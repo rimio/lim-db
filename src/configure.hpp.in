@@ -1,0 +1,11 @@
+#ifndef CONFIGURE_H_IN_
+#define CONFIGURE_H_IN_
+
+//
+// Version
+//
+#define VERSION_MAJOR @VERSION_MAJOR@
+#define VERSION_MINOR @VERSION_MINOR@
+#define VERSION "@VERSION_MAJOR@.@VERSION_MINOR@"
+
+#endif
