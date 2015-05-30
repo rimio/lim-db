@@ -42,6 +42,13 @@ add_flex_bison_dependency (lexer parser)
 set (HEADER_FILES
 	# parser
 	${SOURCE_DIR}/parser/parser-node.hpp
+	${SOURCE_DIR}/parser/command-node.hpp
+	${SOURCE_DIR}/parser/statement-node.hpp
+	${SOURCE_DIR}/parser/parser-context.hpp
+
+	# base
+	${SOURCE_DIR}/base/error-codes.hpp
+	${SOURCE_DIR}/base/error-manager.hpp
 
 	# flex/bison
 	${BISON_parser_OUTPUT_HEADER}
@@ -55,6 +62,12 @@ set (SOURCE_FILES
 	
 	# parser
 	${SOURCE_DIR}/parser/parser-node.cpp
+	${SOURCE_DIR}/parser/command-node.cpp
+	${SOURCE_DIR}/parser/statement-node.cpp
+	${SOURCE_DIR}/parser/parser-context.cpp
+
+	# base
+	${SOURCE_DIR}/base/error-manager.cpp
 
 	# flex/bison
 	${BISON_parser_OUTPUT_SOURCE}

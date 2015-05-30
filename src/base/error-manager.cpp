@@ -4,43 +4,44 @@
 #include <cstring>
 #include <cassert>
 
-static void reportError (ErrorCode ercode, const char *file, const int line, ...)
+void ErrorManager::reportError (const char *file, const int line, ErrorCode ercode, va_list& valist)
 {
 	char buffer[2048];
-	va_list argptr;
 
 	// Check error code
 	assert (ercode >= 0);
 	assert (ercode < ER_LAST_ERROR);
 
 	// Format string
-	va_start (argptr, std::get<0>(kErrorMessages[ercode]));
-    vsprintf (buffer, std::get<1>(kErrorMessages[ercode]), argptr);
-    va_end (argptr);
+    vsprintf (buffer, kErrorMessages[ercode].c_str (), valist);
 
 	// Show error on standard error
-	std::cerr << "[E" << (int) ercode << "] " << buffer << std::endl;
+	std::cerr << "[E" << (int) ercode << " @ " << file << ":" << line << "] " << buffer << std::endl;
 }
 
-void Error::error (const std::string error)
+ErrorCode ErrorManager::error (const char *file, const int line, ErrorCode ercode, ...)
 {
-	Error::reportError ("Error: " + error);
+	va_list argptr;
+	
+	// Check error code
+	assert (ercode >= 0);
+	assert (ercode < ER_LAST_ERROR);
+
+	// Print error
+	va_start (argptr, ercode);
+	reportError (file, line, ercode, argptr);
+	va_end (argptr);
+	
+	// Return received error code
+	return ercode;
 }
 
-void Error::internalError (const std::string error)
+ErrorCode ErrorManager::syntaxError (const char *file, const int line, int row, int col, const std::string& message)
 {
-	Error::reportError ("Internal error: " + error);
+	return ErrorManager::error (file, line, ER_SYNTAX_ERROR, row, col, message.c_str ());
 }
 
-void Error::syntaxError (const std::string error, int line, int column)
+ErrorCode ErrorManager::semanticError (const char *file, const int line, int row, int col, const std::string& message)
 {
-	Error::reportError ("Syntax error at line " + std::to_string (line) + " column " + std::to_string (column) + ": " + error);
-}
-
-void Error::semanticError (const std::string error, ParserNode *node)
-{
-	yy::location loc = node->getLocation ();
-
-	Error::reportError ("Semantic error at line " + std::to_string (loc.begin.line)
-						+ " column " + std::to_string (loc.begin.column) +  ": " + error);
+	return ErrorManager::error (file, line, ER_SEMANTIC_ERROR, row, col, message.c_str ());
 }

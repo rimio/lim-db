@@ -1,7 +1,8 @@
 %{
 
 #include <string>
-#include "lexer.hpp"
+#include "base/error-manager.hpp"
+#include "parser/lexer.hpp"
 
 #define yyterminate()	return Parser::token::END
 
@@ -21,9 +22,18 @@
 location_.step();
 %}
 
+[Cc][Rr][Ee][Aa][Tt][Ee]		{ return Parser::token::CREATE; }
+[Dd][Ee][Ll][Ee][Tt][Ee]		{ return Parser::token::DELETE; }
+[Dd][Rr][Oo][Pp]				{ return Parser::token::DROP; }
+[Ee][Xx][Ii][Tt]				{ return Parser::token::EXIT; }
+[Ii][Nn][Dd][Ee][Xx]			{ return Parser::token::INDEX; }
+[Ii][Nn][Ss][Ee][Rr][Tt]		{ return Parser::token::INSERT; }
+[Ss][Ee][Ll][Ee][Cc][Tt]		{ return Parser::token::SELECT; }
+[Tt][Aa][Bb][Ll][Ee]			{ return Parser::token::TABLE; }
+[Uu][Pp][Dd][Aa][Tt][Ee]		{ return Parser::token::UPDATE; }
+
 "("								{ return Parser::token::PAR_OPEN; }
 ")"								{ return Parser::token::PAR_CLOSE; }
-
 ","								{ return Parser::token::COMMA; }
 ";"								{ return Parser::token::SEMICOLON; }
 
@@ -37,7 +47,6 @@ location_.step();
 ">"								{ return Parser::token::GT; }
 ">="							{ return Parser::token::GT_EQ; }
 "!="							{ return Parser::token::NOT_EQUAL; }
-
 [Mm][Oo][Dd]					{ return Parser::token::MODULO; }
 [Nn][Oo][Tt]					{ return Parser::token::NOT; }
 [Aa][Nn][Dd]					{ return Parser::token::AND; }
@@ -57,6 +66,6 @@ location_.step();
 [ \t]							{ /* eat them */ location_.step (); }
 [\n]+							{ location_.lines (yyleng); location_.step (); }
 
-.								{ /* Error::syntaxError ("unrecognized token '" + std::string (yytext) + "'", location_.begin.line, location_.begin.column); */ }
+.								{ ErrorManager::syntaxError (__HERE__, location_.begin.line, location_.begin.column, "unrecognized token '" + std::string (yytext) + "'"); }
 
 %%

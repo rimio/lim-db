@@ -4,29 +4,37 @@
 #include "error-codes.hpp"
 
 #include <string>
-#include <stdarg.h>
+#include <cstring>
+#include <cstdarg>
+
+//
+// Macro for the file-line combo
+//
+#if defined (_WIN32)
+	#define __FILENAME__	(::strrchr(__FILE__, '\\') ? ::strrchr(__FILE__, '\\') + 1 : __FILE__)
+#else
+	#define __FILENAME__	(::strrchr(__FILE__, '/') ? ::strrchr(__FILE__, '/') + 1 : __FILE__)
+#endif
+#define __HERE__		__FILENAME__, __LINE__
 
 //
 // Errors handling routines gathered in a static class
 //
-class Error
+class ErrorManager
 {
 private:
 	// Common call point for all error routines
-	static void reportError (ErrorCode ercode, const char *file, const int line, ...);
+	static void reportError (const char *file, const int line, ErrorCode ercode, va_list& valist);
 
 public:
-	// Report a generic error
-	static void error (const std::string error);
-
-	// Report an internal error (unexpected behavior by the compiler)
-	static void internalError (const std::string error);
-
-	// Report a syntax error in the code
-	static void syntaxError (const std::string error, int line, int column);
-
-	// Report a semantic error in the code
-	static void semanticError (const std::string error, ParserNode *node);
+	// Report an error
+	static ErrorCode error (const char *file, const int line, ErrorCode ercode, ...);
+	
+	// Report a syntax error
+	static ErrorCode syntaxError (const char *file, const int line, int row, int col, const std::string& message);
+	
+	// Report a semantic error
+	static ErrorCode semanticError (const char *file, const int line, int row, int col, const std::string& message);
 };
 
 #endif

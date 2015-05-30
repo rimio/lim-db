@@ -5,7 +5,7 @@
 #include <FlexLexer.h>
 #endif
 
-#include "parser.hh"
+#include "parser.hpp"
 using namespace yy;
 
 #undef  YY_DECL
