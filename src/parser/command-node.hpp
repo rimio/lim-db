@@ -18,6 +18,9 @@ class CommandNode : public ParserNode
 {
 private:
 protected:
+	// Hidden constructor
+	CommandNode () { };
+
 public:
 	// Implementation of pure virtual functions
 	virtual ParserNodeType getNodeType () const { return PT_COMMAND; };

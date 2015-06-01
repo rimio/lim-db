@@ -25,6 +25,9 @@ class StatementNode : public ParserNode
 {
 private:
 protected:
+	// Hidden constructor
+	StatementNode () { };
+
 public:
 	// Implementation of pure virtual functions
 	virtual ParserNodeType getNodeType () const { return PT_STATEMENT; };
