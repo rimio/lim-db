@@ -42,6 +42,7 @@ set (HEADER_FILES
 	${SOURCE_DIR}/parser/command-node.hpp
 	${SOURCE_DIR}/parser/statement-node.hpp
 	${SOURCE_DIR}/parser/value-node.hpp
+	${SOURCE_DIR}/parser/identifier-node.hpp
 	${SOURCE_DIR}/parser/parser-context.hpp
 
 	# base
@@ -63,6 +64,7 @@ set (SOURCE_FILES
 	${SOURCE_DIR}/parser/command-node.cpp
 	${SOURCE_DIR}/parser/statement-node.cpp
 	${SOURCE_DIR}/parser/value-node.cpp
+	${SOURCE_DIR}/parser/identifier-node.cpp
 	${SOURCE_DIR}/parser/parser-context.cpp
 
 	# base

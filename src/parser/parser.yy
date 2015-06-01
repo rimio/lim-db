@@ -12,6 +12,8 @@
 	#include "parser/parser-node.hpp"
 	#include "parser/command-node.hpp"
 	#include "parser/statement-node.hpp"
+	#include "parser/identifier-node.hpp"
+	#include "parser/value-node.hpp"
 
 	class ParserContext;
 	class Lexer;
@@ -41,18 +43,25 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 	std::string *sval;
 
 	ParserNode *parser_node;
+	TypedParserNode *typed_parser_node;
 	StatementNode *statement_node;
 	CommandNode *command_node;
+	ValueNode *value_node;
+	TableIdentifierNode *table_identifier_node;
+	ColumnIdentifierNode *column_identifier_node;
+	IndexIdentifierNode *index_identifier_node;
 }
 
 %token AND
 %token COMMA					"','"
 %token CREATE
 %token DELETE
+%token DOT						"dot"
 %token DROP
 %token END					0	"end of file"
 %token EQUAL					"="
 %token EXIT
+%token FROM
 %token GT						">"
 %token GT_EQ					">="
 %token INDEX
@@ -95,19 +104,30 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <parser_node>		statement_or_command
 
 // Commands
-%type <command_node>	command
-%type <command_node>	exit_command
+%type <command_node>			command
+%type <command_node>			exit_command
 
 // Statements
-%type <statement_node>	statement
-%type <statement_node>	select_statement
-%type <statement_node>	insert_statement
-%type <statement_node>	delete_statement
-%type <statement_node>	update_statement
-%type <statement_node>	create_table_statement
-%type <statement_node>	create_index_statement
-%type <statement_node>	drop_table_statement
-%type <statement_node>	drop_index_statement
+%type <statement_node>			statement
+%type <statement_node>			select_statement
+%type <statement_node>			insert_statement
+%type <statement_node>			delete_statement
+%type <statement_node>			update_statement
+%type <statement_node>			create_table_statement
+%type <statement_node>			create_index_statement
+%type <statement_node>			drop_table_statement
+%type <statement_node>			drop_index_statement
+
+// Typed nodes
+%type <value_node>				literal
+%type <typed_parser_node>		operand
+%type <typed_parser_node>		expression
+%type <typed_parser_node>		expression_list
+
+// Identifiers
+%type <table_identifier_node>	table_identifier
+%type <column_identifier_node>	column_identifier
+%type <index_identifier_node>	index_identifier
 
 %%
 
@@ -177,9 +197,9 @@ statement
 	;
 
 select_statement
-	: SELECT
+	: SELECT expression_list FROM table_identifier
 		{
-			$$ = new SelectStatementNode ();
+			$$ = new SelectStatementNode ($2, $4);
 			$$->setLocation (@1);
 		}
 	;
@@ -236,6 +256,101 @@ drop_index_statement
 	: DROP INDEX
 		{
 			$$ = new DropIndexStatementNode ();
+			$$->setLocation (@1);
+		}
+	;
+
+expression_list
+	: expression COMMA expression_list
+		{
+			$$ = $1;
+			//$$->setNext ($3);
+		}
+	| expression
+		{
+			$$ = $1;
+		}
+	;
+
+expression
+	: PAR_OPEN expression PAR_CLOSE
+		{
+			// Allow paranthesis for any expression
+			$$ = $2;
+		}
+	| operand
+		{
+			$$ = $1;
+		}
+	;
+
+operand
+	: literal
+		{
+			$$ = $1;
+		}
+	| column_identifier
+		{
+			$$ = $1;
+		}
+	;
+
+literal
+	: ILITERAL
+		{
+			$$ = new IntegerValueNode ($1);
+			$$->setLocation (@1);
+		}
+	| FLITERAL
+		{
+			$$ = new FloatValueNode ($1);
+			$$->setLocation (@1);
+		}
+	| SLITERAL
+		{
+			$$ = new StringValueNode (*($1));
+			delete ($1);
+			$$->setLocation (@1);
+		}
+	;
+
+table_identifier
+	: IDENTIFIER
+		{
+			$$ = new TableIdentifierNode (*($1));
+			delete ($1);
+			$$->setLocation (@1);
+		}
+	;
+
+column_identifier
+	: IDENTIFIER
+		{
+			$$ = new ColumnIdentifierNode (*($1));
+			delete ($1);
+			$$->setLocation (@1);
+		}
+	| IDENTIFIER DOT IDENTIFIER
+		{
+			$$ = new ColumnIdentifierNode (*($1), *($3));
+			delete ($1);
+			delete ($3);
+			$$->setLocation (@1);
+		}
+	;
+
+index_identifier
+	: IDENTIFIER
+		{
+			$$ = new IndexIdentifierNode (*($1));
+			delete ($1);
+			$$->setLocation (@1);
+		}
+	| IDENTIFIER DOT IDENTIFIER
+		{
+			$$ = new IndexIdentifierNode (*($1), *($3));
+			delete ($1);
+			delete ($3);
 			$$->setLocation (@1);
 		}
 	;

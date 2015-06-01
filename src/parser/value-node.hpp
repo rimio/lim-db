@@ -21,7 +21,7 @@ class ValueNode : public TypedParserNode
 private:
 protected:
 	// Hidden constructor
-	ValueNode ();
+	ValueNode () { };
 
 public:
 	// Implementation of pure virtual functions

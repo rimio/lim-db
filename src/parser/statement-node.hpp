@@ -2,6 +2,7 @@
 #define STATEMENT_NODE_HPP_
 
 #include "parser/parser-node.hpp"
+#include "parser/identifier-node.hpp"
 
 //
 // Statement types
@@ -45,7 +46,19 @@ class SelectStatementNode : public StatementNode
 {
 private:
 protected:
+	// The select list
+	TypedParserNode *list_;
+
+	// The FROM part
+	TableIdentifierNode *from_;
+
+	// Hidden default constructor
+	SelectStatementNode () { };
+
 public:
+	// Constructor
+	SelectStatementNode (TypedParserNode *list, TableIdentifierNode *from) : list_ (list), from_ (from) { };
+
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "SELECT"; };
 	virtual StatementType getStatementType () const { return PT_STATEMENT_SELECT; };

@@ -8,9 +8,11 @@
 //
 typedef enum
 {
+	DB_UNKNOWN,		// Not yet resolved
 	DB_INTEGER,
 	DB_FLOAT,
-	DB_STRING
+	DB_STRING,
+	DB_BOOLEAN
 } DataType;
 
 //
@@ -20,7 +22,8 @@ typedef enum
 {
 	PT_COMMAND,
 	PT_STATEMENT,
-	PT_VALUE
+	PT_VALUE,
+	PT_IDENTIFIER
 } ParserNodeType;
 
 //
@@ -50,13 +53,15 @@ public:
 	// Specifies whether the parser node has an associated data type.
 	// If this returns true, it may be cast to TypedParserNode to retireve
 	// the data type.
+	// NOTE: It is inferred that all typed nodes can evaluate to a value,
+	// either at compile time or at runtime.
 	virtual bool isTyped () const { return false; };
 };
 
 //
 // Base class for all typed parser nodes
 //
-class TypedParserNode
+class TypedParserNode : public virtual ParserNode
 {
 private:
 protected:

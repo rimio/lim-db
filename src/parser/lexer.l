@@ -26,6 +26,7 @@ location_.step();
 [Dd][Ee][Ll][Ee][Tt][Ee]		{ return Parser::token::DELETE; }
 [Dd][Rr][Oo][Pp]				{ return Parser::token::DROP; }
 [Ee][Xx][Ii][Tt]				{ return Parser::token::EXIT; }
+[Ff][Rr][Oo][Mm]				{ return Parser::token::FROM; }
 [Ii][Nn][Dd][Ee][Xx]			{ return Parser::token::INDEX; }
 [Ii][Nn][Ss][Ee][Rr][Tt]		{ return Parser::token::INSERT; }
 [Ss][Ee][Ll][Ee][Cc][Tt]		{ return Parser::token::SELECT; }
@@ -36,6 +37,7 @@ location_.step();
 ")"								{ return Parser::token::PAR_CLOSE; }
 ","								{ return Parser::token::COMMA; }
 ";"								{ return Parser::token::SEMICOLON; }
+[.]								{ return Parser::token::DOT; }
 
 "+"								{ return Parser::token::PLUS; }
 "-"								{ return Parser::token::MINUS; }
@@ -55,13 +57,13 @@ location_.step();
 [0-9]+								{ yylval->ival = atoi (yytext); return Parser::token::ILITERAL; }
 [0-9]*[.][0-9]+						{ yylval->fval = atof (yytext); return Parser::token::FLITERAL; }
 [0-9]*[.][0-9]+[Ee][-]?[0-9]+		{ yylval->fval = atof (yytext); return Parser::token::FLITERAL; }
-[0-9]+[Ee][-]?[0-9]+				{ yylval->fval = atof (yytext); return Parser::token::FLITERAL; }
+[0-9]+[Ee][-+]?[0-9]+				{ yylval->fval = atof (yytext); return Parser::token::FLITERAL; }
 ['][^']*[']							{
 										std::string strq (yytext);
 										yylval->sval = new std::string (strq.substr (1, strq.length () - 2));
 										return Parser::token::SLITERAL;
 									}
-[a-zA-Z][a-zA-Z0-9.]*			{ yylval->sval = new std::string (yytext, strlen (yytext) - 1); return Parser::token::IDENTIFIER; }
+[a-zA-Z][a-zA-Z0-9]*			{ yylval->sval = new std::string (yytext); return Parser::token::IDENTIFIER; }
 
 [ \t]							{ /* eat them */ location_.step (); }
 [\n]+							{ location_.lines (yyleng); location_.step (); }
