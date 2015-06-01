@@ -26,6 +26,7 @@ protected:
 public:
 	// Implementation of pure virtual functions
 	virtual ParserNodeType getNodeType() const { return PT_VALUE; };
+	virtual std::string print () { return toString (); };
 
 	// Returns the statement type
 	virtual ValueType getValueType() const = 0;
@@ -101,7 +102,7 @@ public:
 	StringValueNode (std::string& val) : value_ (val) { };
 
 	// Implementation of pure virtual functions
-	virtual std::string toString () { return value_; };
+	virtual std::string toString () { return "'" + value_ + "'"; };
 	virtual ValueType getValueType () const { return PT_VALUE_STRING; };
 	virtual DataType getDataType () const { return DB_STRING; };
 

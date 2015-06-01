@@ -40,6 +40,7 @@ protected:
 public:
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "EXIT"; };
+	virtual std::string print () { return "EXIT"; };
 	virtual CommandType getCommandType () const { return PT_COMMAND_EXIT; };
 };
 

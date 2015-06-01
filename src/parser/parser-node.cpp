@@ -11,3 +11,11 @@ ParserNode::~ParserNode ()
 {
 	delete next_;
 }
+
+std::string ParserNode::printList (std::string sep)
+{
+	if (next_ != nullptr)
+		return print () + sep + next_->printList (sep);
+	else
+		return print ();
+}

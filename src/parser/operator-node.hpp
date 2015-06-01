@@ -51,9 +51,14 @@ public:
 	// Implementation of pure virtual functions
 	virtual ParserNodeType getNodeType () const { return PT_OPERATOR; };
 	virtual DataType getDataType () const { return return_type_; };
+	virtual std::string print ();
 	
 	// Returns the statement type
 	virtual OperatorType getOperatorType () const = 0;
+
+	// Getters for left and right
+	TypedParserNode *getLeft () const { return left_; }
+	TypedParserNode *getRight () const { return right_; }
 };
 
 // ---------------------------- Logical Operators --------------------------- //

@@ -30,6 +30,7 @@ protected:
 public:
 	// Implementation of pure virtual functions
 	virtual ParserNodeType getNodeType () const { return PT_IDENTIFIER; };
+	virtual std::string print () { return toString (); };
 
 	// Returns the identifier type
 	virtual IdentifierType getIdentifierType () const = 0;

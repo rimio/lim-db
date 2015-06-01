@@ -385,6 +385,25 @@ expression
 			$$ = new ModuloOperatorNode ($1, $3);
 			$$->setLocation (@1);
 		}
+	| MINUS expression %prec NEGATION
+		{
+			$$ = new MinusOperatorNode ($2, nullptr);
+			$$->setLocation (@1);
+
+			// Check for chained negations
+			if ($2->getNodeType () == PT_OPERATOR)
+			{
+				OperatorNode *opn = (OperatorNode *) $2;
+				if (opn->getOperatorType () == PT_OPERATOR_MINUS)
+				{
+					MinusOperatorNode *mopn = (MinusOperatorNode *) opn;
+					if (mopn->getRight () == nullptr)
+					{
+						error (@2, "chained negation not allowed");
+					}
+				}
+			}
+		}
 	| PAR_OPEN expression PAR_CLOSE
 		{
 			// Allow paranthesis for any expression

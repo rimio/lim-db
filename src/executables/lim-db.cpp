@@ -72,6 +72,9 @@ ErrorCode InputLoop ()
 			continue;
 		}
 
+		// DEBUG CODE: Print parse tree
+		std::cout << std::endl << "statement: " << root->print () << std::endl;
+
 		// TODO: Semantic checking
 		
 		// Execute statement or internal command

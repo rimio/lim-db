@@ -57,6 +57,12 @@ public:
 	// Returns a string representation of the node
 	virtual std::string toString () = 0;
 
+	// Returns a printable string representation of the node and it's children
+	virtual std::string print () = 0;
+
+	// Prints the node as a list, separated by a specified separator
+	virtual std::string printList (std::string sep);
+
 	// Specifies whether the parser node has an associated data type.
 	// If this returns true, it may be cast to TypedParserNode to retireve
 	// the data type.

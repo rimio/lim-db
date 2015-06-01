@@ -61,6 +61,7 @@ public:
 
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "SELECT"; };
+	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_SELECT; };
 };
 
@@ -85,6 +86,7 @@ public:
 
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "INSERT"; };
+	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_INSERT; };
 };
 
@@ -98,6 +100,7 @@ protected:
 public:
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "DELETE"; };
+	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DELETE; };
 };
 
@@ -111,6 +114,7 @@ protected:
 public:
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "UPDATE"; };
+	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_UPDATE; };
 };
 
@@ -136,6 +140,7 @@ public:
 
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "CREATE TABLE"; };
+	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_CREATE_TABLE; };
 };
 
@@ -149,6 +154,7 @@ protected:
 public:
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "CREATE INDEX"; };
+	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_CREATE_INDEX; };
 };
 
@@ -170,6 +176,7 @@ public:
 
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "DROP TABLE"; };
+	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DROP_TABLE; };
 };
 
@@ -183,6 +190,7 @@ protected:
 public:
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "DROP INDEX"; };
+	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DROP_INDEX; };
 };
 
