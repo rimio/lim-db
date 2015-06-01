@@ -10,6 +10,7 @@ using namespace yy;
 
 #undef  YY_DECL
 #define YY_DECL int Lexer::yylex()
+#define YY_NO_UNISTD_H		// So it's compiled by VC as well
 
 class Lexer : public yyFlexLexer
 {

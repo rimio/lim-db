@@ -263,4 +263,6 @@ FakesAssemblies/
 
 # Project files and solution files
 *.vcproj
+*.vcxproj
+*.vcxproj.filters
 *.sln

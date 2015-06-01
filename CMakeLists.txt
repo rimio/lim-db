@@ -2,9 +2,6 @@
 cmake_minimum_required (VERSION 2.6)
 project (lim-db)
 
-# Flags (C++ standard 11, GDB debugging symbols)
-add_definitions (-std=c++11)
-
 # Version
 set (VERSION_MAJOR 0)
 set (VERSION_MINOR 1)
@@ -79,3 +76,6 @@ add_executable (${BIN_DIR}/lim-db
 	${SOURCE_FILES}
 	${HEADER_FILES}
 	)
+
+# C++11
+set_property(TARGET ${BIN_DIR}/lim-db PROPERTY CXX_STANDARD 11)

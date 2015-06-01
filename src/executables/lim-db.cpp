@@ -97,6 +97,9 @@ ErrorCode InputLoop ()
 			continue;
 		}
 	}
+
+	// All ok?
+	return NO_ERROR;
 }
 
 //
