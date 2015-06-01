@@ -49,6 +49,19 @@ set (HEADER_FILES
 	# base
 	${SOURCE_DIR}/base/error-codes.hpp
 	${SOURCE_DIR}/base/error-manager.hpp
+	${SOURCE_DIR}/base/generic-type-definitions.hpp
+	${SOURCE_DIR}/base/generic-constants.hpp
+	${SOURCE_DIR}/base/generic-operations.hpp
+
+	# storage
+	${SOURCE_DIR}/storage/sector.hpp
+
+	# schema
+	${SOURCE_DIR}/schema/attribute.hpp
+	${SOURCE_DIR}/schema/class.hpp
+
+	# metadata
+	${SOURCE_DIR}/metadata/file.hpp
 
 	# flex/bison
 	${BISON_parser_OUTPUT_HEADER}
@@ -71,6 +84,16 @@ set (SOURCE_FILES
 
 	# base
 	${SOURCE_DIR}/base/error-manager.cpp
+
+	# storage
+	${SOURCE_DIR}/storage/sector.cpp
+	
+	# schema
+	${SOURCE_DIR}/schema/attribute.cpp
+	${SOURCE_DIR}/schema/class.cpp
+
+	# metadata
+	${SOURCE_DIR}/metadata/file.cpp
 
 	# flex/bison
 	${BISON_parser_OUTPUT_SOURCE}
