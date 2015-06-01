@@ -23,7 +23,8 @@ typedef enum
 	PT_COMMAND,
 	PT_STATEMENT,
 	PT_VALUE,
-	PT_IDENTIFIER
+	PT_IDENTIFIER,
+	PT_OPERATOR
 } ParserNodeType;
 
 //

@@ -13,6 +13,7 @@
 	#include "parser/command-node.hpp"
 	#include "parser/statement-node.hpp"
 	#include "parser/identifier-node.hpp"
+	#include "parser/operator-node.hpp"
 	#include "parser/value-node.hpp"
 
 	class ParserContext;
@@ -47,6 +48,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 	StatementNode *statement_node;
 	CommandNode *command_node;
 	ValueNode *value_node;
+	OperatorNode *operator_node;
 	TableIdentifierNode *table_identifier_node;
 	ColumnIdentifierNode *column_identifier_node;
 	IndexIdentifierNode *index_identifier_node;
@@ -313,7 +315,77 @@ expression_list
 	;
 
 expression
-	: PAR_OPEN expression PAR_CLOSE
+	: expression OR expression
+		{
+			$$ = new OrOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| expression AND expression
+		{
+			$$ = new AndOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| NOT expression
+		{
+			$$ = new NotOperatorNode ($2);
+			$$->setLocation (@1);
+		}
+	| expression LT expression
+		{	
+			$$ = new LtOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| expression LT_EQ expression
+		{
+			$$ = new LtEqOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| expression GT expression
+		{
+			$$ = new GtOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| expression GT_EQ expression
+		{
+			$$ = new GtEqOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| expression EQUAL expression
+		{
+			$$ = new EqualOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| expression NOT_EQUAL expression
+		{
+			$$ = new NotEqualOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| expression PLUS expression
+		{
+			$$ = new PlusOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| expression MINUS expression
+		{
+			$$ = new MinusOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| expression STAR expression
+		{
+			$$ = new MultiplicationOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| expression SLASH expression
+		{
+			$$ = new DivisionOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| expression MODULO expression
+		{
+			$$ = new ModuloOperatorNode ($1, $3);
+			$$->setLocation (@1);
+		}
+	| PAR_OPEN expression PAR_CLOSE
 		{
 			// Allow paranthesis for any expression
 			$$ = $2;
