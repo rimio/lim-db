@@ -36,10 +36,16 @@ protected:
 	// Position in input buffer
 	yy::location location_;
 
+	// Next node in list
+	ParserNode *next_;
+
 	// Hidden constructor
-	ParserNode () { };
+	ParserNode ();
 
 public:
+	// Virtual destructor
+	virtual ~ParserNode ();
+
 	// Location getter/setter
 	yy::location getLocation () const { return location_; }
 	void setLocation (yy::location loc) { location_ = loc; }
@@ -56,6 +62,10 @@ public:
 	// NOTE: It is inferred that all typed nodes can evaluate to a value,
 	// either at compile time or at runtime.
 	virtual bool isTyped () const { return false; };
+
+	// Getter and setter for reference to next node
+	ParserNode *getNext () const { return next_; }
+	void setNext (ParserNode *next) { next_ = next; }
 };
 
 //

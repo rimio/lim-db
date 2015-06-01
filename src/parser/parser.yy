@@ -58,14 +58,17 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %token DELETE
 %token DOT						"dot"
 %token DROP
-%token END					0	"end of file"
+%token END					0	"end of command"
 %token EQUAL					"="
 %token EXIT
+%token FLOAT
 %token FROM
 %token GT						">"
 %token GT_EQ					">="
 %token INDEX
 %token INSERT
+%token INT
+%token INTO
 %token LT						"<"
 %token LT_EQ					"<="
 %token MINUS					"-"
@@ -78,10 +81,12 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %token PLUS						"+"
 %token SELECT
 %token SEMICOLON				";"
+%token STRING
 %token SLASH					"/"
 %token STAR						"*"
 %token TABLE
 %token UPDATE
+%token VALUES
 
 /*
  * For SQL operator precedence, see T-SQL specs:
@@ -126,8 +131,13 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 
 // Identifiers
 %type <table_identifier_node>	table_identifier
+%type <table_identifier_node>	table_identifier_list
 %type <column_identifier_node>	column_identifier
 %type <index_identifier_node>	index_identifier
+
+// Data definition language
+%type <column_identifier_node>	column_definition
+%type <column_identifier_node>	column_definition_list
 
 %%
 
@@ -197,7 +207,7 @@ statement
 	;
 
 select_statement
-	: SELECT expression_list FROM table_identifier
+	: SELECT expression_list FROM table_identifier_list
 		{
 			$$ = new SelectStatementNode ($2, $4);
 			$$->setLocation (@1);
@@ -205,9 +215,9 @@ select_statement
 	;
 
 insert_statement
-	: INSERT
+	: INSERT INTO table_identifier VALUES PAR_OPEN expression_list PAR_CLOSE
 		{
-			$$ = new InsertStatementNode ();
+			$$ = new InsertStatementNode ($3, $6);
 			$$->setLocation (@1);
 		}
 	;
@@ -229,15 +239,45 @@ update_statement
 	;
 
 create_table_statement
-	: CREATE TABLE
+	: CREATE TABLE table_identifier PAR_OPEN column_definition_list PAR_CLOSE
 		{
-			$$ = new CreateTableStatementNode ();
+			$$ = new CreateTableStatementNode ($3, $5);
 			$$->setLocation (@1);
 		}
 	;
 
+column_definition_list
+	: column_definition COMMA column_definition_list
+		{
+			$$ = $1;
+			$$->setNext ($3);
+		}
+	| column_definition
+		{
+			$$ = $1;
+		}
+	;
+
+column_definition
+	: column_identifier INT
+		{
+			$$ = $1;
+			$$->setDataType (DB_INTEGER);
+		}
+	| column_identifier FLOAT
+		{
+			$$ = $1;
+			$$->setDataType (DB_FLOAT);
+		}
+	| column_identifier STRING
+		{
+			$$ = $1;
+			$$->setDataType (DB_STRING);
+		}
+	;
+
 create_index_statement
-	: CREATE INDEX
+	: CREATE INDEX index_identifier
 		{
 			$$ = new CreateIndexStatementNode ();
 			$$->setLocation (@1);
@@ -245,15 +285,15 @@ create_index_statement
 	;
 
 drop_table_statement
-	: DROP TABLE
+	: DROP TABLE table_identifier
 		{
-			$$ = new DropTableStatementNode ();
+			$$ = new DropTableStatementNode ($3);
 			$$->setLocation (@1);
 		}
 	;
 
 drop_index_statement
-	: DROP INDEX
+	: DROP INDEX index_identifier
 		{
 			$$ = new DropIndexStatementNode ();
 			$$->setLocation (@1);
@@ -264,7 +304,7 @@ expression_list
 	: expression COMMA expression_list
 		{
 			$$ = $1;
-			//$$->setNext ($3);
+			$$->setNext ($3);
 		}
 	| expression
 		{
@@ -311,6 +351,18 @@ literal
 			$$ = new StringValueNode (*($1));
 			delete ($1);
 			$$->setLocation (@1);
+		}
+	;
+
+table_identifier_list
+	: table_identifier COMMA table_identifier_list
+		{
+			$$ = $1;
+			$$->setNext ($3);
+		}
+	| table_identifier
+		{
+			$$ = $1;
 		}
 	;
 

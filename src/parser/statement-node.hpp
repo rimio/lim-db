@@ -71,7 +71,18 @@ class InsertStatementNode : public StatementNode
 {
 private:
 protected:
+	// Table to insert into
+	TableIdentifierNode *table_;
+
+	// Values to insert into table
+	TypedParserNode *values_;
+
+	// Hidden constructor
+	InsertStatementNode () { };
+
 public:
+	InsertStatementNode (TableIdentifierNode *table, TypedParserNode *values) : table_ (table), values_ (values) { };
+
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "INSERT"; };
 	virtual StatementType getStatementType () const { return PT_STATEMENT_INSERT; };
@@ -112,7 +123,17 @@ class CreateTableStatementNode : public StatementNode
 {
 private:
 protected:
+	// Table identifier for new table
+	TableIdentifierNode *table_;
+
+	// Column definition
+	ColumnIdentifierNode *definition_;
+
+	// Hidden constructor
+	CreateTableStatementNode () { };
 public:
+	CreateTableStatementNode (TableIdentifierNode *table, ColumnIdentifierNode *def) : table_ (table), definition_ (def) { };
+
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "CREATE TABLE"; };
 	virtual StatementType getStatementType () const { return PT_STATEMENT_CREATE_TABLE; };
@@ -138,7 +159,15 @@ class DropTableStatementNode : public StatementNode
 {
 private:
 protected:
+	// Table identifier
+	TableIdentifierNode *table_;
+
+	// Hidden constructor
+	DropTableStatementNode () { };
+
 public:
+	DropTableStatementNode (TableIdentifierNode *table) : table_ (table) { };
+
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "DROP TABLE"; };
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DROP_TABLE; };

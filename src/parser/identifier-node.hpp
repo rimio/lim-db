@@ -81,6 +81,9 @@ public:
 	virtual std::string toString () { return table_ + "." + name_; };
 	virtual IdentifierType getIdentifierType () const { return PT_IDENTIFIER_COLUMN; };
 	virtual DataType getDataType () const { return data_type_; };
+	
+	// Setter for data type
+	void setDataType (DataType data_type) { data_type_ = data_type; };
 };
 
 //

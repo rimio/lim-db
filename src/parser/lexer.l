@@ -26,12 +26,17 @@ location_.step();
 [Dd][Ee][Ll][Ee][Tt][Ee]		{ return Parser::token::DELETE; }
 [Dd][Rr][Oo][Pp]				{ return Parser::token::DROP; }
 [Ee][Xx][Ii][Tt]				{ return Parser::token::EXIT; }
+[Ff][Ll][Oo][Aa][Tt]			{ return Parser::token::FLOAT; }
 [Ff][Rr][Oo][Mm]				{ return Parser::token::FROM; }
 [Ii][Nn][Dd][Ee][Xx]			{ return Parser::token::INDEX; }
 [Ii][Nn][Ss][Ee][Rr][Tt]		{ return Parser::token::INSERT; }
+[Ii][Nn][Tt]					{ return Parser::token::INT; }
+[Ii][Nn][Tt][Oo]				{ return Parser::token::INTO; }
 [Ss][Ee][Ll][Ee][Cc][Tt]		{ return Parser::token::SELECT; }
+[Ss][Tt][Rr][Ii][Nn][Gg]		{ return Parser::token::STRING; }
 [Tt][Aa][Bb][Ll][Ee]			{ return Parser::token::TABLE; }
 [Uu][Pp][Dd][Aa][Tt][Ee]		{ return Parser::token::UPDATE; }
+[Vv][Aa][Ll][Uu][Ee][Ss]		{ return Parser::token::VALUES; }
 
 "("								{ return Parser::token::PAR_OPEN; }
 ")"								{ return Parser::token::PAR_CLOSE; }
