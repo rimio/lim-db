@@ -52,6 +52,7 @@ set (HEADER_FILES
 	${SOURCE_DIR}/base/generic-type-definitions.hpp
 	${SOURCE_DIR}/base/generic-constants.hpp
 	${SOURCE_DIR}/base/generic-operations.hpp
+	${SOURCE_DIR}/base/data-type.hpp
 
 	# storage
 	${SOURCE_DIR}/storage/sector.hpp

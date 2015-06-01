@@ -2,18 +2,7 @@
 #define PARSER_NODE_HPP_
 
 #include "parser/location.hh"
-
-//
-// Data types
-//
-typedef enum
-{
-	DB_UNKNOWN,		// Not yet resolved
-	DB_INTEGER,
-	DB_FLOAT,
-	DB_STRING,
-	DB_BOOLEAN
-} DataType;
+#include "base/data-type.hpp"
 
 //
 // Parser node types
