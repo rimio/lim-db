@@ -1,4 +1,4 @@
-#include "class.hpp"
+#include "table.hpp"
 
 Table::Table ()
 {
@@ -10,8 +10,8 @@ Table::Table ()
 
 Table::Table (SectorID sector_id)
 {
-	id_ = (ClassID) sector_id;
-	MemToClass ();
+	id_ = (TableID) sector_id;
+	MemToTable ();
 }
 
 ErrorCode Table::TableToMem ()
