@@ -17,4 +17,6 @@ typedef unsigned short UINT16;
 typedef signed char BYTE;
 typedef unsigned char UBYTE;
 
+typedef unsigned int UINTPTR;
+
 #endif // GENERIC_TYPE_DEFINITIONS_HPP

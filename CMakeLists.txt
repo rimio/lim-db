@@ -53,13 +53,14 @@ set (HEADER_FILES
 	${SOURCE_DIR}/base/generic-constants.hpp
 	${SOURCE_DIR}/base/generic-operations.hpp
 	${SOURCE_DIR}/base/data-type.hpp
+	${SOURCE_DIR}/base/bitmap.hpp
 
 	# storage
 	${SOURCE_DIR}/storage/sector.hpp
 
 	# schema
 	${SOURCE_DIR}/schema/attribute.hpp
-	${SOURCE_DIR}/schema/class.hpp
+	${SOURCE_DIR}/schema/table.hpp
 
 	# metadata
 	${SOURCE_DIR}/metadata/file.hpp
@@ -85,13 +86,14 @@ set (SOURCE_FILES
 
 	# base
 	${SOURCE_DIR}/base/error-manager.cpp
+	${SOURCE_DIR}/base/bitmap.cpp
 
 	# storage
 	${SOURCE_DIR}/storage/sector.cpp
 	
 	# schema
 	${SOURCE_DIR}/schema/attribute.cpp
-	${SOURCE_DIR}/schema/class.cpp
+	${SOURCE_DIR}/schema/table.cpp
 
 	# metadata
 	${SOURCE_DIR}/metadata/file.cpp
