@@ -3,7 +3,7 @@
 Table::Table ()
 {
 	id_ = 0;
-	file_ = NULL;
+	allocated_sectors_ = NULL;
 	n_attributes_ = 0;
 	attributes_ = NULL;
 }

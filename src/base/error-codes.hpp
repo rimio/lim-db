@@ -17,6 +17,8 @@ typedef enum
 	ER_MISSING_PARSER_NODE,
 	ER_INVALID_PARSER_NODE,
 	ER_EXECUTION_FAILED,
+
+	ER_OUT_OF_MEMORY,
 	ER_LAST_ERROR
 } ErrorCode;
 
@@ -31,7 +33,8 @@ static const std::string kErrorMessages[] = {
 	"parsing failed",
 	"missing %s parser node",
 	"invalid parser node",
-	"execution failed"
+	"execution failed",
+	"out of memory: failed to allocate %d bytes"
 };
 
 #endif

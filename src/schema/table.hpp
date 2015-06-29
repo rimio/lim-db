@@ -3,7 +3,7 @@
 
 #include "storage\sector.hpp"
 #include "schema\attribute.hpp"
-#include "metadata\file.hpp"
+#include "metadata\sector-group.hpp"
 #include "base\error-codes.hpp"
 #include <string>
 
@@ -17,12 +17,13 @@ private:
 
 	std::string name_;
 
-	File *file_;
+	SectorGroup* allocated_sectors_;
 
 	int n_attributes_;
-	Attribute *attributes_;
+	Attribute* attributes_;
 
 public:
+	// Constructors
 	Table ();
 	Table (SectorID sector_id);
 
