@@ -65,6 +65,7 @@ bool Bitmap::is_bit_set(int index) {
 
 		return ((bit_array_[position] >> remainder) & 1);
 	}
+	else return false;
 };
 
 int Bitmap::bitset_count() {

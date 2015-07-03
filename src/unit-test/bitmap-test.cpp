@@ -54,8 +54,11 @@ void BitmapTest::check() {
 		result = true;
 	else
 		result = false;
-
 	assert(result);
+
+	//when bit is out of range
+	result = t1.is_bit_set(5000);
+	assert(!result);
 	
 
 };
