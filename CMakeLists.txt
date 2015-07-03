@@ -58,6 +58,7 @@ set (HEADER_FILES
 
 	# storage
 	${SOURCE_DIR}/storage/sector.hpp
+	${SOURCE_DIR}/storage/sector-manager.hpp
 
 	# schema
 	${SOURCE_DIR}/schema/attribute.hpp
@@ -90,6 +91,7 @@ set (SOURCE_FILES
 
 	# storage
 	${SOURCE_DIR}/storage/sector.cpp
+	${SOURCE_DIR}/storage/sector-manager.cpp
 	
 	# schema
 	${SOURCE_DIR}/schema/attribute.cpp
