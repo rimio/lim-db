@@ -44,14 +44,15 @@ bool Bitmap::clear_bit(int index) {
 
 		//check if the bit is used
 		if (is_bit_set(index)) {
-			// set the bit as being used
-
+			// set the bit as being unused
 			bit_array_[position_] &= ~(1ULL << remainder_);
 			return true;
 		}
 		else
 			return false;
 	}
+	else
+		return false;
 };
 
 bool Bitmap::is_bit_set(int index) {
