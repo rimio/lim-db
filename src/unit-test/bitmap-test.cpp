@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cstdio>
 
 #include "unit-test\bitmap-test.hpp"
@@ -7,34 +8,54 @@ void BitmapTest::check() {
 	Bitmap t2 = Bitmap(20);
 	Bitmap t3 = Bitmap(100);
 	Bitmap t4 = Bitmap(1000);
-
-	printf("t1 initially: %d \n", t1.bitset_count());
 	
-	printf("bit shouldn't be set: %d \n", t1.is_bit_set(10));
-	
-	//t1.set_bit(10);
-	t1.set_bit(100);
-	t1.set_bit(500);
-	t1.set_bit(1);
-	t1.set_bit(0);
+	bool result = t1.set_bit(100);
 
-	printf("bit is setted set: %d \n", t1.set_bit(10));
+	assert(result);
 
-	printf("t1 after 5 inserations: %d \n", t1.bitset_count());
+	result = t1.set_bit(10);
+	assert(result);
 
-	printf("bit should be set: %d \n", t1.is_bit_set(10));
+	//error if i try to use an already used bit
+	result = t1.set_bit(10);
+	assert(!result);
 
-	t1.clear_bit(10);
+	result = t1.set_bit(500);
+	assert(result);
+	result = t1.set_bit(1);
+	assert(result);
+	result = t1.set_bit(100000);
+	assert(!result);
 
-	printf("bit shouldn't be set: %d \n", t1.is_bit_set(10));
 
-	//t1.clear_bit(0);
+	if (t1.bitset_count() == 4)
+		result = true;
+	else
+		result = false;
+	assert(result);
 
-	printf("t1 clears a bit: %d \n", t1.clear_bit(0));
+	//bit should be set: 
+	result = t1.is_bit_set(10);
+	assert(result);
+	//erase used bit
+	result = t1.clear_bit(10);
+	assert(result);
+	//erase unused bit
+	result = t1.clear_bit(7);
+	assert(!result);
 
-	printf("t1 after two deletes: %d \n", t1.bitset_count());
+	result = t1.is_bit_set(10);
+	assert(!result);
+
+	result = t1.clear_bit(0);
+	assert(!result);
+
+	if (t1.bitset_count() == 2)
+		result = true;
+	else
+		result = false;
+
+	assert(result);
 	
 
 };
-
-

@@ -10,13 +10,13 @@ class Bitmap {
 		Bitmap(int bits_number);
 
 		//marks the sector at the specified index as being used
-		int set_bit(int index);
+		bool set_bit(int index);
 
 		//marks the sector at the specified index as being unused
-		int clear_bit(int index);
+		bool clear_bit(int index);
 
 		//checks wether the sector at the specified index is used
-		int is_bit_set(int index);
+		bool is_bit_set(int index);
 
 		//counts the total number of sectors used
 		int bitset_count();
