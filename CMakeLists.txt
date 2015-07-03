@@ -73,8 +73,6 @@ set (HEADER_FILES
 
 # Source files
 set (SOURCE_FILES
-	# executable
-	${SOURCE_DIR}/executables/lim-db.cpp
 	
 	# parser
 	${SOURCE_DIR}/parser/parser-node.cpp
@@ -105,10 +103,34 @@ set (SOURCE_FILES
 	${FLEX_lexer_OUTPUTS}
 	)
 
+# Unit-testing Header files
+set (UNIT_TEST_HEADER_FILES
+	${SOURCE_DIR}/unit-test/bitmap-test.hpp
+	)
+
+# Unit-testing Source files
+set (UNIT_TEST_SOURCE_FILES
+	${SOURCE_DIR}/unit-test/bitmap-test.cpp
+	)
+
 # Executable targets
 add_executable (${BIN_DIR}/lim-db
 	${SOURCE_FILES}
 	${HEADER_FILES}
+
+	# executable
+	${SOURCE_DIR}/executables/lim-db.cpp
+	)
+
+add_executable (${BIN_DIR}/unit-test
+	${SOURCE_FILES}
+	${HEADER_FILES}
+
+	${UNIT_TEST_SOURCE_FILES}
+	${UNIT_TEST_HEADER_FILES}
+
+	# executable
+	${SOURCE_DIR}/executables/unit-test/unit-test.cpp
 	)
 
 # C++11
