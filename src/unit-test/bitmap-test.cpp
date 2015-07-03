@@ -50,7 +50,7 @@ void BitmapTest::check() {
 	result = t1.clear_bit(0);
 	assert(!result);
 
-	if (t1.bitset_count() == 2)
+	if (t1.bitset_count() == 3)
 		result = true;
 	else
 		result = false;

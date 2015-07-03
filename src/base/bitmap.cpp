@@ -18,13 +18,13 @@ bool Bitmap::set_bit(int index) {
 	if (index >= 0 && index < bits_number_ ) {
 	 
 		//locate the bit representing the sector
-		int position_ = index / BITMAP_UNIT_SIZE;
-		int remainder_ = index % BITMAP_UNIT_SIZE;
+		int position = index / BITMAP_UNIT_SIZE;
+		int remainder = index % BITMAP_UNIT_SIZE;
 		
 		//check if the bit is not already used
 		if (!is_bit_set(index)) {
 			// set the bit to acknowledge that the bit is used
-			bit_array_[position_] |= 1ULL << remainder_;
+			bit_array_[position] |= 1ULL << remainder;
 			return true;
 		}
 		else
@@ -39,13 +39,13 @@ bool Bitmap::clear_bit(int index) {
 	if (index >= 0 && index < bits_number_) {
 
 		//locate the bit 
-		int position_ = index / BITMAP_UNIT_SIZE;
-		int remainder_ = index % BITMAP_UNIT_SIZE;
+		int position = index / BITMAP_UNIT_SIZE;
+		int remainder = index % BITMAP_UNIT_SIZE;
 
 		//check if the bit is used
 		if (is_bit_set(index)) {
 			// set the bit as being unused
-			bit_array_[position_] &= ~(1ULL << remainder_);
+			bit_array_[position] &= ~(1ULL << remainder);
 			return true;
 		}
 		else
@@ -60,10 +60,10 @@ bool Bitmap::is_bit_set(int index) {
 	if (index >= 0 && index < bits_number_) {
 
 		//locate the bit 
-		int position_ = index / BITMAP_UNIT_SIZE;
-		int remainder_ = index % BITMAP_UNIT_SIZE;
+		int position = index / BITMAP_UNIT_SIZE;
+		int remainder = index % BITMAP_UNIT_SIZE;
 
-		return ((bit_array_[position_] >> remainder_) & 1);
+		return ((bit_array_[position] >> remainder) & 1);
 	}
 };
 
