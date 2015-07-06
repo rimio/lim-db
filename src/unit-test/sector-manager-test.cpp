@@ -6,20 +6,21 @@
 void SectorManagerTest::check() {
 	SectorManager s1 = SectorManager();
 
-	int a[20];
+	ErrorCode a[20];
+	int * b[20];
 	//10 is the predefinied NUMBER_OF_SECTORS
 	for (int i = 1; i <= 10; ++i)
-		a[i] = s1.allocate_sector();
+		a[i] = s1.allocate_sector(b[i]);
 	
 	//Allocate more than available space
-	int z = s1.allocate_sector();
+	a[11] = s1.allocate_sector(b[11]);
 	bool result;
-	if (z == -1)
+	/*if (z == -1)
 		result = true;
 	else
 		result = false;
 	assert(result);
-
+	*/
 	//Free a space
 	result = s1.deallocate_sector(3);
 	assert(result);
@@ -33,8 +34,8 @@ void SectorManagerTest::check() {
 	assert(!result);
 
 	//Only space free -> 3, allocate it
-	z = s1.allocate_sector();
-	if (z == 3)
+	a[12] = s1.allocate_sector(b[12]);
+	if (*b[12] == 3)
 		result = true;
 	else
 		result = false;

@@ -16,7 +16,7 @@ void BitmapTest::check() {
 	result = t1.set_bit(10);
 	assert(result);
 
-	//error if i try to use an already used bit
+	//Error if i try to use an already used bit
 	result = t1.set_bit(10);
 	assert(!result);
 
@@ -34,13 +34,13 @@ void BitmapTest::check() {
 		result = false;
 	assert(result);
 
-	//bit should be set: 
+	//Bit should be set: 
 	result = t1.is_bit_set(10);
 	assert(result);
-	//erase used bit
+	//Erase used bit
 	result = t1.clear_bit(10);
 	assert(result);
-	//erase unused bit
+	//Erase unused bit
 	result = t1.clear_bit(7);
 	assert(!result);
 
@@ -56,18 +56,18 @@ void BitmapTest::check() {
 		result = false;
 	assert(result);
 
-	//when bit is out of range
+	//When bit is out of range
 	result = t1.is_bit_set(5000);
 	assert(!result);
 	
-	//ocuppy first 500 places 
-	for (int i = 0; i < 500; i++)
-		t1.set_bit(i);
+	//Ocuppy first 500 places 
+	for (int i = 0; i < 500; i++) t1.set_bit(i);
 	
-	//assign another 140
+	//Assign another 140
 	int x = t1.give_free_bit(499);
 	for (int i = 1; i < 139; i++) {
 		x = t1.give_free_bit(x);
+		
 	}
 
 	//it should be full now
