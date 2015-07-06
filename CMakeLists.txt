@@ -108,11 +108,13 @@ set (SOURCE_FILES
 # Unit-testing Header files
 set (UNIT_TEST_HEADER_FILES
 	${SOURCE_DIR}/unit-test/bitmap-test.hpp
+	${SOURCE_DIR}/unit-test/sector-manager-test.hpp
 	)
 
 # Unit-testing Source files
 set (UNIT_TEST_SOURCE_FILES
 	${SOURCE_DIR}/unit-test/bitmap-test.cpp
+	${SOURCE_DIR}/unit-test/sector-manager-test.cpp
 	)
 
 # Executable targets
