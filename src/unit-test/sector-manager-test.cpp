@@ -4,7 +4,7 @@
 #include "unit-test\sector-manager-test.hpp"
 
 void SectorManagerTest::check() {
-	SectorManager s1 = SectorManager(10);
+	SectorManager s1 = SectorManager();
 
 	int a[20];
 	//10 is the predefinied NUMBER_OF_SECTORS

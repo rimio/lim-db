@@ -6,6 +6,6 @@
 int main ()
 {
 	BitmapTest::check();
-	SectorManagerTest::check();
+	//SectorManagerTest::check();
 	return 0;
 }

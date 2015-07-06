@@ -20,7 +20,7 @@ void BitmapTest::check() {
 	result = t1.set_bit(10);
 	assert(!result);
 
-	result = t1.set_bit(500);
+	result = t1.set_bit(520);
 	assert(result);
 	result = t1.set_bit(1);
 	assert(result);
@@ -60,5 +60,16 @@ void BitmapTest::check() {
 	result = t1.is_bit_set(5000);
 	assert(!result);
 	
+	//ocuppy first 500 places 
+	for (int i = 0; i < 500; i++)
+		t1.set_bit(i);
+	
+	//assign another 140
+	int x = t1.give_free_bit(499);
+	for (int i = 1; i < 139; i++) {
+		x = t1.give_free_bit(x);
+	}
 
+	//it should be full now
+	assert(t1.bitset_count() == 640);
 };
