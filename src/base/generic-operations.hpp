@@ -15,7 +15,4 @@
 #define PTR_ALIGN(ptr, alignment) \
 	((ptr) = (char *) ((((UINTPTR) (ptr)) + ((UINTPTR) ((alignment) - 1))) & ~((UINTPTR) ((alignment) - 1))))
 
-// Pass both file and line arguments.
-#define FILE_LINE __FILE__, __LINE__
-
 #endif // GENERIC_OPERATIONS_
