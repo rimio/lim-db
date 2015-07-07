@@ -6,9 +6,10 @@
 
 class Bitmap {
 	public:
+		//Constructor which leaves all the bits unset
 		Bitmap(int bits_number);
 		
-		//Constructor
+		//Constructor which gives the opportunity to initialize all the bits to either set or unset
 		Bitmap(int bits_number, bool set_bits);
 
 		//Marks the sector at the specified index as being used
