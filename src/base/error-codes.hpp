@@ -19,6 +19,9 @@ typedef enum
 	ER_EXECUTION_FAILED,
 
 	ER_OUT_OF_MEMORY,
+	ER_ALLOCATION_TABLE_FULL,
+	ER_SECTOR_OUT_OF_RANGE,
+	ER_SECTOR_NOT_USED,
 	ER_LAST_ERROR
 } ErrorCode;
 
@@ -35,6 +38,9 @@ static const std::string kErrorMessages[] = {
 	"invalid parser node",
 	"execution failed",
 	"out of memory: failed to allocate %d bytes"
+	"out of memory: can't allocate sector. Table full"
+	"can't deallocate sector with %d sectorID: out of range. Sector range: [ 0 %d ]"
+	"can't deallocate sector with %d sectorID: currently not used"
 };
 
 #endif
