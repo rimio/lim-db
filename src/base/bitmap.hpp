@@ -6,6 +6,8 @@
 
 class Bitmap {
 	public:
+		Bitmap(int bits_number);
+		
 		//Constructor
 		Bitmap(int bits_number, bool set_bits);
 

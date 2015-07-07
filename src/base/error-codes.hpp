@@ -39,8 +39,8 @@ static const std::string kErrorMessages[] = {
 	"execution failed",
 	"out of memory: failed to allocate %d bytes"
 	"out of memory: can't allocate sector. Table full"
-	"can't deallocate sector: out of range"
-	"can't deallocate sector: currently not used"
+	"can't deallocate sector with %d sectorID: out of range. Sector range: [ 0 %d ]"
+	"can't deallocate sector with %d sectorID: currently not used"
 };
 
 #endif

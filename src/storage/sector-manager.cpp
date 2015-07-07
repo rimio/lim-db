@@ -28,11 +28,11 @@ ErrorCode SectorManager::deallocate_sector(SectorID sector_id) {
 	
 	//Check if sector number is in range
 	if (sector_id < 0 || sector_id >= NUMBER_OF_SECTORS)
-		return ErrorManager::error(__HERE__, ER_SECTOR_OUT_OF_RANGE);
+		return ErrorManager::error(__HERE__, ER_SECTOR_OUT_OF_RANGE, sector_id,NUMBER_OF_SECTORS-1);
 
 	//Check if sector is actually allocated
 	if (!(*allocation_table_).is_bit_set(sector_id)) {
-		return ErrorManager::error(__HERE__, ER_SECTOR_NOT_USED);
+		return ErrorManager::error(__HERE__, ER_SECTOR_NOT_USED, sector_id);
 	}
 	else {
 		(*allocation_table_).clear_bit(sector_id);

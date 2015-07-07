@@ -4,6 +4,10 @@
 
 #define BITMAP_UNIT_SIZE 64
 
+Bitmap::Bitmap(int bits_number) {
+	Bitmap(bits_number, false);
+}
+
 Bitmap::Bitmap(int bits_number, bool set_bits) {
 	bits_number_ = bits_number;
 	bits_array_size_ = (bits_number_ - 1) / BITMAP_UNIT_SIZE + 1;
