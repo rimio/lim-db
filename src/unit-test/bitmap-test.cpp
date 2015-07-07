@@ -4,10 +4,10 @@
 #include "unit-test\bitmap-test.hpp"
 
 void BitmapTest::check() {
-	Bitmap t1 = Bitmap(640);
-	Bitmap t2 = Bitmap(20);
-	Bitmap t3 = Bitmap(100);
-	Bitmap t4 = Bitmap(1000);
+	Bitmap t1 = Bitmap(640, false);
+	Bitmap t2 = Bitmap(20, true);
+	Bitmap t3 = Bitmap(100, true);
+	Bitmap t4 = Bitmap(1000,false);
 	
 	bool result = t1.set_bit(100);
 
@@ -16,11 +16,11 @@ void BitmapTest::check() {
 	result = t1.set_bit(10);
 	assert(result);
 
-	//error if i try to use an already used bit
+	//Error if i try to use an already used bit
 	result = t1.set_bit(10);
 	assert(!result);
 
-	result = t1.set_bit(500);
+	result = t1.set_bit(520);
 	assert(result);
 	result = t1.set_bit(1);
 	assert(result);
@@ -34,13 +34,13 @@ void BitmapTest::check() {
 		result = false;
 	assert(result);
 
-	//bit should be set: 
+	//Bit should be set: 
 	result = t1.is_bit_set(10);
 	assert(result);
-	//erase used bit
+	//Erase used bit
 	result = t1.clear_bit(10);
 	assert(result);
-	//erase unused bit
+	//Erase unused bit
 	result = t1.clear_bit(7);
 	assert(!result);
 
@@ -56,9 +56,23 @@ void BitmapTest::check() {
 		result = false;
 	assert(result);
 
-	//when bit is out of range
+	//When bit is out of range
 	result = t1.is_bit_set(5000);
 	assert(!result);
 	
+	//Ocuppy first 500 places 
+	for (int i = 0; i < 500; i++) t1.set_bit(i);
+	
+	//Assign another 140
+	int x = t1.give_free_bit(499);
+	for (int i = 1; i < 139; i++) {
+		x = t1.give_free_bit(x);
+		
+	}
 
+	//it should be full now
+	assert(t1.bitset_count() == 640);
+
+	result = t2.is_bit_set(12);
+	assert(result);
 };

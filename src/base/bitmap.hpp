@@ -7,28 +7,33 @@
 class Bitmap {
 	public:
 		//Constructor
-		Bitmap(int bits_number);
+		Bitmap(int bits_number, bool set_bits);
 
-		//marks the sector at the specified index as being used
+		//Marks the sector at the specified index as being used
 		bool set_bit(int index);
 
-		//marks the sector at the specified index as being unused
+		//Marks the sector at the specified index as being unused
 		bool clear_bit(int index);
 
-		//checks wether the sector at the specified index is used
+		//Checks wether the sector at the specified index is used
 		bool is_bit_set(int index);
 
-		//counts the total number of sectors used
+		//Counts the total number of sectors used
 		int bitset_count();
+
+		//Returns the position of a free bit or -1 if there is none left unused
+		int give_free_bit(int last_used);
 
 	protected:
 	private:
-		//total number of sectors
+		//Total number of sectors
 		int bits_number_;
-		//keeps record of used and unused sectors
+		//Keeps record of used and unused sectors
 		UINT64 *bit_array_;
-		//length of the array that holds the usage of sectors
+		//Length of the array that holds the usage of sectors
 		int bits_array_size_;
+		//finds the position of an unset bit
+		int find_unset_bit(UINT64 value);
 
 };
 
