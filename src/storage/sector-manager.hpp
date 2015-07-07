@@ -13,13 +13,13 @@ class SectorManager {
 		SectorManager();
 
 		//Finds and returns ID to a free sector
-		ErrorCode allocate_sector(int *sector_id);
+		ErrorCode allocate_sector(SectorID *sector_id);
 
 		//Deallocates a sector
-		ErrorCode deallocate_sector(int sector_number);
+		ErrorCode deallocate_sector(SectorID sector_number);
 
 		//Checks wether a sector is free ot not
-		bool is_sector_allocated(int sector_id);
+		bool is_sector_allocated(SectorID sector_id);
 	protected:
 	private:
 		//Instance of Bitmap for tracking usage of sectors
@@ -27,7 +27,7 @@ class SectorManager {
 		//Keeps record of the size of one sector
 		int sector_size_;
 		//Pointer to the last sector used
-		int last_used_;
+		SectorID last_used_;
 		//Points to the start of the memory allocated
 		int *storage_pointer_;
 };

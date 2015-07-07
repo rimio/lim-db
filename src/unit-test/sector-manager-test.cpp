@@ -7,7 +7,7 @@ void SectorManagerTest::check() {
 	SectorManager s1 = SectorManager();
 
 	ErrorCode a[20];
-	int * b[20];
+	SectorID * b[20];
 	//10 is the predefinied NUMBER_OF_SECTORS
 	for (int i = 1; i <= 10; ++i)
 		a[i] = s1.allocate_sector(b[i]);

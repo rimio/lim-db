@@ -5,7 +5,7 @@
 #include "base\generic-constants.hpp"
 #include "base\error-codes.hpp"
 
-typedef unsigned int SectorID;
+typedef INT64 SectorID;
 typedef UINT16 SectorSize;
 
 #define SECTOR_MAX_SIZE MAX_UINT16

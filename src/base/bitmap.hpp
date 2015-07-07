@@ -7,7 +7,7 @@
 class Bitmap {
 	public:
 		//Constructor
-		Bitmap(int bits_number);
+		Bitmap(int bits_number, bool set_bits);
 
 		//Marks the sector at the specified index as being used
 		bool set_bit(int index);

@@ -4,10 +4,10 @@
 #include "unit-test\bitmap-test.hpp"
 
 void BitmapTest::check() {
-	Bitmap t1 = Bitmap(640);
-	Bitmap t2 = Bitmap(20);
-	Bitmap t3 = Bitmap(100);
-	Bitmap t4 = Bitmap(1000);
+	Bitmap t1 = Bitmap(640, false);
+	Bitmap t2 = Bitmap(20, true);
+	Bitmap t3 = Bitmap(100, true);
+	Bitmap t4 = Bitmap(1000,false);
 	
 	bool result = t1.set_bit(100);
 
@@ -72,4 +72,7 @@ void BitmapTest::check() {
 
 	//it should be full now
 	assert(t1.bitset_count() == 640);
+
+	result = t2.is_bit_set(12);
+	assert(result);
 };

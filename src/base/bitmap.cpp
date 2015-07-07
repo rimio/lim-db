@@ -1,18 +1,25 @@
 #include "base\bitmap.hpp"
 
-#include <stdio.h>
+#include <cstdio>
 
 #define BITMAP_UNIT_SIZE 64
 
-Bitmap::Bitmap(int bits_number) {
+Bitmap::Bitmap(int bits_number, bool set_bits) {
 	bits_number_ = bits_number;
 	bits_array_size_ = (bits_number_ - 1) / BITMAP_UNIT_SIZE + 1;
 	bit_array_ = new UINT64[bits_array_size_];
-	for (int i = 0; i < bits_array_size_; ++i)
-		bit_array_[i] = 0;
+	
+	if (set_bits) {
+		for (int i = 0; i < bits_array_size_; ++i)
+			bit_array_[i] = 0xffffffffffffffff;
+	}
+	else {
+		for (int i = 0; i < bits_array_size_; ++i)
+			bit_array_[i] = 0;
+	}
 	//Bits that are out of range must be set to 1 (we could consider them used, therefore, inaccessible )
 	for (int i = bits_number; i < bits_array_size_ * BITMAP_UNIT_SIZE; i++)
-		set_bit(i);
+		(void) set_bit(i);
 };
 
 bool Bitmap::set_bit(int index) {
@@ -30,11 +37,13 @@ bool Bitmap::set_bit(int index) {
 			bit_array_[position] |= 1ULL << remainder;
 			return true;
 		}
-		else
+		else {
 			return false;
+		}
 	}
-	else
+	else {
 		return false;
+	}
 };
 
 bool Bitmap::clear_bit(int index) {
@@ -51,11 +60,13 @@ bool Bitmap::clear_bit(int index) {
 			bit_array_[position] &= ~(1ULL << remainder);
 			return true;
 		}
-		else
+		else {
 			return false;
+		}
 	}
-	else
+	else {
 		return false;
+	}
 };
 
 bool Bitmap::is_bit_set(int index) {
@@ -68,7 +79,9 @@ bool Bitmap::is_bit_set(int index) {
 
 		return ((bit_array_[position] >> remainder) & 1);
 	}
-	else return false;
+	else {
+		return false;
+	}
 };
 
 int Bitmap::bitset_count() {
@@ -81,7 +94,9 @@ int Bitmap::bitset_count() {
 		}
 	}
 	int length = bits_number_ % BITMAP_UNIT_SIZE;
+	
 	if (length == 0)  length = BITMAP_UNIT_SIZE;
+	
 	for (int j = 0; j < length; ++j) {
 		result += ((bit_array_[bits_array_size_-1] >> j) & 1);
 	}
@@ -114,57 +129,28 @@ int Bitmap::give_free_bit(int last_used){
 
 int Bitmap::find_unset_bit(UINT64 value) {
 	int position = 0;
+	int cond = 0;
 	//The algorithm asserts that the input has at least one free bit
 	//The algorithm finds an unsetted bit by constantly splitting a part in two halves
 	//If the first half is full, choose to search in the second one
 	//The algorithm stops when only one bit is considered, therefore it's a 0 and can not be splitted furthermore
 	//It retreives the position of that bit
-	if ((value >> 32) == 0xffffffff) {
-		value = (value & 0xffffffff);
-	}
-	else {
-		value = value >> 32;
-		position += 32;
-	}
-	
-	if ((value >> 16) == 0x0000ffff) {
-		value = (value & 0x0000ffff);
-	}
-	else {
-		value = value >> 16;
-		position += 16;
-	}
+#define step(x) \
+	do { \
+		cond = !((value >> (x)) == (1ULL << (x)) - 1); \
+		(value) = (value >> (cond * (x))); \
+		(value) &= ((1ULL << (x)) - 1); \
+		position = position + (cond * (x)); \
+	} while (false)
 
-	if ((value >> 8)  == 0x000000ff) {
-		value = (value & 0x000000ff);
-	}
-	else {
-		value = value >> 8;
-		position += 8;
-	}
+	step(32);
+	step(16);
+	step(8);
+	step(4);
+	step(2);
+	step(1);
 
-	if ((value >> 4) == 0x0000000f) {
-		value = (value & 0x0000000f);
-	}
-	else {
-		value = value >> 4;
-		position += 4;
-	}
+#undef step
 
-	if ((value >> 2)  == 0x00000003) {
-		value = (value & 0x00000003);
-	}
-	else {
-		value = value >> 2;
-		position += 2;
-	}
-
-	if ((value >> 1)  == 0x00000001) {
-		value = (value & 0x0000001);
-	}
-	else {
-		value = value >> 1;
-		position += 1;
-	}
 	return position;
 }
