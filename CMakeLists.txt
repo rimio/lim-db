@@ -56,6 +56,9 @@ set (HEADER_FILES
 	${SOURCE_DIR}/base/bitmap.hpp
 	${SOURCE_DIR}/base/template-class.hpp
 
+	#boot
+	${SOURCE_DIR}/boot/boot.hpp
+
 	# storage
 	${SOURCE_DIR}/storage/sector.hpp
 	${SOURCE_DIR}/storage/sector-manager.hpp
@@ -63,6 +66,7 @@ set (HEADER_FILES
 	# schema
 	${SOURCE_DIR}/schema/attribute.hpp
 	${SOURCE_DIR}/schema/table.hpp
+	${SOURCE_DIR}/schema/schema-manager.hpp
 
 	# metadata
 	${SOURCE_DIR}/metadata/sector-group.hpp
@@ -89,6 +93,9 @@ set (SOURCE_FILES
 	${SOURCE_DIR}/base/bitmap.cpp
 	${SOURCE_DIR}/base/template-class.cpp
 
+	#boot
+	${SOURCE_DIR}/boot/boot.cpp
+
 	# storage
 	${SOURCE_DIR}/storage/sector.cpp
 	${SOURCE_DIR}/storage/sector-manager.cpp
@@ -96,6 +103,7 @@ set (SOURCE_FILES
 	# schema
 	${SOURCE_DIR}/schema/attribute.cpp
 	${SOURCE_DIR}/schema/table.cpp
+	${SOURCE_DIR}/schema/schema-manager.cpp
 
 	# metadata
 	${SOURCE_DIR}/metadata/sector-group.cpp

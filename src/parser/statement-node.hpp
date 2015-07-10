@@ -142,6 +142,9 @@ public:
 	virtual std::string toString () { return "CREATE TABLE"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_CREATE_TABLE; };
+
+	bool compile();
+	bool execute();
 };
 
 //

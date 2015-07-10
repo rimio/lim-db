@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <string>
+#include <algorithm>
 
 #include "base\generic-type-definitions.hpp"
 
@@ -17,5 +19,8 @@
 
 // Pass both file and line arguments.
 #define FILE_LINE __FILE__, __LINE__
+
+#define string_to_lower(a) \
+	std::transform((a).begin(), (a).end(), (a).begin(), ::tolower)
 
 #endif // GENERIC_OPERATIONS_

@@ -44,3 +44,8 @@ ErrorCode SectorManager::deallocate_sector(SectorID sector_id) {
 bool SectorManager::is_sector_allocated(SectorID sector_id) {
 	return (*allocation_table_).is_bit_set(sector_id);
 }
+
+int* SectorManager::get_sector_pointer(SectorID sector_id) {
+	if (sector_id >= 0 && sector_id < NUMBER_OF_SECTORS)
+		return storage_pointer_ + sector_id*sector_size_;
+}

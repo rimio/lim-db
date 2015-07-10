@@ -1,4 +1,9 @@
+#include "base\generic-operations.hpp"
+#include "schema\schema-manager.hpp"
 #include "statement-node.hpp"
+#include "base\generic-operations.hpp"
+
+#include <map>
 
 std::string SelectStatementNode::print ()
 {
@@ -39,6 +44,44 @@ std::string CreateTableStatementNode::print ()
 		+ std::string ("(")
 		+ (definition_ != nullptr ? definition_->printList (", ") : "")
 		+ std::string (")");
+}
+
+ bool CreateTableStatementNode::compile() {
+	std::string table_name = table_->toString();
+	ColumnIdentifierNode *attribute = new ColumnIdentifierNode("");
+	ColumnIdentifierNode *next_attribute = new ColumnIdentifierNode("");
+	//Verify that the table name isn't already used
+	if (!(SchemaManager::find_table(table_name))) {
+		//Verify that all atrtribute names are different
+		for (attribute = definition_; attribute != NULL; attribute = dynamic_cast<ColumnIdentifierNode *> (attribute->getNext())) {
+			std::string s_attribute = (attribute->toString());
+			string_to_lower(s_attribute);
+			for (next_attribute = dynamic_cast<ColumnIdentifierNode *>(attribute->getNext()); next_attribute != NULL; next_attribute = dynamic_cast<ColumnIdentifierNode *> (next_attribute->getNext())){
+				std::string s_next_attribute = next_attribute->toString();
+				string_to_lower(s_next_attribute);
+				if (s_attribute.compare(s_next_attribute) == 0)
+					return false;
+			}
+		}
+		return true;
+	}
+	else {
+		return false;
+	} 
+} 
+ 
+ bool CreateTableStatementNode::execute() {
+	Table *t = new Table();
+	ColumnIdentifierNode *attribute = new ColumnIdentifierNode(NULL, NULL);
+	t->set_table_name(table_->toString()); 
+	for (attribute = definition_; attribute->getNext() != NULL; attribute = dynamic_cast<ColumnIdentifierNode * > (attribute->getNext())) {
+		std::string str_attribute = attribute->toString();
+		str_attribute.erase(0, (table_->toString().length() + 1));
+		Attribute *a = new Attribute((attribute->getDataType()), str_attribute);
+		t->add_attribute(*a);
+	}
+	SchemaManager::add_table(t);
+	return true;
 }
 
 std::string CreateIndexStatementNode::print ()

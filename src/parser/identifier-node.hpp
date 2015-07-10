@@ -58,7 +58,7 @@ public:
 //
 // Column identifier node
 //
-class ColumnIdentifierNode : public IdentifierNode, public TypedParserNode
+class ColumnIdentifierNode : public IdentifierNode, public virtual TypedParserNode
 {
 private:
 protected:
@@ -82,6 +82,7 @@ public:
 	virtual std::string toString () { return table_ + "." + name_; };
 	virtual IdentifierType getIdentifierType () const { return PT_IDENTIFIER_COLUMN; };
 	virtual DataType getDataType () const { return data_type_; };
+	//ColumnIdentifierNode getNext() { return *dynamic_cast< ColumnIdentifierNode*>(next_) ; }
 	
 	// Setter for data type
 	void setDataType (DataType data_type) { data_type_ = data_type; };

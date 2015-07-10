@@ -3,6 +3,7 @@
 
 #include "base/error-manager.hpp"
 #include "parser/parser-context.hpp"
+#include "boot\boot.hpp"
 
 //
 // Application initialization routine
@@ -10,6 +11,7 @@
 ErrorCode Initialize ()
 {
 	// TODO
+	Boot::StartServer();
 	return NO_ERROR;
 }
 
@@ -32,7 +34,6 @@ ErrorCode ExecuteCommand (CommandNode& command, bool& shutdown)
 	case PT_COMMAND_EXIT:
 		shutdown = true;
 		break;
-
 	default:
 		return ErrorManager::error (__HERE__, ER_INVALID_PARSER_NODE);
 	}
@@ -66,6 +67,7 @@ ErrorCode InputLoop ()
 
 		// Check we have a root node
 		ParserNode *root = context.getRootNode ();
+	
 		if (root == nullptr)
 		{
 			ErrorManager::error (__HERE__, ER_MISSING_PARSER_NODE, "root");
@@ -83,8 +85,11 @@ ErrorCode InputLoop ()
 		case PT_COMMAND:
 			rc = ExecuteCommand (* ((CommandNode *)root), shutdown);
 			break;
-
+		
 		case PT_STATEMENT:
+			// TODO: Compile and execute
+			if (dynamic_cast<CreateTableStatementNode *> (root)->compile())
+				dynamic_cast<CreateTableStatementNode *> (root)->execute();
 			rc = NO_ERROR;
 			break;
 

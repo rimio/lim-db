@@ -16,10 +16,13 @@ class SectorManager {
 		ErrorCode allocate_sector(SectorID *sector_id);
 
 		//Deallocates a sector
-		ErrorCode deallocate_sector(SectorID sector_number);
+		ErrorCode deallocate_sector(SectorID sector_id);
 
 		//Checks wether a sector is free ot not
 		bool is_sector_allocated(SectorID sector_id);
+
+		//Returns a pointer to the beggining of the requested sector
+		int* get_sector_pointer(SectorID sector_id);
 	protected:
 	private:
 		//Instance of Bitmap for tracking usage of sectors
