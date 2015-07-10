@@ -51,7 +51,7 @@ std::string CreateTableStatementNode::print ()
 	ColumnIdentifierNode *attribute = new ColumnIdentifierNode("");
 	ColumnIdentifierNode *next_attribute = new ColumnIdentifierNode("");
 	//Verify that the table name isn't already used
-	if (!(SchemaManager::find_table(table_name))) {
+	if (SchemaManager::find_table(table_name) == NULL) {
 		//Verify that all atrtribute names are different
 		for (attribute = definition_; attribute != NULL; attribute = dynamic_cast<ColumnIdentifierNode *> (attribute->getNext())) {
 			std::string s_attribute = (attribute->toString());
@@ -72,13 +72,13 @@ std::string CreateTableStatementNode::print ()
  
  bool CreateTableStatementNode::execute() {
 	Table *t = new Table();
-	ColumnIdentifierNode *attribute = new ColumnIdentifierNode(NULL, NULL);
+	ColumnIdentifierNode *attribute = new ColumnIdentifierNode("");
 	t->set_table_name(table_->toString()); 
-	for (attribute = definition_; attribute->getNext() != NULL; attribute = dynamic_cast<ColumnIdentifierNode * > (attribute->getNext())) {
+	for (attribute = definition_; attribute != NULL; attribute = dynamic_cast<ColumnIdentifierNode * > (attribute->getNext())) {
 		std::string str_attribute = attribute->toString();
-		str_attribute.erase(0, (table_->toString().length() + 1));
+		str_attribute.erase(0,1);
 		Attribute *a = new Attribute((attribute->getDataType()), str_attribute);
-		t->add_attribute(*a);
+		t->add_attribute(a);
 	}
 	SchemaManager::add_table(t);
 	return true;

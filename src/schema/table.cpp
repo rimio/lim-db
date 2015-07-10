@@ -38,8 +38,8 @@ void Table::set_table_name(std::string table_name) {
 	name_ = table_name;
 }
 
-void Table::add_attribute(Attribute table_attribute) {
-	attributes_[n_attributes_] = table_attribute;
+void Table::add_attribute(Attribute * table_attribute) {
+	attributes_[n_attributes_] = *table_attribute;
 	++n_attributes_;
 }
 

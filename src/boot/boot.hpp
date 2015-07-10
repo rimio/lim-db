@@ -9,7 +9,6 @@ class Boot{
 public:
 	static SectorManager get_sector_manager();
 	static void StartServer();
-protected:
 private:
 	Boot(){};
 	static SectorManager *sector_manager_;

@@ -30,9 +30,9 @@ bool SchemaManager::drop_table(std::string table_name) {
 	return false;
 }
 
-Table SchemaManager::find_table(std::string table_name) {
+Table * SchemaManager::find_table(std::string table_name) {
 	string_to_lower(table_name);
 	if (list_of_tables_.find(table_name) != list_of_tables_.end())
-		return *list_of_tables_.find(table_name)->second;
-	return (new Table(""));
+		return list_of_tables_.find(table_name)->second;
+	return NULL;
 }

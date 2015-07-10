@@ -39,6 +39,6 @@ public:
 
 	void set_table_id(int id);
 	void set_table_name(std::string table_name);
-	void add_attribute(Attribute table_attribute);
+	void add_attribute(Attribute * table_attribute);
 };
 #endif // TABLE_HPP_
