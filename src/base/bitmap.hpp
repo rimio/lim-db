@@ -12,20 +12,23 @@ class Bitmap {
 		//Constructor which gives the opportunity to initialize all the bits to either set or unset
 		Bitmap(int bits_number, bool set_bits);
 
+		//Destructor
+		~Bitmap();
+
 		//Marks the sector at the specified index as being used
-		bool set_bit(int index);
+		bool SetBit(int index);
 
 		//Marks the sector at the specified index as being unused
-		bool clear_bit(int index);
+		bool ClearBit(int index);
 
 		//Checks wether the sector at the specified index is used
-		bool is_bit_set(int index);
+		bool IsBitSet(int index);
 
 		//Counts the total number of sectors used
-		int bitset_count();
+		int BitsetCount();
 
 		//Returns the position of a free bit or -1 if there is none left unused
-		int give_free_bit(int last_used);
+		int GiveFreeBit(int last_used);
 
 	protected:
 	private:

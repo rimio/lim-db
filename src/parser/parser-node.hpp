@@ -3,6 +3,7 @@
 
 #include "parser/location.hh"
 #include "base/data-type.hpp"
+#include "base/error-codes.hpp"
 
 //
 // Parser node types

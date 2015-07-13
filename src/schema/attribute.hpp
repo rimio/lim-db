@@ -6,7 +6,15 @@
 
 class Attribute
 {
-	DataType type_;
-	std::string name_;
+	public:
+		Attribute(DataType type, std::string name);
+		~Attribute();
+
+		DataType get_type();
+		std::string get_name();
+		
+	private:
+		DataType type_;
+		std::string name_;
 };
 #endif // ATTRIBUTE_HPP_

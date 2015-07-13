@@ -8,6 +8,10 @@ Bitmap::Bitmap(int bits_number) {
 	Bitmap(bits_number, false);
 }
 
+Bitmap::~Bitmap(){
+	delete bit_array_;
+}
+
 Bitmap::Bitmap(int bits_number, bool set_bits) {
 	bits_number_ = bits_number;
 	bits_array_size_ = (bits_number_ - 1) / BITMAP_UNIT_SIZE + 1;
@@ -23,72 +27,60 @@ Bitmap::Bitmap(int bits_number, bool set_bits) {
 	}
 	//Bits that are out of range must be set to 1 (we could consider them used, therefore, inaccessible )
 	for (int i = bits_number; i < bits_array_size_ * BITMAP_UNIT_SIZE; i++)
-		(void) set_bit(i);
+		(void) SetBit(i);
 };
 
-bool Bitmap::set_bit(int index) {
+bool Bitmap::SetBit(int index) {
 	
 	//Check if the desired bit is in range
-	if (index >= 0 && index < bits_number_ ) {
-	 
-		//Locate the bit 
-		int position = index / BITMAP_UNIT_SIZE;
-		int remainder = index % BITMAP_UNIT_SIZE;
+	if (index < 0 && index >= bits_number_)
+		return false;
+
+	//Locate the bit 
+	int position = index / BITMAP_UNIT_SIZE;
+	int remainder = index % BITMAP_UNIT_SIZE;
 		
-		//check if the bit is not already used
-		if (!is_bit_set(index)) {
-			// Set the bit to acknowledge that the bit is used
-			bit_array_[position] |= 1ULL << remainder;
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	else {
+	//check if the bit is not already used
+	if (IsBitSet(index))
 		return false;
-	}
+		
+	// Set the bit to acknowledge that the bit is used
+	bit_array_[position] |= 1ULL << remainder;
+	return true;
+	
 };
 
-bool Bitmap::clear_bit(int index) {
+bool Bitmap::ClearBit(int index) {
 	//Check if the desired bit is in range
-	if (index >= 0 && index < bits_number_) {
-
-		//Locate the bit 
-		int position = index / BITMAP_UNIT_SIZE;
-		int remainder = index % BITMAP_UNIT_SIZE;
-
-		//Check if the bit is used
-		if (is_bit_set(index)) {
-			// Set the bit as being unused
-			bit_array_[position] &= ~(1ULL << remainder);
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	else {
+	if (index < 0 && index >= bits_number_)
 		return false;
-	}
+
+	//Locate the bit 
+	int position = index / BITMAP_UNIT_SIZE;
+	int remainder = index % BITMAP_UNIT_SIZE;
+
+	//Check if the bit is used
+	if (!IsBitSet(index))
+		return false;
+
+	// Set the bit as being unused
+	bit_array_[position] &= ~(1ULL << remainder);
+	return true;
 };
 
-bool Bitmap::is_bit_set(int index) {
+bool Bitmap::IsBitSet(int index) {
 	//Check if the desired bit is in range
-	if (index >= 0 && index < bits_number_) {
+	if (index < 0 && index >= bits_number_)
+		return true;
 
-		//locate the bit 
-		int position = index / BITMAP_UNIT_SIZE;
-		int remainder = index % BITMAP_UNIT_SIZE;
+	//locate the bit 
+	int position = index / BITMAP_UNIT_SIZE;
+	int remainder = index % BITMAP_UNIT_SIZE;
 
-		return ((bit_array_[position] >> remainder) & 1);
-	}
-	else {
-		return false;
-	}
+	return ((bit_array_[position] >> remainder) & 1);
 };
 
-int Bitmap::bitset_count() {
+int Bitmap::BitsetCount() {
 	int result = 0;
 	
 	//Counts the number of bits used by iterating through the array
@@ -108,7 +100,7 @@ int Bitmap::bitset_count() {
 	return result;
 }
 
-int Bitmap::give_free_bit(int last_used){
+int Bitmap::GiveFreeBit(int last_used){
 	bool full_search = false;
 	int position = last_used / BITMAP_UNIT_SIZE;
 
@@ -126,7 +118,7 @@ int Bitmap::give_free_bit(int last_used){
 	}
 
 	int left = find_unset_bit(bit_array_[position]);
-	set_bit(position * 64 + left);
+	SetBit(position * 64 + left);
 
 	return position*64 + left;
 }
