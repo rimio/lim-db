@@ -7,9 +7,16 @@
 
 class Boot{
 public:
-	static SectorManager get_sector_manager();
+	//Retrieves the instance of the Sector Manager
+	static SectorManager* get_sector_manager();
+	//Generates the instance of Sector Manager
 	static void StartServer();
+	//Erases the instance of sector manager
+	static void CloseServer();
+	//Destructor
+	~Boot();
 private:
+	//Private constructor
 	Boot(){};
 	static SectorManager *sector_manager_;
 };

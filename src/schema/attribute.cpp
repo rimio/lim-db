@@ -12,3 +12,6 @@ DataType Attribute::get_type(){
 std::string Attribute::get_name(){
 	return name_;
 }
+
+Attribute::~Attribute() {
+};

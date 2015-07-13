@@ -20,7 +20,7 @@
 // Pass both file and line arguments.
 #define FILE_LINE __FILE__, __LINE__
 
-#define string_to_lower(a) \
+#define STRING_TO_LOWER(a) \
 	std::transform((a).begin(), (a).end(), (a).begin(), ::tolower)
 
 #endif // GENERIC_OPERATIONS_

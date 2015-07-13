@@ -1,9 +1,10 @@
 #ifndef STATEMENT_NODE_HPP_
 #define STATEMENT_NODE_HPP_
 
+#include "base/error-codes.hpp"
 #include "parser/parser-node.hpp"
 #include "parser/identifier-node.hpp"
-
+#include "schema/table.hpp"
 //
 // Statement types
 //
@@ -35,6 +36,10 @@ public:
 	
 	// Returns the statement type
 	virtual StatementType getStatementType () const = 0;
+
+	virtual ErrorCode compile() = 0;
+
+	virtual ErrorCode execute() = 0;
 };
 
 // ------------------ Data Manipulation Language Statements ------------------ //
@@ -63,6 +68,8 @@ public:
 	virtual std::string toString () { return "SELECT"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_SELECT; };
+	ErrorCode compile() { return NO_ERROR; };
+	ErrorCode execute() { return NO_ERROR; };
 };
 
 //
@@ -88,6 +95,8 @@ public:
 	virtual std::string toString () { return "INSERT"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_INSERT; };
+	ErrorCode compile() { return NO_ERROR; };
+	ErrorCode execute() { return NO_ERROR; };
 };
 
 //
@@ -102,6 +111,8 @@ public:
 	virtual std::string toString () { return "DELETE"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DELETE; };
+	ErrorCode compile() { return NO_ERROR; };
+	ErrorCode execute() { return NO_ERROR; };
 };
 
 //
@@ -116,6 +127,8 @@ public:
 	virtual std::string toString () { return "UPDATE"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_UPDATE; };
+	ErrorCode compile() { return NO_ERROR; };
+	ErrorCode execute() { return NO_ERROR; };
 };
 
 // ------------------- Data Definition Language Statements ------------------- //
@@ -143,8 +156,8 @@ public:
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_CREATE_TABLE; };
 
-	bool compile();
-	bool execute();
+	ErrorCode compile();
+	ErrorCode execute();
 };
 
 //
@@ -159,6 +172,8 @@ public:
 	virtual std::string toString () { return "CREATE INDEX"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_CREATE_INDEX; };
+	ErrorCode compile() { return NO_ERROR; };
+	ErrorCode execute() { return NO_ERROR; };
 };
 
 //
@@ -181,6 +196,8 @@ public:
 	virtual std::string toString () { return "DROP TABLE"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DROP_TABLE; };
+	ErrorCode compile() { return NO_ERROR; };
+	ErrorCode execute() { return NO_ERROR; };
 };
 
 //
@@ -195,6 +212,8 @@ public:
 	virtual std::string toString () { return "DROP INDEX"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DROP_INDEX; };
+	ErrorCode compile() { return NO_ERROR; };
+	ErrorCode execute() { return NO_ERROR; };
 };
 
 #endif

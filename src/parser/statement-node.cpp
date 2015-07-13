@@ -1,7 +1,6 @@
 #include "base\generic-operations.hpp"
 #include "schema\schema-manager.hpp"
 #include "statement-node.hpp"
-#include "base\generic-operations.hpp"
 
 #include <map>
 
@@ -46,42 +45,47 @@ std::string CreateTableStatementNode::print ()
 		+ std::string (")");
 }
 
- bool CreateTableStatementNode::compile() {
-	std::string table_name = table_->toString();
-	ColumnIdentifierNode *attribute = new ColumnIdentifierNode("");
-	ColumnIdentifierNode *next_attribute = new ColumnIdentifierNode("");
+ErrorCode CreateTableStatementNode::compile() {
+	std::string table_name = table_->name();
+
 	//Verify that the table name isn't already used
-	if (SchemaManager::find_table(table_name) == NULL) {
-		//Verify that all atrtribute names are different
-		for (attribute = definition_; attribute != NULL; attribute = dynamic_cast<ColumnIdentifierNode *> (attribute->getNext())) {
-			std::string s_attribute = (attribute->toString());
-			string_to_lower(s_attribute);
-			for (next_attribute = dynamic_cast<ColumnIdentifierNode *>(attribute->getNext()); next_attribute != NULL; next_attribute = dynamic_cast<ColumnIdentifierNode *> (next_attribute->getNext())){
-				std::string s_next_attribute = next_attribute->toString();
-				string_to_lower(s_next_attribute);
-				if (s_attribute.compare(s_next_attribute) == 0)
-					return false;
-			}
+	if (SchemaManager::FindTable(table_name) != NULL)
+		return ER_TABLE_ALREADY_EXISTS;
+
+	for (ColumnIdentifierNode *attr = definition_; attr != NULL; attr = dynamic_cast<ColumnIdentifierNode *> (attr->getNext())) {
+		std::string attr_name = attr->name();
+		STRING_TO_LOWER(attr_name);
+	}
+
+	//Verify that all atrtribute names are different
+	for (ColumnIdentifierNode * attr = definition_; attr != NULL; attr = dynamic_cast<ColumnIdentifierNode *> (attr->getNext())) {
+		std::string s_attr = (attr->name());
+		for (ColumnIdentifierNode *attr2 = dynamic_cast<ColumnIdentifierNode *>(attr->getNext()); attr2 != NULL; attr2 = dynamic_cast<ColumnIdentifierNode *> (attr2->getNext())){
+			std::string s_attr2 = attr2->name();
+			if (s_attr.compare(s_attr2) == 0)
+				return ER_SAME_ATTRIBUTE;
 		}
-		return true;
 	}
-	else {
-		return false;
-	} 
-} 
+	return NO_ERROR;
+}
  
- bool CreateTableStatementNode::execute() {
+ ErrorCode CreateTableStatementNode::execute() {
+	printf("Se creeaza tabelul %s \n", table_->name());
 	Table *t = new Table();
-	ColumnIdentifierNode *attribute = new ColumnIdentifierNode("");
-	t->set_table_name(table_->toString()); 
-	for (attribute = definition_; attribute != NULL; attribute = dynamic_cast<ColumnIdentifierNode * > (attribute->getNext())) {
-		std::string str_attribute = attribute->toString();
-		str_attribute.erase(0,1);
-		Attribute *a = new Attribute((attribute->getDataType()), str_attribute);
-		t->add_attribute(a);
+
+	t->set_table_name(table_->name()); 
+	
+	for (ColumnIdentifierNode * attr = definition_; attr != NULL; attr = dynamic_cast<ColumnIdentifierNode * > (attr->getNext())) {
+		std::string s_attr = attr->name();
+		s_attr.erase(0,1);
+		t->AddAttribute(s_attr, (attr->getDataType()));
 	}
-	SchemaManager::add_table(t);
-	return true;
+	
+	ErrorCode er = SchemaManager::AddTable(t);
+	
+	delete t;
+
+	return NO_ERROR;
 }
 
 std::string CreateIndexStatementNode::print ()

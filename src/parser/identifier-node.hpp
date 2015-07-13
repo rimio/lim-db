@@ -52,6 +52,7 @@ public:
 
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return name_; };
+	virtual std::string name() { return name_; };
 	virtual IdentifierType getIdentifierType () const { return PT_IDENTIFIER_TABLE; };
 };
 
@@ -80,9 +81,11 @@ public:
 
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return table_ + "." + name_; };
+	virtual std::string name() { return name_; };
+	virtual void set_name(std::string name) {  name_ = name; };
 	virtual IdentifierType getIdentifierType () const { return PT_IDENTIFIER_COLUMN; };
 	virtual DataType getDataType () const { return data_type_; };
-	//ColumnIdentifierNode getNext() { return *dynamic_cast< ColumnIdentifierNode*>(next_) ; }
+
 	
 	// Setter for data type
 	void setDataType (DataType data_type) { data_type_ = data_type; };

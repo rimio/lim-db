@@ -42,6 +42,12 @@ ErrorCode ExecuteCommand (CommandNode& command, bool& shutdown)
 	return NO_ERROR;
 }
 
+ErrorCode ExecuteStatement(StatementNode *statement){
+	ErrorCode er = statement->compile();
+	if ( er == NO_ERROR) 
+		er = statement->execute();
+	return er;
+}
 //
 // Input loop
 //
@@ -88,9 +94,7 @@ ErrorCode InputLoop ()
 		
 		case PT_STATEMENT:
 			// TODO: Compile and execute
-			if (dynamic_cast<CreateTableStatementNode *> (root)->compile())
-				dynamic_cast<CreateTableStatementNode *> (root)->execute();
-			rc = NO_ERROR;
+			rc = ExecuteStatement(static_cast<StatementNode *>(root));
 			break;
 
 		default:

@@ -4,14 +4,17 @@ Table::Table ()
 {
 	id_ = 0;
 	allocated_sectors_ = NULL;
-	n_attributes_ = 0;
-	attributes_ = NULL;
+	attributes_.clear();
 }
 
 Table::Table (SectorID sector_id)
 {
 	id_ = (TableID) sector_id;
 	MemToTable ();
+}
+
+Table::~Table(){
+	delete allocated_sectors_;
 }
 
 TableID Table::get_table_id() {
@@ -23,10 +26,10 @@ std::string Table::get_table_name(){
 }
 
 int Table::get_number_of_attributes(){
-	return n_attributes_;
+	return attributes_.size();
 }
 
-Attribute* Table::get_table_attributes(){
+std::vector<Attribute> Table::get_table_attributes(){
 	return attributes_;
 }
 
@@ -38,9 +41,8 @@ void Table::set_table_name(std::string table_name) {
 	name_ = table_name;
 }
 
-void Table::add_attribute(Attribute * table_attribute) {
-	attributes_[n_attributes_] = *table_attribute;
-	++n_attributes_;
+void Table::AddAttribute(std::string attr_name, DataType attr_type) {
+	attributes_.emplace_back(attr_type,attr_name);
 }
 
 ErrorCode Table::TableToMem ()

@@ -8,10 +8,11 @@ class Attribute
 {
 	public:
 		Attribute(DataType type, std::string name);
+		~Attribute();
 
 		DataType get_type();
 		std::string get_name();
-	protected:
+		
 	private:
 		DataType type_;
 		std::string name_;

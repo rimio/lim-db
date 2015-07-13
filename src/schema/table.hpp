@@ -20,14 +20,15 @@ private:
 
 	SectorGroup* allocated_sectors_;
 
-	int n_attributes_;
-
-	Attribute *attributes_;
+	std::vector<Attribute> attributes_;
 
 public:
 	// Constructors
 	Table ();
 	Table (SectorID sector_id);
+	
+	// Destructor
+	~Table();
 
 	ErrorCode TableToMem ();
 	ErrorCode MemToTable ();
@@ -35,10 +36,10 @@ public:
 	TableID get_table_id();
 	std::string get_table_name();
 	int get_number_of_attributes();
-	Attribute *get_table_attributes();
+	std::vector<Attribute> get_table_attributes();
 
 	void set_table_id(int id);
 	void set_table_name(std::string table_name);
-	void add_attribute(Attribute * table_attribute);
+	void AddAttribute(std::string attr_name, DataType attr_type);
 };
 #endif // TABLE_HPP_
