@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <string>
+#include <algorithm>
 
 #include "base\generic-type-definitions.hpp"
 
@@ -15,4 +17,6 @@
 #define PTR_ALIGN(ptr, alignment) \
 	((ptr) = (char *) ((((UINTPTR) (ptr)) + ((UINTPTR) ((alignment) - 1))) & ~((UINTPTR) ((alignment) - 1))))
 
+#define STRING_TO_LOWER(a) \
+	std::transform((a).begin(), (a).end(), (a).begin(), ::tolower)
 #endif // GENERIC_OPERATIONS_

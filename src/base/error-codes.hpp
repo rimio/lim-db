@@ -22,6 +22,8 @@ typedef enum
 	ER_ALLOCATION_TABLE_FULL,
 	ER_SECTOR_OUT_OF_RANGE,
 	ER_SECTOR_NOT_USED,
+	ER_TABLE_ALREADY_EXISTS,
+	ER_SAME_ATTRIBUTE,
 	ER_LAST_ERROR
 } ErrorCode;
 
@@ -37,10 +39,13 @@ static const std::string kErrorMessages[] = {
 	"missing %s parser node",
 	"invalid parser node",
 	"execution failed",
-	"out of memory: failed to allocate %d bytes"
-	"out of memory: can't allocate sector. Table full"
-	"can't deallocate sector with %d sectorID: out of range. Sector range: [ 0 %d ]"
-	"can't deallocate sector with %d sectorID: currently not used"
+	"out of memory: failed to allocate %d bytes",
+	"out of memory: can't allocate sector. Table full",
+	"can't deallocate sector with %d sectorID: out of range. "
+	"Sector range: [ 0 %d ]",
+	"can't deallocate sector with %d sectorID: currently not used",
+	"a table with the name %s already exists",
+	"attribute with the name %s is duplicated"
 };
 
 #endif
