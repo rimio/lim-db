@@ -9,6 +9,7 @@ Bitmap::Bitmap(int bits_number) {
 }
 
 Bitmap::~Bitmap(){
+	delete bit_array_;
 }
 
 Bitmap::Bitmap(int bits_number, bool set_bits) {

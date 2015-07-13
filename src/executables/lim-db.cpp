@@ -20,6 +20,7 @@ ErrorCode Initialize ()
 //
 void Deinitialize ()
 {
+	Boot::StopServer();
 	// TODO
 }
 

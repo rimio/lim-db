@@ -2,9 +2,11 @@
 #define STATEMENT_NODE_HPP_
 
 #include "base/error-codes.hpp"
+#include "base/error-manager.hpp"
 #include "parser/parser-node.hpp"
 #include "parser/identifier-node.hpp"
 #include "schema/table.hpp"
+
 //
 // Statement types
 //
@@ -32,7 +34,7 @@ protected:
 
 public:
 	// Implementation of pure virtual functions
-	virtual ParserNodeType getNodeType () const { return PT_STATEMENT; };
+	virtual ParserNodeType getNodeType() const { return PT_STATEMENT; };
 	
 	// Returns the statement type
 	virtual StatementType getStatementType () const = 0;
@@ -68,8 +70,8 @@ public:
 	virtual std::string toString () { return "SELECT"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_SELECT; };
-	ErrorCode compile() { return NO_ERROR; };
-	ErrorCode execute() { return NO_ERROR; };
+	ErrorCode compile() override { return NO_ERROR; };
+	ErrorCode execute() override  { return NO_ERROR; };
 };
 
 //
@@ -95,8 +97,8 @@ public:
 	virtual std::string toString () { return "INSERT"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_INSERT; };
-	ErrorCode compile() { return NO_ERROR; };
-	ErrorCode execute() { return NO_ERROR; };
+	ErrorCode compile() override  { return NO_ERROR; };
+	ErrorCode execute() override  { return NO_ERROR; };
 };
 
 //
@@ -111,8 +113,8 @@ public:
 	virtual std::string toString () { return "DELETE"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DELETE; };
-	ErrorCode compile() { return NO_ERROR; };
-	ErrorCode execute() { return NO_ERROR; };
+	ErrorCode compile() override  { return NO_ERROR; };
+	ErrorCode execute() override  { return NO_ERROR; };
 };
 
 //
@@ -127,8 +129,8 @@ public:
 	virtual std::string toString () { return "UPDATE"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_UPDATE; };
-	ErrorCode compile() { return NO_ERROR; };
-	ErrorCode execute() { return NO_ERROR; };
+	ErrorCode compile() override  { return NO_ERROR; };
+	ErrorCode execute() override  { return NO_ERROR; };
 };
 
 // ------------------- Data Definition Language Statements ------------------- //
@@ -156,8 +158,8 @@ public:
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_CREATE_TABLE; };
 
-	ErrorCode compile();
-	ErrorCode execute();
+	ErrorCode compile() override;
+	ErrorCode execute() override;
 };
 
 //
@@ -172,8 +174,8 @@ public:
 	virtual std::string toString () { return "CREATE INDEX"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_CREATE_INDEX; };
-	ErrorCode compile() { return NO_ERROR; };
-	ErrorCode execute() { return NO_ERROR; };
+	ErrorCode compile() override  { return NO_ERROR; };
+	ErrorCode execute() override  { return NO_ERROR; };
 };
 
 //
@@ -194,10 +196,10 @@ public:
 
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "DROP TABLE"; };
-	virtual std::string print ();
+	virtual std::string print();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DROP_TABLE; };
-	ErrorCode compile() { return NO_ERROR; };
-	ErrorCode execute() { return NO_ERROR; };
+	ErrorCode compile() override { return NO_ERROR; };
+	ErrorCode execute() override { return NO_ERROR; };
 };
 
 //
@@ -212,8 +214,8 @@ public:
 	virtual std::string toString () { return "DROP INDEX"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DROP_INDEX; };
-	ErrorCode compile() { return NO_ERROR; };
-	ErrorCode execute() { return NO_ERROR; };
+	ErrorCode compile() override { return NO_ERROR; };
+	ErrorCode execute() override { return NO_ERROR; };
 };
 
 #endif

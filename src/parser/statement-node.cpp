@@ -50,42 +50,41 @@ ErrorCode CreateTableStatementNode::compile() {
 
 	//Verify that the table name isn't already used
 	if (SchemaManager::FindTable(table_name) != NULL)
-		return ER_TABLE_ALREADY_EXISTS;
-
+		return ErrorManager::error(__HERE__, ER_TABLE_ALREADY_EXISTS, table_->name().c_str());
+	
+	//Lowercase all the attributes
+	std::string attr_name;
 	for (ColumnIdentifierNode *attr = definition_; attr != NULL; attr = dynamic_cast<ColumnIdentifierNode *> (attr->getNext())) {
-		std::string attr_name = attr->name();
+		attr_name = attr->name();
 		STRING_TO_LOWER(attr_name);
+		attr -> set_name( attr_name );
 	}
 
 	//Verify that all atrtribute names are different
 	for (ColumnIdentifierNode * attr = definition_; attr != NULL; attr = dynamic_cast<ColumnIdentifierNode *> (attr->getNext())) {
-		std::string s_attr = (attr->name());
 		for (ColumnIdentifierNode *attr2 = dynamic_cast<ColumnIdentifierNode *>(attr->getNext()); attr2 != NULL; attr2 = dynamic_cast<ColumnIdentifierNode *> (attr2->getNext())){
-			std::string s_attr2 = attr2->name();
-			if (s_attr.compare(s_attr2) == 0)
-				return ER_SAME_ATTRIBUTE;
+			if (attr->name().compare(attr2->name()) == 0)
+				return ErrorManager::error(__HERE__, ER_SAME_ATTRIBUTE, attr->name().c_str());
 		}
 	}
 	return NO_ERROR;
 }
  
  ErrorCode CreateTableStatementNode::execute() {
-	printf("Se creeaza tabelul %s \n", table_->name());
+	printf("Se creeaza tabelul %s \n", table_->name().c_str());
 	Table *t = new Table();
 
 	t->set_table_name(table_->name()); 
 	
 	for (ColumnIdentifierNode * attr = definition_; attr != NULL; attr = dynamic_cast<ColumnIdentifierNode * > (attr->getNext())) {
-		std::string s_attr = attr->name();
-		s_attr.erase(0,1);
-		t->AddAttribute(s_attr, (attr->getDataType()));
+		t->AddAttribute(attr->name(), (attr->getDataType()));
 	}
 	
 	ErrorCode er = SchemaManager::AddTable(t);
 	
 	delete t;
 
-	return NO_ERROR;
+	return er;
 }
 
 std::string CreateIndexStatementNode::print ()

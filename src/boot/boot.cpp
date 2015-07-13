@@ -2,15 +2,11 @@
 
 SectorManager * Boot::sector_manager_ = NULL;
 
-Boot::~Boot(){
-	delete sector_manager_;
-}
-
 void Boot::StartServer(){
 	sector_manager_ = new SectorManager();
 }
 
-void Boot::CloseServer(){
+void Boot::StopServer(){
 	delete sector_manager_;
 }
 

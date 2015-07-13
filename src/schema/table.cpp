@@ -4,7 +4,6 @@ Table::Table ()
 {
 	id_ = 0;
 	allocated_sectors_ = NULL;
-	attributes_.clear();
 }
 
 Table::Table (SectorID sector_id)
@@ -14,6 +13,7 @@ Table::Table (SectorID sector_id)
 }
 
 Table::~Table(){
+	attributes_.clear();
 	delete allocated_sectors_;
 }
 

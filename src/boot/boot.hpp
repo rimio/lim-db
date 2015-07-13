@@ -12,12 +12,12 @@ public:
 	//Generates the instance of Sector Manager
 	static void StartServer();
 	//Erases the instance of sector manager
-	static void CloseServer();
-	//Destructor
-	~Boot();
+	static void StopServer();
 private:
 	//Private constructor
 	Boot(){};
+	//Private destructor
+	~Boot();
 	static SectorManager *sector_manager_;
 };
 
