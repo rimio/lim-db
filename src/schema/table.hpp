@@ -38,7 +38,7 @@ public:
 	int get_number_of_attributes();
 	std::vector<Attribute> get_table_attributes();
 
-	void set_table_id(int id);
+	void set_table_id(TableID id);
 	void set_table_name(std::string table_name);
 	void AddAttribute(std::string attr_name, DataType attr_type);
 };

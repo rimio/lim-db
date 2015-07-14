@@ -15,7 +15,7 @@ class SchemaManager {
 		//Adds a new table
 		static ErrorCode AddTable(Table *t);
 		//Delets an existing table
-		static bool DropTable(std::string table_name);
+		static ErrorCode DropTable(std::string table_name);
 		//If there exists a table with the searched name, returns it, NULL otherwise
 	    static Table* FindTable(std::string table_name);
 	protected:

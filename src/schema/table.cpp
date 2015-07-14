@@ -33,7 +33,7 @@ std::vector<Attribute> Table::get_table_attributes(){
 	return attributes_;
 }
 
-void Table::set_table_id(int id) {
+void Table::set_table_id(TableID id) {
 	id_ = id;
 }
 
