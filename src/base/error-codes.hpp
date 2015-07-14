@@ -24,6 +24,7 @@ typedef enum
 	ER_SECTOR_NOT_USED,
 	ER_TABLE_ALREADY_EXISTS,
 	ER_SAME_ATTRIBUTE,
+	ER_TABLE_DOES_NOT_EXIST,
 	ER_LAST_ERROR
 } ErrorCode;
 
@@ -45,7 +46,8 @@ static const std::string kErrorMessages[] = {
 	"Sector range: [ 0 %d ]",
 	"can't deallocate sector with %d sectorID: currently not used",
 	"a table with the name %s already exists",
-	"attribute with the name %s is duplicated"
+	"attribute with the name %s is duplicated",
+	"Can not delete table with the name %s. There is no such table",
 };
 
 #endif

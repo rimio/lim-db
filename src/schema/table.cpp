@@ -13,7 +13,7 @@ Table::Table (SectorID sector_id)
 }
 
 Table::~Table(){
-	attributes_.clear();
+	attributes_.clear(); 
 	delete allocated_sectors_;
 }
 

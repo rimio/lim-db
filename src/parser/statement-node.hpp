@@ -35,6 +35,9 @@ protected:
 	StatementNode () { };
 
 public:
+	//Virtual destructor 
+	virtual ~StatementNode() { ParserNode::~ParserNode(); };
+
 	// Implementation of pure virtual functions
 	virtual ParserNodeType getNodeType() const { return PT_STATEMENT; };
 	
@@ -153,7 +156,7 @@ protected:
 	CreateTableStatementNode () { };
 public:
 	CreateTableStatementNode(TableIdentifierNode *table, std::vector<ColumnIdentifierNode*> *def) : table_(table), definition_(def) { };
-
+	~CreateTableStatementNode() override;
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "CREATE TABLE"; };
 	virtual std::string print ();

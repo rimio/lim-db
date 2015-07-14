@@ -35,6 +35,14 @@ std::string UpdateStatementNode::print ()
 		std::string ("UPDATE");
 }
 
+CreateTableStatementNode::~CreateTableStatementNode(){
+	StatementNode::~StatementNode();
+	delete table_;
+	for (std::vector<ColumnIdentifierNode*>::iterator it = (*definition_).begin(); it != (*definition_).end(); ++it)
+		delete (*it);
+	(*definition_).clear();
+}
+
 std::string CreateTableStatementNode::print ()
 {
 	std::string s("CREATE TABLE ");
@@ -102,10 +110,14 @@ std::string DropTableStatementNode::print ()
 }
 
 ErrorCode DropTableStatementNode::compile() {
+	//Verify that the table name exists
+	if (SchemaManager::FindTable(table_->name()) == NULL)
+		return ErrorManager::error(__HERE__, ER_TABLE_DOES_NOT_EXIST, table_->name().c_str());
 	return NO_ERROR;
 }
 
 ErrorCode DropTableStatementNode::execute() {
+	
 	return NO_ERROR;
 }
 
