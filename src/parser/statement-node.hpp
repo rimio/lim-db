@@ -35,8 +35,8 @@ protected:
 	StatementNode () { };
 
 public:
-	//Virtual destructor 
-	virtual ~StatementNode() { ParserNode::~ParserNode(); };
+	//Pure virtual destructor 
+	virtual ~StatementNode() = 0;
 
 	// Implementation of pure virtual functions
 	virtual ParserNodeType getNodeType() const { return PT_STATEMENT; };
@@ -72,6 +72,7 @@ public:
 	SelectStatementNode (TypedParserNode *list, TableIdentifierNode *from) : list_ (list), from_ (from) { };
 
 	// Implementation of pure virtual functions
+	~SelectStatementNode() {};
 	virtual std::string toString () { return "SELECT"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_SELECT; };
@@ -99,6 +100,7 @@ public:
 	InsertStatementNode (TableIdentifierNode *table, TypedParserNode *values) : table_ (table), values_ (values) { };
 
 	// Implementation of pure virtual functions
+	~InsertStatementNode() {};
 	virtual std::string toString () { return "INSERT"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_INSERT; };
@@ -115,6 +117,7 @@ private:
 protected:
 public:
 	// Implementation of pure virtual functions
+	~DeleteStatementNode() {};
 	virtual std::string toString () { return "DELETE"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DELETE; };
@@ -131,6 +134,7 @@ private:
 protected:
 public:
 	// Implementation of pure virtual functions
+	~UpdateStatementNode() {};
 	virtual std::string toString () { return "UPDATE"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_UPDATE; };
@@ -156,7 +160,7 @@ protected:
 	CreateTableStatementNode () { };
 public:
 	CreateTableStatementNode(TableIdentifierNode *table, std::vector<ColumnIdentifierNode*> *def) : table_(table), definition_(def) { };
-	~CreateTableStatementNode() override;
+	~CreateTableStatementNode();
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "CREATE TABLE"; };
 	virtual std::string print ();
@@ -174,6 +178,7 @@ private:
 protected:
 public:
 	// Implementation of pure virtual functions
+	~CreateIndexStatementNode() {};
 	virtual std::string toString () { return "CREATE INDEX"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_CREATE_INDEX; };
@@ -197,11 +202,12 @@ public:
 	DropTableStatementNode (TableIdentifierNode *table) : table_ (table) { };
 
 	// Implementation of pure virtual functions
+	~DropTableStatementNode();
 	virtual std::string toString () { return "DROP TABLE"; };
 	virtual std::string print();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DROP_TABLE; };
-	ErrorCode compile();
-	ErrorCode execute();
+	ErrorCode compile() override;
+	ErrorCode execute() override;
 };
 
 //
@@ -212,6 +218,7 @@ private:
 protected:
 public:
 	// Implementation of pure virtual functions
+	~DropIndexStatementNode() {};
 	virtual std::string toString () { return "DROP INDEX"; };
 	virtual std::string print ();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DROP_INDEX; };

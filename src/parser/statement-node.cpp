@@ -4,7 +4,9 @@
 
 #include <map>
 
-std::string SelectStatementNode::print () 
+StatementNode::~StatementNode() {}
+
+std::string SelectStatementNode::print ()
 {
 	return
 		std::string ("SELECT ")
@@ -36,10 +38,12 @@ std::string UpdateStatementNode::print ()
 }
 
 CreateTableStatementNode::~CreateTableStatementNode(){
-	StatementNode::~StatementNode();
 	delete table_;
-	for (std::vector<ColumnIdentifierNode*>::iterator it = (*definition_).begin(); it != (*definition_).end(); ++it)
-		delete (*it);
+	while (!(*definition_).empty()) {
+		ColumnIdentifierNode *it = (*definition_).back();
+		(*definition_).pop_back();
+		delete it;
+	}
 	(*definition_).clear();
 }
 
@@ -80,7 +84,6 @@ ErrorCode CreateTableStatementNode::compile() {
 }
  
  ErrorCode CreateTableStatementNode::execute() {
-	printf("Se creeaza tabelul %s \n", table_->name().c_str());
 	Table *t = new Table();
 
 	t->set_table_name(table_->name()); 
@@ -91,9 +94,13 @@ ErrorCode CreateTableStatementNode::compile() {
 	
 	ErrorCode er = SchemaManager::AddTable(t);
 	
-	delete t;
+	//delete t;
 
 	return er;
+}
+
+DropTableStatementNode::~DropTableStatementNode(){
+	delete table_;
 }
 
 std::string CreateIndexStatementNode::print ()
@@ -117,8 +124,8 @@ ErrorCode DropTableStatementNode::compile() {
 }
 
 ErrorCode DropTableStatementNode::execute() {
-	
-	return NO_ERROR;
+	ErrorCode er = SchemaManager::DropTable(table_->name());
+	return er;
 }
 
 std::string DropIndexStatementNode::print ()

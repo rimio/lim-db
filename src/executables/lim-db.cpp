@@ -48,7 +48,7 @@ ErrorCode ExecuteStatement(StatementNode *statement){
 	if (er == NO_ERROR)
 		er = statement->execute();
 	return er;
-	}
+}
 
 //
 // Input loop

@@ -13,7 +13,7 @@ Table::Table (SectorID sector_id)
 }
 
 Table::~Table(){
-	attributes_.clear(); 
+	attributes_.clear();
 	delete allocated_sectors_;
 }
 
@@ -33,7 +33,7 @@ std::vector<Attribute> Table::get_table_attributes(){
 	return attributes_;
 }
 
-void Table::set_table_id(int id) {
+void Table::set_table_id(TableID id) {
 	id_ = id;
 }
 

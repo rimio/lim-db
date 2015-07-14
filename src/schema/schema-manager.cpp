@@ -25,11 +25,19 @@ ErrorCode SchemaManager::AddTable(Table *t){
 	return er;
 }
 
-bool SchemaManager::DropTable(std::string table_name) {
+ErrorCode SchemaManager::DropTable(std::string table_name) {
 	std::transform(table_name.begin(), table_name.end(), table_name.begin(), ::tolower);
-	if (list_of_tables_.erase(table_name))
-		return true;
-	return false;
+	//Store a pointer to the desired table in order to completely delete it
+	Table *t = list_of_tables_.find(table_name)->second;
+	//Free the used sector
+	ErrorCode er = GET_SECTOR_MANAGER()->DeallocateSector(t->get_table_id());
+	if (er == NO_ERROR){
+		//Delete the table from the list 
+		list_of_tables_.erase(table_name);
+		//Delete the table from memory 
+		delete t;
+	}
+	return er;
 }
 
 Table * SchemaManager::FindTable(std::string table_name) {
