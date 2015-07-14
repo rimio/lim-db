@@ -4,7 +4,7 @@
 
 #include <map>
 
-std::string SelectStatementNode::print ()
+std::string SelectStatementNode::print () 
 {
 	return
 		std::string ("SELECT ")
@@ -37,12 +37,13 @@ std::string UpdateStatementNode::print ()
 
 std::string CreateTableStatementNode::print ()
 {
-	return
-		std::string ("CREATE TABLE ")
-		+ (table_ != nullptr ? table_->print () : "")
-		+ std::string ("(")
-		+ (definition_ != nullptr ? definition_->printList (", ") : "")
-		+ std::string (")");
+	std::string s("CREATE TABLE ");
+	s += table_ != nullptr ? table_->print() : "";
+	s += std::string("(");
+	for (std::vector<ColumnIdentifierNode*>::iterator attr = (*definition_).begin(); attr != (*definition_).end(); ++attr)
+		s += (*attr)->name() + std::string(", ");
+	s += std::string (")");
+	return s;
 }
 
 ErrorCode CreateTableStatementNode::compile() {
@@ -54,17 +55,17 @@ ErrorCode CreateTableStatementNode::compile() {
 	
 	//Lowercase all the attributes
 	std::string attr_name;
-	for (ColumnIdentifierNode *attr = definition_; attr != NULL; attr = dynamic_cast<ColumnIdentifierNode *> (attr->getNext())) {
-		attr_name = attr->name();
+	for (std::vector<ColumnIdentifierNode*>::iterator attr = (*definition_).begin(); attr != (*definition_).end(); ++attr) {
+		attr_name = (*attr)->name();
 		STRING_TO_LOWER(attr_name);
-		attr -> set_name( attr_name );
+		(*attr) -> set_name( attr_name );
 	}
 
 	//Verify that all atrtribute names are different
-	for (ColumnIdentifierNode * attr = definition_; attr != NULL; attr = dynamic_cast<ColumnIdentifierNode *> (attr->getNext())) {
-		for (ColumnIdentifierNode *attr2 = dynamic_cast<ColumnIdentifierNode *>(attr->getNext()); attr2 != NULL; attr2 = dynamic_cast<ColumnIdentifierNode *> (attr2->getNext())){
-			if (attr->name().compare(attr2->name()) == 0)
-				return ErrorManager::error(__HERE__, ER_SAME_ATTRIBUTE, attr->name().c_str());
+	for (std::vector<ColumnIdentifierNode*>::iterator attr = (*definition_).begin(); attr != (*definition_).end(); ++attr) {
+		for (std::vector<ColumnIdentifierNode*>::iterator attr2 = attr+1; attr2 != (*definition_).end(); ++attr2 ){
+			if ((*attr)->name().compare((*attr2)->name()) == 0)
+				return ErrorManager::error(__HERE__, ER_SAME_ATTRIBUTE, (*attr)->name().c_str());
 		}
 	}
 	return NO_ERROR;
@@ -76,8 +77,8 @@ ErrorCode CreateTableStatementNode::compile() {
 
 	t->set_table_name(table_->name()); 
 	
-	for (ColumnIdentifierNode * attr = definition_; attr != NULL; attr = dynamic_cast<ColumnIdentifierNode * > (attr->getNext())) {
-		t->AddAttribute(attr->name(), (attr->getDataType()));
+	for (std::vector<ColumnIdentifierNode*>::iterator attr = (*definition_).begin(); attr != (*definition_).end(); ++attr) {
+		t->AddAttribute((*attr)->name(), ((*attr)->getDataType()));
 	}
 	
 	ErrorCode er = SchemaManager::AddTable(t);
@@ -98,6 +99,14 @@ std::string DropTableStatementNode::print ()
 	return
 		std::string ("DROP TABLE ")
 		+ (table_ != nullptr ? table_->print () : "");
+}
+
+ErrorCode DropTableStatementNode::compile() {
+	return NO_ERROR;
+}
+
+ErrorCode DropTableStatementNode::execute() {
+	return NO_ERROR;
 }
 
 std::string DropIndexStatementNode::print ()

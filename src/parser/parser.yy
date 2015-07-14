@@ -30,6 +30,7 @@
 {
 
 #include <iostream>
+#include <vector>
 #include "base/error-manager.hpp"
 #include "parser/parser-context.hpp"
 #include "parser/lexer.hpp"
@@ -52,6 +53,8 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 	TableIdentifierNode *table_identifier_node;
 	ColumnIdentifierNode *column_identifier_node;
 	IndexIdentifierNode *index_identifier_node;
+
+	std::vector<ColumnIdentifierNode*> *column_identifier_node_list;
 }
 
 %token AND
@@ -139,7 +142,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 
 // Data definition language
 %type <column_identifier_node>	column_definition
-%type <column_identifier_node>	column_definition_list
+%type <column_identifier_node_list>	column_definition_list
 
 %%
 
@@ -249,14 +252,15 @@ create_table_statement
 	;
 
 column_definition_list
-	: column_definition COMMA column_definition_list
+	: column_definition_list COMMA column_definition 
 		{
 			$$ = $1;
-			$$->setNext ($3);
+			$$->push_back($3);
 		}
 	| column_definition
 		{
-			$$ = $1;
+			$$ = new std::vector <ColumnIdentifierNode*>;
+			$$->push_back($1); 
 		}
 	;
 

@@ -44,10 +44,24 @@ ErrorCode ExecuteCommand (CommandNode& command, bool& shutdown)
 }
 
 ErrorCode ExecuteStatement(StatementNode *statement){
-	ErrorCode er = statement->compile();
-	if ( er == NO_ERROR) 
-		er = statement->execute();
-	return er;
+	ErrorCode er;
+	switch (statement->getStatementType())
+	{
+	case PT_STATEMENT_CREATE_TABLE:
+		er = statement->compile();
+		if (er == NO_ERROR)
+			er = statement->execute();
+		break;
+	case PT_STATEMENT_DROP_TABLE:
+		er = statement->compile();
+		if (er == NO_ERROR)
+			er = statement->execute();
+		break;
+	default:
+		return er;
+	}
+	
+	
 }
 //
 // Input loop
