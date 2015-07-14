@@ -45,10 +45,11 @@ ErrorCode ExecuteCommand (CommandNode& command, bool& shutdown)
 
 ErrorCode ExecuteStatement(StatementNode *statement){
 	ErrorCode er = statement->compile();
-	if ( er == NO_ERROR) 
+	if (er == NO_ERROR)
 		er = statement->execute();
 	return er;
-}
+	}
+
 //
 // Input loop
 //
@@ -109,9 +110,12 @@ ErrorCode InputLoop ()
 			ErrorManager::error (__HERE__, ER_INVALID_PARSER_NODE);
 			continue;
 		}
+
+		delete root;
 	}
 
 	// All ok?
+
 	return NO_ERROR;
 }
 

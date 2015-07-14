@@ -1,6 +1,8 @@
 #ifndef STATEMENT_NODE_HPP_
 #define STATEMENT_NODE_HPP_
 
+#include <vector>
+
 #include "base/error-codes.hpp"
 #include "base/error-manager.hpp"
 #include "parser/parser-node.hpp"
@@ -33,6 +35,9 @@ protected:
 	StatementNode () { };
 
 public:
+	//Virtual destructor 
+	virtual ~StatementNode() { ParserNode::~ParserNode(); };
+
 	// Implementation of pure virtual functions
 	virtual ParserNodeType getNodeType() const { return PT_STATEMENT; };
 	
@@ -138,21 +143,20 @@ public:
 //
 // CREATE TABLE statement node
 //
-class CreateTableStatementNode : public StatementNode
-{
+class CreateTableStatementNode : public StatementNode {
 private:
 protected:
 	// Table identifier for new table
 	TableIdentifierNode *table_;
 
 	// Column definition
-	ColumnIdentifierNode *definition_;
+	std::vector<ColumnIdentifierNode*> *definition_;
 
 	// Hidden constructor
 	CreateTableStatementNode () { };
 public:
-	CreateTableStatementNode (TableIdentifierNode *table, ColumnIdentifierNode *def) : table_ (table), definition_ (def) { };
-
+	CreateTableStatementNode(TableIdentifierNode *table, std::vector<ColumnIdentifierNode*> *def) : table_(table), definition_(def) { };
+	~CreateTableStatementNode() override;
 	// Implementation of pure virtual functions
 	virtual std::string toString () { return "CREATE TABLE"; };
 	virtual std::string print ();
@@ -165,8 +169,7 @@ public:
 //
 // CREATE INDEX statement node
 //
-class CreateIndexStatementNode : public StatementNode
-{
+class CreateIndexStatementNode : public StatementNode {
 private:
 protected:
 public:
@@ -181,8 +184,7 @@ public:
 //
 // DROP TABLE statement node
 //
-class DropTableStatementNode : public StatementNode
-{
+class DropTableStatementNode : public StatementNode {
 private:
 protected:
 	// Table identifier
@@ -198,15 +200,14 @@ public:
 	virtual std::string toString () { return "DROP TABLE"; };
 	virtual std::string print();
 	virtual StatementType getStatementType () const { return PT_STATEMENT_DROP_TABLE; };
-	ErrorCode compile() override { return NO_ERROR; };
-	ErrorCode execute() override { return NO_ERROR; };
+	ErrorCode compile();
+	ErrorCode execute();
 };
 
 //
 // DROP INDEX statement node
 //
-class DropIndexStatementNode : public StatementNode
-{
+class DropIndexStatementNode : public StatementNode {
 private:
 protected:
 public:
