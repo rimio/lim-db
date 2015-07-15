@@ -8,7 +8,7 @@
 #include "parser/parser-node.hpp"
 #include "parser/identifier-node.hpp"
 #include "schema/table.hpp"
-#include "boot\boot.hpp"
+#include "boot/boot.hpp"
 
 //
 // Statement types
