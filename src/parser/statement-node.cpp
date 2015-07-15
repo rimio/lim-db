@@ -62,7 +62,7 @@ ErrorCode CreateTableStatementNode::compile() {
 	std::string table_name = table_->name();
 
 	//Verify that the table name isn't already used
-	if (SchemaManager::FindTable(table_name) != NULL)
+	if (GET_SCHEMA_MANAGER()->FindTable(table_name) != NULL)
 		return ErrorManager::error(__HERE__, ER_TABLE_ALREADY_EXISTS, table_->name().c_str());
 	
 	//Lowercase all the attributes
@@ -92,9 +92,7 @@ ErrorCode CreateTableStatementNode::compile() {
 		t->AddAttribute((*attr)->name(), ((*attr)->getDataType()));
 	}
 	
-	ErrorCode er = SchemaManager::AddTable(t);
-	
-	//delete t;
+	ErrorCode er = GET_SCHEMA_MANAGER()->AddTable(t);
 
 	return er;
 }
@@ -118,13 +116,13 @@ std::string DropTableStatementNode::print ()
 
 ErrorCode DropTableStatementNode::compile() {
 	//Verify that the table name exists
-	if (SchemaManager::FindTable(table_->name()) == NULL)
+	if (GET_SCHEMA_MANAGER()->FindTable(table_->name()) == NULL)
 		return ErrorManager::error(__HERE__, ER_TABLE_DOES_NOT_EXIST, table_->name().c_str());
 	return NO_ERROR;
 }
 
 ErrorCode DropTableStatementNode::execute() {
-	ErrorCode er = SchemaManager::DropTable(table_->name());
+	ErrorCode er = GET_SCHEMA_MANAGER()->DropTable(table_->name());
 	return er;
 }
 
