@@ -48,21 +48,8 @@ set (SRC_PARSER_FILES
 	${SOURCE_DIR}/parser/identifier-node.hpp
 	${SOURCE_DIR}/parser/identifier-node.cpp
 
-<<<<<<< HEAD
-	# base
-	${SOURCE_DIR}/base/error-codes.hpp
-	${SOURCE_DIR}/base/error-manager.hpp
-	${SOURCE_DIR}/base/generic-type-definitions.hpp
-	${SOURCE_DIR}/base/generic-constants.hpp
-	${SOURCE_DIR}/base/generic-operations.hpp
-	${SOURCE_DIR}/base/data-type.hpp
-	${SOURCE_DIR}/base/bitmap.hpp
-	${SOURCE_DIR}/base/template-class.hpp
-	${SOURCE_DIR}/base/serialize.hpp
-=======
 	${SOURCE_DIR}/parser/operator-node.hpp
 	${SOURCE_DIR}/parser/operator-node.cpp
->>>>>>> ribram/master
 
 	${SOURCE_DIR}/parser/parser-context.hpp
 	${SOURCE_DIR}/parser/parser-context.cpp
@@ -104,12 +91,8 @@ set (SRC_BASE_FILES
 	
 	${SOURCE_DIR}/base/template-class.hpp
 	${SOURCE_DIR}/base/template-class.cpp
-<<<<<<< HEAD
-	${SOURCE_DIR}/base/serialize.cpp
-=======
 	)
 source_group("src\\base" FILES ${SRC_BASE_FILES})
->>>>>>> ribram/master
 
 set (SRC_BOOT_FILES
 	${SOURCE_DIR}/boot/boot.hpp
