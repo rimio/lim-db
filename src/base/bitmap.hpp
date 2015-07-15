@@ -30,7 +30,6 @@ class Bitmap {
 		//Returns the position of a free bit or -1 if there is none left unused
 		int GiveFreeBit(int last_used);
 
-	protected:
 	private:
 		//Total number of sectors
 		int bits_number_;

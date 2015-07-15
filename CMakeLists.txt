@@ -8,8 +8,10 @@ set (VERSION_MINOR 1)
 
 # Directories
 set (SOURCE_DIR src)
-set (BUILD_DIR build)
-set (BIN_DIR ${BUILD_DIR}/bin)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Include directories
 include_directories (
@@ -125,16 +127,20 @@ set (UNIT_TEST_SOURCE_FILES
 	${SOURCE_DIR}/unit-test/sector-manager-test.cpp
 	)
 
+
+add_library(lim-db-lib
+			${HEADER_FILES}
+			${SOURCE_FILES})
+
 # Executable targets
-add_executable (${BIN_DIR}/lim-db
-	${SOURCE_FILES}
-	${HEADER_FILES}
+add_executable (lim-db
 
 	# executable
 	${SOURCE_DIR}/executables/lim-db.cpp
 	)
+target_link_libraries (lim-db lim-db-lib)
 
-add_executable (${BIN_DIR}/unit-test
+add_executable (unit-test
 	${SOURCE_FILES}
 	${HEADER_FILES}
 
@@ -146,4 +152,4 @@ add_executable (${BIN_DIR}/unit-test
 	)
 
 # C++11
-set_property(TARGET ${BIN_DIR}/lim-db PROPERTY CXX_STANDARD 11)
+set_property(TARGET lim-db PROPERTY CXX_STANDARD 11)

@@ -4,6 +4,9 @@
 
 #define BITMAP_UNIT_SIZE 64
 
+#define BITMAP_FULL_UNIT 0xFFFFFFFFFFFFFFFF
+#define BITMAP_EMPTY_UNIT 0ULL
+
 Bitmap::Bitmap(int bits_number) {
 	Bitmap(bits_number, false);
 }
@@ -19,15 +22,21 @@ Bitmap::Bitmap(int bits_number, bool set_bits) {
 	
 	if (set_bits) {
 		for (int i = 0; i < bits_array_size_; ++i)
-			bit_array_[i] = 0xffffffffffffffff;
+			bit_array_[i] = BITMAP_FULL_UNIT;
 	}
 	else {
 		for (int i = 0; i < bits_array_size_; ++i)
-			bit_array_[i] = 0;
+			bit_array_[i] = BITMAP_EMPTY_UNIT;
 	}
-	//Bits that are out of range must be set to 1 (we could consider them used, therefore, inaccessible )
-	for (int i = bits_number; i < bits_array_size_ * BITMAP_UNIT_SIZE; i++)
-		(void) SetBit(i);
+
+	// Bits that are out of range must be set to 1 (we could consider them used, therefore, inaccessible )
+	// Reversed process if set_bits is true
+	for (int i = bits_number; i < bits_array_size_ * BITMAP_UNIT_SIZE; i++) {
+		if (set_bits)
+			(void) ClearBit(i);
+		else
+			(void) SetBit(i);
+	}
 };
 
 bool Bitmap::SetBit(int index) {
