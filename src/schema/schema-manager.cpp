@@ -7,8 +7,6 @@
 #include <algorithm>
 #include <utility>
 
-std::map<std::string, Table*> SchemaManager::list_of_tables_;
-
 SchemaManager::~SchemaManager(){
 }
 

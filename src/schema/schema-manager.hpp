@@ -13,14 +13,14 @@ class SchemaManager {
 		//Destructor
 		~SchemaManager();
 		//Adds a new table
-		static ErrorCode AddTable(Table *t);
+		ErrorCode AddTable(Table *t);
 		//Delets an existing table
-		static ErrorCode DropTable(std::string table_name);
+		ErrorCode DropTable(std::string table_name);
 		//If there exists a table with the searched name, returns it, NULL otherwise
-	    static Table* FindTable(std::string table_name);
+	    Table* FindTable(std::string table_name);
 	protected:
 	private:
-		static std::map<std::string, Table*> list_of_tables_;
+		std::map<std::string, Table*> list_of_tables_;
 };
 
 #endif
