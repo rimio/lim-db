@@ -55,7 +55,7 @@ set (HEADER_FILES
 	${SOURCE_DIR}/base/data-type.hpp
 	${SOURCE_DIR}/base/bitmap.hpp
 	${SOURCE_DIR}/base/template-class.hpp
-	${SOURCE_DIR}/base/serialize.hpp
+	${SOURCE_DIR}/base/serializable.hpp
 
 	#boot
 	${SOURCE_DIR}/boot/boot.hpp
@@ -93,7 +93,7 @@ set (SOURCE_FILES
 	${SOURCE_DIR}/base/error-manager.cpp
 	${SOURCE_DIR}/base/bitmap.cpp
 	${SOURCE_DIR}/base/template-class.cpp
-	${SOURCE_DIR}/base/serialize.cpp
+	${SOURCE_DIR}/base/serializable.cpp
 
 	#boot
 	${SOURCE_DIR}/boot/boot.cpp

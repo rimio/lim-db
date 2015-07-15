@@ -16,7 +16,7 @@ public:
 	//Retreives the instance of the Schema Manager
 	static SchemaManager* get_schema_manager();
 	//Retreives the instance of the Serialize class
-	static Serialize* get_serialize();
+	//static Serialize* get_serialize();
 	//Generates the instance of Sector Manager
 	static void StartServer();
 	//Erases the instance of sector manager
@@ -28,7 +28,7 @@ private:
 	~Boot();
 	static SectorManager *sector_manager_;
 	static SchemaManager *schema_manager_;
-	static Serialize *serialize_;
+	//static Serialize *serialize_;
 };
 
 #endif

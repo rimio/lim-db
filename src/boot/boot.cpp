@@ -2,7 +2,7 @@
 
 SectorManager * Boot::sector_manager_ = NULL;
 SchemaManager * Boot::schema_manager_ = NULL;
-Serialize * Boot::serialize_ = NULL;
+//Serialize * Boot::serialize_ = NULL;
 
 void Boot::StartServer() {
 	sector_manager_ = new SectorManager();
@@ -13,7 +13,7 @@ void Boot::StartServer() {
 void Boot::StopServer() {
 	delete sector_manager_;
 	delete schema_manager_;
-	delete serialize_;
+	//delete serialize_;
 }
 
 SectorManager* Boot::get_sector_manager() {
