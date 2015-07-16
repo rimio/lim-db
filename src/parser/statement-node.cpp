@@ -88,8 +88,11 @@ ErrorCode CreateTableStatementNode::compile() {
 
 	t->set_table_name(table_->name()); 
 	
+	INT32 position = 1;
+
 	for (std::vector<ColumnIdentifierNode*>::iterator attr = (*definition_).begin(); attr != (*definition_).end(); ++attr) {
-		t->AddAttribute((*attr)->name(), ((*attr)->getDataType()));
+		t->AddAttribute((*attr)->name(), ((*attr)->getDataType()), position);
+		++position;
 	}
 	
 	ErrorCode er = GET_SCHEMA_MANAGER()->AddTable(t);

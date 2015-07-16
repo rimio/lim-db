@@ -40,6 +40,6 @@ public:
 
 	void set_table_id(TableID id);
 	void set_table_name(std::string table_name);
-	void AddAttribute(std::string attr_name, DataType attr_type);
+	void AddAttribute(std::string attr_name, DataType attr_type, INT32 position);
 };
 #endif // TABLE_HPP_

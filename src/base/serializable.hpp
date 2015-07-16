@@ -9,8 +9,10 @@ public:
 
 class SerializeInt : Serializable {
 	BYTE* Serialize(BYTE *ptr) override;
+	static BYTE* SerializeArg(int arg, BYTE* ptr);
 };
 
 class SerializeFloat : Serializable {
 	BYTE* Serialize(BYTE *ptr) override;
+	static BYTE* SerializeArg(float arg, BYTE* ptr);
 };
