@@ -89,6 +89,9 @@ set (SRC_BASE_FILES
 
 	${SOURCE_DIR}/base/generic-type-definitions.hpp
 	
+	${SOURCE_DIR}/base/serializable.hpp
+	${SOURCE_DIR}/base/serializable.cpp
+
 	${SOURCE_DIR}/base/template-class.hpp
 	${SOURCE_DIR}/base/template-class.cpp
 	)
