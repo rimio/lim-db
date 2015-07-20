@@ -41,10 +41,6 @@ add_flex_bison_dependency (lexer parser)
 
 # Parser files
 set (SRC_PARSER_FILES
-	
-	${SOURCE_DIR}/parser/command-node.hpp
-	${SOURCE_DIR}/parser/command-node.cpp
-	
 	${SOURCE_DIR}/parser/identifier-node.hpp
 	${SOURCE_DIR}/parser/identifier-node.cpp
 
@@ -56,6 +52,21 @@ set (SRC_PARSER_FILES
 
 	${SOURCE_DIR}/parser/parser-node.hpp
 	${SOURCE_DIR}/parser/parser-node.cpp
+
+	${SOURCE_DIR}/parser/parser-root.hpp
+	${SOURCE_DIR}/parser/parser-root.cpp
+
+	${SOURCE_DIR}/parser/pt-column.hpp
+	${SOURCE_DIR}/parser/pt-column.cpp
+
+	${SOURCE_DIR}/parser/pt-command.hpp
+	${SOURCE_DIR}/parser/pt-command.cpp
+
+	${SOURCE_DIR}/parser/pt-create-table.hpp
+	${SOURCE_DIR}/parser/pt-create-table.cpp
+
+	${SOURCE_DIR}/parser/pt-table.hpp
+	${SOURCE_DIR}/parser/pt-table.cpp
 
 	${SOURCE_DIR}/parser/statement-node.hpp
 	${SOURCE_DIR}/parser/statement-node.cpp
@@ -166,7 +177,6 @@ target_link_libraries(unit-test lim-db)
 set_property(TARGET lim-db PROPERTY FOLDER "libraries")
 set_property(TARGET lim-db-console PROPERTY FOLDER "executables")
 set_property(TARGET unit-test PROPERTY FOLDER "executables")
-
 
 # C++11
 set_property(TARGET lim-db PROPERTY CXX_STANDARD 11)

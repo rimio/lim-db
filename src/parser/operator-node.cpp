@@ -1,23 +1,23 @@
 #include "parser/operator-node.hpp"
 #include <cassert>
 
-std::string OperatorNode::print ()
+std::string OperatorNode::ToString ()
 {
 	assert (left_ != nullptr);
 	if (right_ == nullptr)
 		return
 			std::string ("(")
-			+ toString ()
+			+ ToString ()
 			+ std::string (" ")
-			+ left_->print ()
+			+ left_->ToString ()
 			+ std::string (")");
 	else
 		return
 			std::string ("(")
-			+ left_->print ()
+			+ left_->ToString ()
 			+ std::string (" ")
-			+ toString ()
+			+ ToString ()
 			+ std::string (" ")
-			+ right_->print ()
+			+ right_->ToString ()
 			+ std::string (")");
 }

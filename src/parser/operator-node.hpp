@@ -51,7 +51,7 @@ public:
 	// Implementation of pure virtual functions
 	virtual ParserNodeType getNodeType () const { return PT_OPERATOR; };
 	virtual DataType getDataType () const { return return_type_; };
-	virtual std::string print ();
+	virtual std::string ToString ();
 	
 	// Returns the statement type
 	virtual OperatorType getOperatorType () const = 0;

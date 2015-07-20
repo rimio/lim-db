@@ -146,32 +146,6 @@ public:
 // ------------------- Data Definition Language Statements ------------------- //
 
 //
-// CREATE TABLE statement node
-//
-class CreateTableStatementNode : public StatementNode {
-private:
-protected:
-	// Table identifier for new table
-	TableIdentifierNode *table_;
-
-	// Column definition
-	std::vector<ColumnIdentifierNode*> *definition_;
-
-	// Hidden constructor
-	CreateTableStatementNode () { };
-public:
-	CreateTableStatementNode(TableIdentifierNode *table, std::vector<ColumnIdentifierNode*> *def) : table_(table), definition_(def) { };
-	~CreateTableStatementNode();
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "CREATE TABLE"; };
-	virtual std::string print ();
-	virtual StatementType getStatementType () const { return PT_STATEMENT_CREATE_TABLE; };
-
-	ErrorCode compile() override;
-	ErrorCode execute() override;
-};
-
-//
 // CREATE INDEX statement node
 //
 class CreateIndexStatementNode : public StatementNode {

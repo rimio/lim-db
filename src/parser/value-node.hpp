@@ -26,7 +26,7 @@ protected:
 public:
 	// Implementation of pure virtual functions
 	virtual ParserNodeType getNodeType() const { return PT_VALUE; };
-	virtual std::string print () { return toString (); };
+	virtual std::string print () { return ToString (); };
 
 	// Returns the statement type
 	virtual ValueType getValueType() const = 0;

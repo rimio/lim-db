@@ -9,12 +9,19 @@
 %code requires
 {
 	/* Node includes */
+	#include "parser/parser-root.hpp"
 	#include "parser/parser-node.hpp"
-	#include "parser/command-node.hpp"
+	#include "parser/pt-command.hpp"
+	#include "parser/pt-column.hpp"
+	#include "parser/pt-table.hpp"
+	#include "parser/pt-create-table.hpp"
 	#include "parser/statement-node.hpp"
 	#include "parser/identifier-node.hpp"
 	#include "parser/operator-node.hpp"
 	#include "parser/value-node.hpp"
+
+	#include <iostream>
+	#include <vector>
 
 	class ParserContext;
 	class Lexer;
@@ -24,13 +31,11 @@
 %parse-param	{ Lexer &lexer  }
 %lex-param		{ ParserContext &context }
 %parse-param	{ ParserContext &context }
-%parse-param	{ ParserNode **root_node }
+%parse-param	{ ParserRoot **root_node }
 
 %code
 {
 
-#include <iostream>
-#include <vector>
 #include "base/error-manager.hpp"
 #include "parser/parser-context.hpp"
 #include "parser/lexer.hpp"
@@ -44,17 +49,24 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 	float fval;
 	std::string *sval;
 
+	ParserRoot *parser_root_val;
 	ParserNode *parser_node;
 	TypedParserNode *typed_parser_node;
 	StatementNode *statement_node;
-	CommandNode *command_node;
+	PTCommand *command_val;
 	ValueNode *value_node;
 	OperatorNode *operator_node;
 	TableIdentifierNode *table_identifier_node;
 	ColumnIdentifierNode *column_identifier_node;
 	IndexIdentifierNode *index_identifier_node;
 
+	PTTableNode* table_node_val;
+	PTColumnNode* column_node_val;
+
 	std::vector<ColumnIdentifierNode*> *column_identifier_node_list;
+
+	std::vector<PTTableNode *>* table_node_list_val;
+	std::vector<PTColumnNode *>* column_node_list_val;
 }
 
 %token AND
@@ -114,16 +126,16 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <parser_node>		statement_or_command
 
 // Commands
-%type <command_node>			command
-%type <command_node>			exit_command
+%type <command_val>			command
+%type <command_val>			exit_command
 
 // Statements
-%type <statement_node>			statement
+%type <parser_root_val>			statement
 %type <statement_node>			select_statement
 %type <statement_node>			insert_statement
 %type <statement_node>			delete_statement
 %type <statement_node>			update_statement
-%type <statement_node>			create_table_statement
+%type <parser_root_val>			create_table_statement
 %type <statement_node>			create_index_statement
 %type <statement_node>			drop_table_statement
 %type <statement_node>			drop_index_statement
@@ -135,14 +147,14 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <typed_parser_node>		expression_list
 
 // Identifiers
-%type <table_identifier_node>	table_identifier
-%type <table_identifier_node>	table_identifier_list
-%type <column_identifier_node>	column_identifier
+%type <table_node_val>	table_identifier
+%type <table_node_list_val>	table_identifier_list
+%type <column_node_val>	column_identifier
 %type <index_identifier_node>	index_identifier
 
 // Data definition language
-%type <column_identifier_node>	column_definition
-%type <column_identifier_node_list>	column_definition_list
+%type <column_node_val>	column_definition
+%type <column_node_list_val>	column_definition_list
 
 %%
 
@@ -171,27 +183,30 @@ command
 exit_command
 	: EXIT
 		{
-			$$ = new ExitCommandNode ();
-			$$->setLocation (@1);
+			$$ = new PTCommand (PT_COMMAND_EXIT);
 		}
 	;
 
 statement
 	: select_statement
 		{
-			$$ = $1;
+			$$ = NULL;
+			// $$ = $1;
 		}
 	| insert_statement
 		{
-			$$ = $1;
+			$$ = NULL;
+			// $$ = $1;
 		}
 	| delete_statement
 		{
-			$$ = $1;
+			$$ = NULL;
+			// $$ = $1;
 		}
 	| update_statement
 		{
-			$$ = $1;
+			$$ = NULL;
+			// $$ = $1;
 		}
 	| create_table_statement
 		{
@@ -199,31 +214,36 @@ statement
 		}
 	| create_index_statement
 		{
-			$$ = $1;
+			$$ = NULL;
+			// $$ = $1;
 		}
 	| drop_table_statement
 		{
-			$$ = $1;
+			$$ = NULL;
+			// $$ = $1;
 		}
 	| drop_index_statement
 		{
-			$$ = $1;
+			$$ = NULL;
+			// $$ = $1;
 		}
 	;
 
 select_statement
 	: SELECT expression_list FROM table_identifier_list
 		{
-			$$ = new SelectStatementNode ($2, $4);
-			$$->setLocation (@1);
+			// $$ = new SelectStatementNode ($2, $4);
+			// $$->setLocation (@1);
+			$$ = NULL;
 		}
 	;
 
 insert_statement
 	: INSERT INTO table_identifier VALUES PAR_OPEN expression_list PAR_CLOSE
 		{
-			$$ = new InsertStatementNode ($3, $6);
-			$$->setLocation (@1);
+			// $$ = new InsertStatementNode ($3, $6);
+			// $$->setLocation (@1);
+			$$ = NULL;
 		}
 	;
 
@@ -246,8 +266,7 @@ update_statement
 create_table_statement
 	: CREATE TABLE table_identifier PAR_OPEN column_definition_list PAR_CLOSE
 		{
-			$$ = new CreateTableStatementNode ($3, $5);
-			$$->setLocation (@1);
+			$$ = new PTCreateTableRoot ($3, $5, @1);
 		}
 	;
 
@@ -255,12 +274,12 @@ column_definition_list
 	: column_definition_list COMMA column_definition 
 		{
 			$$ = $1;
-			$$->push_back($3);
+			$$->push_back ($3);
 		}
 	| column_definition
 		{
-			$$ = new std::vector <ColumnIdentifierNode*>;
-			$$->push_back($1); 
+			$$ = new std::vector <PTColumnNode *>;
+			$$->push_back ($1); 
 		}
 	;
 
@@ -268,17 +287,17 @@ column_definition
 	: column_identifier INT
 		{
 			$$ = $1;
-			$$->setDataType (DB_INTEGER);
+			$$->set_data_type (DB_INTEGER);
 		}
 	| column_identifier FLOAT
 		{
 			$$ = $1;
-			$$->setDataType (DB_FLOAT);
+			$$->set_data_type (DB_FLOAT);
 		}
 	| column_identifier STRING
 		{
 			$$ = $1;
-			$$->setDataType (DB_STRING);
+			$$->set_data_type (DB_STRING);
 		}
 	;
 
@@ -293,8 +312,9 @@ create_index_statement
 drop_table_statement
 	: DROP TABLE table_identifier
 		{
-			$$ = new DropTableStatementNode ($3);
-			$$->setLocation (@1);
+			// $$ = new DropTableStatementNode ($3);
+			// $$->setLocation (@1);
+			$$ = NULL;
 		}
 	;
 
@@ -395,18 +415,18 @@ expression
 			$$->setLocation (@1);
 
 			// Check for chained negations
-			if ($2->getNodeType () == PT_OPERATOR)
-			{
-				OperatorNode *opn = (OperatorNode *) $2;
-				if (opn->getOperatorType () == PT_OPERATOR_MINUS)
-				{
-					MinusOperatorNode *mopn = (MinusOperatorNode *) opn;
-					if (mopn->getRight () == nullptr)
-					{
-						error (@2, "chained negation not allowed");
-					}
-				}
-			}
+			//if ($2->getNodeType () == PT_OPERATOR)
+			//{
+				//OperatorNode *opn = (OperatorNode *) $2;
+				//if (opn->getOperatorType () == PT_OPERATOR_MINUS)
+				//{
+					//MinusOperatorNode *mopn = (MinusOperatorNode *) opn;
+					//if (mopn->getRight () == nullptr)
+					//{
+						//error (@2, "chained negation not allowed");
+					//}
+				//}
+			//}
 		}
 	| PAR_OPEN expression PAR_CLOSE
 		{
@@ -426,7 +446,8 @@ operand
 		}
 	| column_identifier
 		{
-			$$ = $1;
+			// $$ = $1;
+			$$ = NULL;
 		}
 	;
 
@@ -450,21 +471,22 @@ literal
 	;
 
 table_identifier_list
-	: table_identifier COMMA table_identifier_list
+	: table_identifier_list COMMA table_identifier
 		{
 			$$ = $1;
-			$$->setNext ($3);
+			$$->push_back ($3);
 		}
 	| table_identifier
 		{
-			$$ = $1;
+			$$ = new std::vector<PTTableNode *>;
+			$$->push_back ($1);
 		}
 	;
 
 table_identifier
 	: IDENTIFIER
 		{
-			$$ = new TableIdentifierNode (*($1));
+			$$ = new PTTableNode (*($1));
 			delete ($1);
 			$$->setLocation (@1);
 		}
@@ -473,15 +495,16 @@ table_identifier
 column_identifier
 	: IDENTIFIER
 		{
-			$$ = new ColumnIdentifierNode (*($1));
+			$$ = new PTColumnNode (*($1));
 			delete ($1);
 			$$->setLocation (@1);
 		}
 	| IDENTIFIER DOT IDENTIFIER
 		{
-			$$ = new ColumnIdentifierNode (*($1), *($3));
-			delete ($1);
+			$$ = new PTColumnNode (*($3));
 			delete ($3);
+			$$->set_table_name (*($1));
+			delete ($1);
 			$$->setLocation (@1);
 		}
 	;
