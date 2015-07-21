@@ -6,16 +6,6 @@
 
 StatementNode::~StatementNode() {}
 
-std::string SelectStatementNode::print ()
-{
-	return
-		std::string ("SELECT ")
-		//+ (list_ != nullptr ? list_->printList (", ") : "")
-		+ std::string (" FROM ")
-		//+ (from_ != nullptr ? from_->printList (", ") : "")
-		;
-}
-
 std::string DeleteStatementNode::print ()
 {
 	return

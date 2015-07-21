@@ -50,37 +50,6 @@ public:
 	virtual ErrorCode execute() = 0;
 };
 
-// ------------------ Data Manipulation Language Statements ------------------ //
-
-//
-// SELECT statement node
-//
-class SelectStatementNode : public StatementNode
-{
-private:
-protected:
-	// The select list
-	TypedParserNode *list_;
-
-	// The FROM part
-	TableIdentifierNode *from_;
-
-	// Hidden default constructor
-	SelectStatementNode () { };
-
-public:
-	// Constructor
-	SelectStatementNode (TypedParserNode *list, TableIdentifierNode *from) : list_ (list), from_ (from) { };
-
-	// Implementation of pure virtual functions
-	~SelectStatementNode() {};
-	virtual std::string toString () { return "SELECT"; };
-	virtual std::string print ();
-	virtual StatementType getStatementType () const { return PT_STATEMENT_SELECT; };
-	ErrorCode compile() override { return NO_ERROR; };
-	ErrorCode execute() override  { return NO_ERROR; };
-};
-
 //
 // DELETE statement node
 //

@@ -71,6 +71,9 @@ set (SRC_PARSER_FILES
 	${SOURCE_DIR}/parser/pt-insert.hpp
 	${SOURCE_DIR}/parser/pt-insert.cpp
 
+	${SOURCE_DIR}/parser/pt-select.hpp
+	${SOURCE_DIR}/parser/pt-select.cpp
+
 	${SOURCE_DIR}/parser/pt-table.hpp
 	${SOURCE_DIR}/parser/pt-table.cpp
 

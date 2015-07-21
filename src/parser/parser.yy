@@ -17,6 +17,7 @@
 	#include "parser/pt-create-table.hpp"
 	#include "parser/pt-drop-table.hpp"
 	#include "parser/pt-insert.hpp"
+	#include "parser/pt-select.hpp"
 	#include "parser/statement-node.hpp"
 	#include "parser/identifier-node.hpp"
 	#include "parser/operator-node.hpp"
@@ -134,7 +135,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 
 // Statements
 %type <parser_root_val>			statement
-%type <statement_node>			select_statement
+%type <parser_root_val>			select_statement
 %type <parser_root_val>			insert_statement
 %type <statement_node>			delete_statement
 %type <statement_node>			update_statement
@@ -193,8 +194,7 @@ exit_command
 statement
 	: select_statement
 		{
-			$$ = NULL;
-			// $$ = $1;
+			$$ = $1;
 		}
 	| insert_statement
 		{
@@ -231,11 +231,9 @@ statement
 	;
 
 select_statement
-	: SELECT expression_list FROM table_identifier_list
+	: SELECT expression_list FROM table_identifier
 		{
-			// $$ = new SelectStatementNode ($2, $4);
-			// $$->setLocation (@1);
-			$$ = NULL;
+			$$ = new PTSelectRoot ($2, $4, @1);
 		}
 	;
 
