@@ -15,6 +15,7 @@
 	#include "parser/pt-column.hpp"
 	#include "parser/pt-table.hpp"
 	#include "parser/pt-create-table.hpp"
+	#include "parser/pt-drop-table.hpp"
 	#include "parser/statement-node.hpp"
 	#include "parser/identifier-node.hpp"
 	#include "parser/operator-node.hpp"
@@ -137,7 +138,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <statement_node>			update_statement
 %type <parser_root_val>			create_table_statement
 %type <statement_node>			create_index_statement
-%type <statement_node>			drop_table_statement
+%type <parser_root_val>			drop_table_statement
 %type <statement_node>			drop_index_statement
 
 // Typed nodes
@@ -219,8 +220,7 @@ statement
 		}
 	| drop_table_statement
 		{
-			$$ = NULL;
-			// $$ = $1;
+			$$ = $1;
 		}
 	| drop_index_statement
 		{
@@ -312,9 +312,7 @@ create_index_statement
 drop_table_statement
 	: DROP TABLE table_identifier
 		{
-			// $$ = new DropTableStatementNode ($3);
-			// $$->setLocation (@1);
-			$$ = NULL;
+			$$ = new PTDropTableRoot ($3, @1);
 		}
 	;
 

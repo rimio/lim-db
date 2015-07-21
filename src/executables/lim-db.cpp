@@ -63,6 +63,9 @@ ErrorCode InputLoop ()
 		
 		// Execute statement or internal command
 		root->Process();
+
+		// Delete parser resource for statement or internal command
+		delete root;
 		
 		// Check execution return code
 		if (rc != NO_ERROR)
@@ -70,8 +73,6 @@ ErrorCode InputLoop ()
 			ErrorManager::error (__HERE__, ER_INVALID_PARSER_NODE);
 			continue;
 		}
-
-		delete root;
 	}
 
 	// All ok?

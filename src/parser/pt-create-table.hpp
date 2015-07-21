@@ -15,8 +15,8 @@ public:
 					   std::vector<PTColumnNode*>* columns,
 					   yy::location loc)
 		: table_(table),
-		  columns_(columns)
-		{
+		  columns_(columns) {
+
 			setLocation (loc);
 		};
 	~PTCreateTableRoot ();
@@ -24,11 +24,11 @@ public:
 protected:
 	PTCreateTableRoot () {};
 
-	ErrorCode Compile ();
-	ErrorCode Prepare () { return NO_ERROR; };
-	ErrorCode Execute ();
+	ErrorCode Compile () override;
+	ErrorCode Prepare () override { return NO_ERROR; };
+	ErrorCode Execute () override;
 
-	std::string Print();
+	std::string Print() override;
 private:
 	PTTableNode* table_;
 	std::vector<PTColumnNode *>* columns_;

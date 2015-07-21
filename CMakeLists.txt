@@ -65,6 +65,9 @@ set (SRC_PARSER_FILES
 	${SOURCE_DIR}/parser/pt-create-table.hpp
 	${SOURCE_DIR}/parser/pt-create-table.cpp
 
+	${SOURCE_DIR}/parser/pt-drop-table.hpp
+	${SOURCE_DIR}/parser/pt-drop-table.cpp
+
 	${SOURCE_DIR}/parser/pt-table.hpp
 	${SOURCE_DIR}/parser/pt-table.cpp
 
