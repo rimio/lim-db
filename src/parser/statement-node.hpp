@@ -162,30 +162,6 @@ public:
 };
 
 //
-// DROP TABLE statement node
-//
-class DropTableStatementNode : public StatementNode {
-private:
-protected:
-	// Table identifier
-	TableIdentifierNode *table_;
-
-	// Hidden constructor
-	DropTableStatementNode () { };
-
-public:
-	DropTableStatementNode (TableIdentifierNode *table) : table_ (table) { };
-
-	// Implementation of pure virtual functions
-	~DropTableStatementNode();
-	virtual std::string toString () { return "DROP TABLE"; };
-	virtual std::string print();
-	virtual StatementType getStatementType () const { return PT_STATEMENT_DROP_TABLE; };
-	ErrorCode compile() override;
-	ErrorCode execute() override;
-};
-
-//
 // DROP INDEX statement node
 //
 class DropIndexStatementNode : public StatementNode {

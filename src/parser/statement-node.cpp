@@ -38,34 +38,10 @@ std::string UpdateStatementNode::print ()
 		std::string ("UPDATE");
 }
 
-DropTableStatementNode::~DropTableStatementNode(){
-	delete table_;
-}
-
 std::string CreateIndexStatementNode::print ()
 {
 	return
 		std::string ("CREATE INDEX ");
-}
-
-std::string DropTableStatementNode::print ()
-{
-	return
-		std::string ("DROP TABLE ")
-		//+ (table_ != nullptr ? table_->print () : "")
-		;
-}
-
-ErrorCode DropTableStatementNode::compile() {
-	//Verify that the table name exists
-	if (GET_SCHEMA_MANAGER()->FindTable(table_->name()) == NULL)
-		return ErrorManager::error(__HERE__, ER_TABLE_DOES_NOT_EXIST, table_->name().c_str());
-	return NO_ERROR;
-}
-
-ErrorCode DropTableStatementNode::execute() {
-	ErrorCode er = GET_SCHEMA_MANAGER()->DropTable(table_->name());
-	return er;
 }
 
 std::string DropIndexStatementNode::print ()
