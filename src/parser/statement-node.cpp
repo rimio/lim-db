@@ -16,16 +16,6 @@ std::string SelectStatementNode::print ()
 		;
 }
 
-std::string InsertStatementNode::print ()
-{
-	return
-		std::string ("INSERT INTO ")
-		//+ (table_ != nullptr ? table_->print () : "")
-		+ std::string (" VALUES (")
-		//+ (values_ != nullptr ? values_->printList (", ") : "")
-		+ std::string (")");
-}
-
 std::string DeleteStatementNode::print ()
 {
 	return

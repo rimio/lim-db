@@ -16,6 +16,7 @@
 	#include "parser/pt-table.hpp"
 	#include "parser/pt-create-table.hpp"
 	#include "parser/pt-drop-table.hpp"
+	#include "parser/pt-insert.hpp"
 	#include "parser/statement-node.hpp"
 	#include "parser/identifier-node.hpp"
 	#include "parser/operator-node.hpp"
@@ -66,6 +67,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 
 	std::vector<ColumnIdentifierNode*> *column_identifier_node_list;
 
+	std::vector<ParserNode *>* parser_node_list;
 	std::vector<PTTableNode *>* table_node_list_val;
 	std::vector<PTColumnNode *>* column_node_list_val;
 }
@@ -133,7 +135,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 // Statements
 %type <parser_root_val>			statement
 %type <statement_node>			select_statement
-%type <statement_node>			insert_statement
+%type <parser_root_val>			insert_statement
 %type <statement_node>			delete_statement
 %type <statement_node>			update_statement
 %type <parser_root_val>			create_table_statement
@@ -145,7 +147,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <value_node>				literal
 %type <typed_parser_node>		operand
 %type <typed_parser_node>		expression
-%type <typed_parser_node>		expression_list
+%type <parser_node_list>		expression_list
 
 // Identifiers
 %type <table_node_val>	table_identifier
@@ -196,8 +198,7 @@ statement
 		}
 	| insert_statement
 		{
-			$$ = NULL;
-			// $$ = $1;
+			$$ = $1;
 		}
 	| delete_statement
 		{
@@ -241,9 +242,11 @@ select_statement
 insert_statement
 	: INSERT INTO table_identifier VALUES PAR_OPEN expression_list PAR_CLOSE
 		{
-			// $$ = new InsertStatementNode ($3, $6);
-			// $$->setLocation (@1);
-			$$ = NULL;
+			std::vector<std::vector<ParserNode *> *> *values_list =
+				new std::vector<std::vector<ParserNode *> *>;
+			values_list->push_back ($6);
+
+			$$ = new PTInsertRoot ($3, NULL, values_list, @1);
 		}
 	;
 
@@ -325,14 +328,15 @@ drop_index_statement
 	;
 
 expression_list
-	: expression COMMA expression_list
+	: expression_list COMMA expression
 		{
 			$$ = $1;
-			$$->setNext ($3);
+			$$->push_back ($3);
 		}
 	| expression
 		{
-			$$ = $1;
+			$$ = new std::vector<ParserNode *>;
+			$$->push_back ($1);
 		}
 	;
 

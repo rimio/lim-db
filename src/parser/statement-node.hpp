@@ -82,34 +82,6 @@ public:
 };
 
 //
-// INSERT statement node
-//
-class InsertStatementNode : public StatementNode
-{
-private:
-protected:
-	// Table to insert into
-	TableIdentifierNode *table_;
-
-	// Values to insert into table
-	TypedParserNode *values_;
-
-	// Hidden constructor
-	InsertStatementNode () { };
-
-public:
-	InsertStatementNode (TableIdentifierNode *table, TypedParserNode *values) : table_ (table), values_ (values) { };
-
-	// Implementation of pure virtual functions
-	~InsertStatementNode() {};
-	virtual std::string toString () { return "INSERT"; };
-	virtual std::string print ();
-	virtual StatementType getStatementType () const { return PT_STATEMENT_INSERT; };
-	ErrorCode compile() override  { return NO_ERROR; };
-	ErrorCode execute() override  { return NO_ERROR; };
-};
-
-//
 // DELETE statement node
 //
 class DeleteStatementNode : public StatementNode
