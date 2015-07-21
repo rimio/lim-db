@@ -11,14 +11,19 @@
 	/* Node includes */
 	#include "parser/parser-root.hpp"
 	#include "parser/parser-node.hpp"
+
 	#include "parser/pt-command.hpp"
 	#include "parser/pt-column.hpp"
 	#include "parser/pt-table.hpp"
+
+	#include "parser/pt-alter-table.hpp"
 	#include "parser/pt-create-table.hpp"
+	#include "parser/pt-delete.hpp"
 	#include "parser/pt-drop-table.hpp"
 	#include "parser/pt-insert.hpp"
 	#include "parser/pt-select.hpp"
-	#include "parser/statement-node.hpp"
+	#include "parser/pt-update.hpp"
+
 	#include "parser/identifier-node.hpp"
 	#include "parser/operator-node.hpp"
 	#include "parser/value-node.hpp"
@@ -55,7 +60,6 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 	ParserRoot *parser_root_val;
 	ParserNode *parser_node;
 	TypedParserNode *typed_parser_node;
-	StatementNode *statement_node;
 	PTCommand *command_val;
 	ValueNode *value_node;
 	OperatorNode *operator_node;
@@ -137,12 +141,12 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <parser_root_val>			statement
 %type <parser_root_val>			select_statement
 %type <parser_root_val>			insert_statement
-%type <statement_node>			delete_statement
-%type <statement_node>			update_statement
+%type <parser_root_val>			delete_statement
+%type <parser_root_val>			update_statement
 %type <parser_root_val>			create_table_statement
-%type <statement_node>			create_index_statement
+%type <parser_root_val>			create_index_statement
 %type <parser_root_val>			drop_table_statement
-%type <statement_node>			drop_index_statement
+%type <parser_root_val>			drop_index_statement
 
 // Typed nodes
 %type <value_node>				literal
@@ -202,13 +206,11 @@ statement
 		}
 	| delete_statement
 		{
-			$$ = NULL;
-			// $$ = $1;
+			$$ = $1;
 		}
 	| update_statement
 		{
-			$$ = NULL;
-			// $$ = $1;
+			$$ = $1;
 		}
 	| create_table_statement
 		{
@@ -216,8 +218,7 @@ statement
 		}
 	| create_index_statement
 		{
-			$$ = NULL;
-			// $$ = $1;
+			$$ = $1;
 		}
 	| drop_table_statement
 		{
@@ -225,8 +226,7 @@ statement
 		}
 	| drop_index_statement
 		{
-			$$ = NULL;
-			// $$ = $1;
+			$$ = $1;
 		}
 	;
 
@@ -251,16 +251,14 @@ insert_statement
 delete_statement
 	: DELETE
 		{
-			$$ = new DeleteStatementNode ();
-			$$->setLocation (@1);
+			$$ = new PTDeleteRoot (@1);
 		}
 	;
 
 update_statement
 	: UPDATE
 		{
-			$$ = new UpdateStatementNode ();
-			$$->setLocation (@1);
+			$$ = new PTUpdateRoot (@1);
 		}
 	;
 
@@ -305,8 +303,7 @@ column_definition
 create_index_statement
 	: CREATE INDEX index_identifier
 		{
-			$$ = new CreateIndexStatementNode ();
-			$$->setLocation (@1);
+			$$ = new PTAlterTableRoot (@1);
 		}
 	;
 
@@ -320,8 +317,7 @@ drop_table_statement
 drop_index_statement
 	: DROP INDEX index_identifier
 		{
-			$$ = new DropIndexStatementNode ();
-			$$->setLocation (@1);
+			$$ = new PTAlterTableRoot (@1);
 		}
 	;
 

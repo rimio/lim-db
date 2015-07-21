@@ -56,6 +56,9 @@ set (SRC_PARSER_FILES
 	${SOURCE_DIR}/parser/parser-root.hpp
 	${SOURCE_DIR}/parser/parser-root.cpp
 
+	${SOURCE_DIR}/parser/pt-alter-table.hpp
+	${SOURCE_DIR}/parser/pt-alter-table.cpp
+
 	${SOURCE_DIR}/parser/pt-column.hpp
 	${SOURCE_DIR}/parser/pt-column.cpp
 
@@ -64,6 +67,9 @@ set (SRC_PARSER_FILES
 
 	${SOURCE_DIR}/parser/pt-create-table.hpp
 	${SOURCE_DIR}/parser/pt-create-table.cpp
+
+	${SOURCE_DIR}/parser/pt-delete.hpp
+	${SOURCE_DIR}/parser/pt-delete.cpp
 
 	${SOURCE_DIR}/parser/pt-drop-table.hpp
 	${SOURCE_DIR}/parser/pt-drop-table.cpp
@@ -77,8 +83,8 @@ set (SRC_PARSER_FILES
 	${SOURCE_DIR}/parser/pt-table.hpp
 	${SOURCE_DIR}/parser/pt-table.cpp
 
-	${SOURCE_DIR}/parser/statement-node.hpp
-	${SOURCE_DIR}/parser/statement-node.cpp
+	${SOURCE_DIR}/parser/pt-update.hpp
+	${SOURCE_DIR}/parser/pt-update.cpp
 
 	${SOURCE_DIR}/parser/value-node.hpp
 	${SOURCE_DIR}/parser/value-node.cpp
