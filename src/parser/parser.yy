@@ -16,6 +16,7 @@
 	#include "parser/parser-column.hpp"
 	#include "parser/parser-identifier.hpp"
 	#include "parser/parser-table.hpp"
+	#include "parser/parser-value.hpp"
 
 	#include "parser/parser-alter-table.hpp"
 	#include "parser/parser-create-table.hpp"
@@ -27,7 +28,6 @@
 	#include "parser/parser-update.hpp"
 
 	#include "parser/operator-node.hpp"
-	#include "parser/value-node.hpp"
 
 	#include <iostream>
 	#include <vector>
@@ -62,12 +62,12 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 	ParserNode *parser_node;
 	TypedParserNode *typed_parser_node;
 	ParserCommand *command_val;
-	ValueNode *value_node;
 	OperatorNode *operator_node;
 
 	ParserIndex *index_node_val;
 	ParserTable* table_node_val;
 	ParserColumn* column_node_val;
+	ParserValue* value_node_val;
 
 	std::vector<ParserNode *>* parser_node_list;
 	std::vector<ParserTable *>* table_node_list_val;
@@ -146,7 +146,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <parser_root_val>			drop_index_statement
 
 // Typed nodes
-%type <value_node>				literal
+%type <value_node_val>			literal
 %type <typed_parser_node>		operand
 %type <typed_parser_node>		expression
 %type <parser_node_list>		expression_list
@@ -435,7 +435,8 @@ expression
 operand
 	: literal
 		{
-			$$ = $1;
+			// $$ = $1;
+			$$ = NULL;
 		}
 	| column_identifier
 		{
@@ -447,19 +448,18 @@ operand
 literal
 	: ILITERAL
 		{
-			$$ = new IntegerValueNode ($1);
-			$$->setLocation (@1);
+			// TODO
+			$$ = NULL;
 		}
 	| FLITERAL
 		{
-			$$ = new FloatValueNode ($1);
-			$$->setLocation (@1);
+			// TODO
+			$$ = NULL;
 		}
 	| SLITERAL
 		{
-			$$ = new StringValueNode (*($1));
-			delete ($1);
-			$$->setLocation (@1);
+			// TODO
+			$$ = NULL;
 		}
 	;
 

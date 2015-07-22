@@ -90,8 +90,8 @@ set (SRC_PARSER_FILES
 	${SOURCE_DIR}/parser/parser-update.hpp
 	${SOURCE_DIR}/parser/parser-update.cpp
 
-	${SOURCE_DIR}/parser/value-node.hpp
-	${SOURCE_DIR}/parser/value-node.cpp
+	${SOURCE_DIR}/parser/parser-value.hpp
+	${SOURCE_DIR}/parser/parser-value.cpp
 
 	# flex/bison
 	${BISON_parser_OUTPUT_HEADER}
@@ -100,7 +100,6 @@ set (SRC_PARSER_FILES
 	${SOURCE_DIR}/parser/lexer.hpp
 	)
 source_group("src\\parser" FILES ${SRC_PARSER_FILES})
-
 
 set (SRC_BASE_FILES
 	${SOURCE_DIR}/base/bitmap.hpp
