@@ -1,16 +1,16 @@
-#include "parser\pt-drop-table.hpp"
+#include "parser\parser-drop-table.hpp"
 #include "schema\table.hpp"
 #include "schema\schema-manager.hpp"
 #include "boot\boot.hpp"
 #include "base\generic-operations.hpp"
 
-PTDropTableRoot::~PTDropTableRoot () {
+ParserDropTableStatement::~ParserDropTableStatement () {
 	delete table_;
 }
 
 // Compile conditions:
 // 1. Table exists
-ErrorCode PTDropTableRoot::Compile () {
+ErrorCode ParserDropTableStatement::Compile () {
 	Table *tableSchema = NULL;
 	std::string table_name;
 
@@ -32,14 +32,14 @@ ErrorCode PTDropTableRoot::Compile () {
 }
 
 // Execute drop table
-ErrorCode PTDropTableRoot::Execute () {
+ErrorCode ParserDropTableStatement::Execute () {
 	return GET_SCHEMA_MANAGER ()->DropTable (table_->name ());
 }
 
-std::string PTDropTableRoot::Print () {
+std::string ParserDropTableStatement::Print () {
 	assert (table_ != NULL);
 
 	return
-		std::string ("DROP TABLE")
+		std::string ("DROP TABLE ")
 		+ (table_ != NULL ? table_->name () : "(unknown)");
 }

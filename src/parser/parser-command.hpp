@@ -1,5 +1,5 @@
-#ifndef PT_COMMAND_HPP_
-#define PT_COMMAND_HPP_
+#ifndef PARSER_COMMAND_HPP_
+#define PARSER_COMMAND_HPP_
 
 #include "parser/parser-root.hpp"
 
@@ -14,9 +14,9 @@ typedef enum
 //
 // Base class for command node
 //
-class PTCommand : public virtual ParserRoot {
+class ParserCommand : public virtual ParserRoot {
 public:
-	PTCommand (CommandType type) : type_ (type) {};
+	ParserCommand (CommandType type) : type_ (type) {};
 
 	std::string Print ();
 
@@ -26,9 +26,9 @@ protected:
 	ErrorCode Execute ();
 
 private:
-	PTCommand ();
+	ParserCommand ();
 
 	CommandType type_;
 };
 
-#endif // PT_COMMAND_HPP_
+#endif // PARSER_COMMAND_HPP_

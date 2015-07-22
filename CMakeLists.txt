@@ -41,8 +41,6 @@ add_flex_bison_dependency (lexer parser)
 
 # Parser files
 set (SRC_PARSER_FILES
-	${SOURCE_DIR}/parser/identifier-node.hpp
-	${SOURCE_DIR}/parser/identifier-node.cpp
 
 	${SOURCE_DIR}/parser/operator-node.hpp
 	${SOURCE_DIR}/parser/operator-node.cpp
@@ -56,35 +54,41 @@ set (SRC_PARSER_FILES
 	${SOURCE_DIR}/parser/parser-root.hpp
 	${SOURCE_DIR}/parser/parser-root.cpp
 
-	${SOURCE_DIR}/parser/pt-alter-table.hpp
-	${SOURCE_DIR}/parser/pt-alter-table.cpp
+	${SOURCE_DIR}/parser/parser-alter-table.hpp
+	${SOURCE_DIR}/parser/parser-alter-table.cpp
 
-	${SOURCE_DIR}/parser/pt-column.hpp
-	${SOURCE_DIR}/parser/pt-column.cpp
+	${SOURCE_DIR}/parser/parser-column.hpp
+	${SOURCE_DIR}/parser/parser-column.cpp
 
-	${SOURCE_DIR}/parser/pt-command.hpp
-	${SOURCE_DIR}/parser/pt-command.cpp
+	${SOURCE_DIR}/parser/parser-command.hpp
+	${SOURCE_DIR}/parser/parser-command.cpp
 
-	${SOURCE_DIR}/parser/pt-create-table.hpp
-	${SOURCE_DIR}/parser/pt-create-table.cpp
+	${SOURCE_DIR}/parser/parser-create-table.hpp
+	${SOURCE_DIR}/parser/parser-create-table.cpp
 
-	${SOURCE_DIR}/parser/pt-delete.hpp
-	${SOURCE_DIR}/parser/pt-delete.cpp
+	${SOURCE_DIR}/parser/parser-delete.hpp
+	${SOURCE_DIR}/parser/parser-delete.cpp
 
-	${SOURCE_DIR}/parser/pt-drop-table.hpp
-	${SOURCE_DIR}/parser/pt-drop-table.cpp
+	${SOURCE_DIR}/parser/parser-drop-table.hpp
+	${SOURCE_DIR}/parser/parser-drop-table.cpp
 
-	${SOURCE_DIR}/parser/pt-insert.hpp
-	${SOURCE_DIR}/parser/pt-insert.cpp
+	${SOURCE_DIR}/parser/parser-identifier.hpp
+	${SOURCE_DIR}/parser/parser-identifier.cpp
 
-	${SOURCE_DIR}/parser/pt-select.hpp
-	${SOURCE_DIR}/parser/pt-select.cpp
+	${SOURCE_DIR}/parser/parser-index.hpp
+	${SOURCE_DIR}/parser/parser-index.cpp
 
-	${SOURCE_DIR}/parser/pt-table.hpp
-	${SOURCE_DIR}/parser/pt-table.cpp
+	${SOURCE_DIR}/parser/parser-insert.hpp
+	${SOURCE_DIR}/parser/parser-insert.cpp
 
-	${SOURCE_DIR}/parser/pt-update.hpp
-	${SOURCE_DIR}/parser/pt-update.cpp
+	${SOURCE_DIR}/parser/parser-select.hpp
+	${SOURCE_DIR}/parser/parser-select.cpp
+
+	${SOURCE_DIR}/parser/parser-table.hpp
+	${SOURCE_DIR}/parser/parser-table.cpp
+
+	${SOURCE_DIR}/parser/parser-update.hpp
+	${SOURCE_DIR}/parser/parser-update.cpp
 
 	${SOURCE_DIR}/parser/value-node.hpp
 	${SOURCE_DIR}/parser/value-node.cpp

@@ -1,26 +1,26 @@
-#ifndef PT_UPDATE_HPP_
-#define PT_UPDATE_HPP_
+#ifndef PARSER_DELETE_HPP_
+#define PARSER_DELETE_HPP_
 
 #include "parser\parser-node.hpp"
 #include "parser\parser-root.hpp"
 
-class PTUpdateNode :
+class ParserDelete :
 	public virtual ParserNode {
 
 public:
-	~PTUpdateNode ();
+	~ParserDelete ();
 
 	std::string ToString () override;
 
 protected:
 };
 
-class PTUpdateRoot :
-	public virtual PTUpdateNode,
+class ParserDeleteStatement :
+	public virtual ParserDelete,
 	public virtual ParserRoot {
 
 public:
-	PTUpdateRoot (yy::location loc);
+	ParserDeleteStatement (yy::location loc);
 
 protected:
 	ErrorCode Compile () override;
@@ -30,4 +30,4 @@ protected:
 	std::string Print () override;
 };
 
-#endif // PT_UPDATE_HPP_
+#endif // PARSER_DELETE_HPP_

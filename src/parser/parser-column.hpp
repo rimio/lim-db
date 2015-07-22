@@ -1,14 +1,14 @@
-#ifndef PT_COLUMN_HPP_
-#define PT_COLUMN_HPP_
+#ifndef PARSER_COLUMN_HPP_
+#define PARSER_COLUMN_HPP_
 
 #include "parser\parser-node.hpp"
 #include "base\data-type.hpp"
 
-class PTColumnNode : public virtual ParserNode {
+class ParserColumn : public virtual ParserNode {
 
 public:
 	// Ctors
-	PTColumnNode (std::string name) : name_ (name) {};
+	ParserColumn (std::string name) : name_ (name) {};
 
 	std::string ToString ();
 
@@ -23,7 +23,7 @@ public:
 	void set_data_type (DataType data_type) { data_type_ = data_type; };
 
 protected:
-	PTColumnNode () {};
+	ParserColumn () {};
 
 private:
 
@@ -37,4 +37,4 @@ private:
 	DataType data_type_;
 };
 
-#endif // PT_COLUMN_HPP_
+#endif // PARSER_COLUMN_HPP_

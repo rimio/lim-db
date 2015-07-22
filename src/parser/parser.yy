@@ -11,20 +11,21 @@
 	/* Node includes */
 	#include "parser/parser-root.hpp"
 	#include "parser/parser-node.hpp"
+	#include "parser/parser-command.hpp"
+	
+	#include "parser/parser-column.hpp"
+	#include "parser/parser-identifier.hpp"
+	#include "parser/parser-table.hpp"
 
-	#include "parser/pt-command.hpp"
-	#include "parser/pt-column.hpp"
-	#include "parser/pt-table.hpp"
+	#include "parser/parser-alter-table.hpp"
+	#include "parser/parser-create-table.hpp"
+	#include "parser/parser-delete.hpp"
+	#include "parser/parser-drop-table.hpp"
+	#include "parser/parser-index.hpp"
+	#include "parser/parser-insert.hpp"
+	#include "parser/parser-select.hpp"
+	#include "parser/parser-update.hpp"
 
-	#include "parser/pt-alter-table.hpp"
-	#include "parser/pt-create-table.hpp"
-	#include "parser/pt-delete.hpp"
-	#include "parser/pt-drop-table.hpp"
-	#include "parser/pt-insert.hpp"
-	#include "parser/pt-select.hpp"
-	#include "parser/pt-update.hpp"
-
-	#include "parser/identifier-node.hpp"
 	#include "parser/operator-node.hpp"
 	#include "parser/value-node.hpp"
 
@@ -60,21 +61,17 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 	ParserRoot *parser_root_val;
 	ParserNode *parser_node;
 	TypedParserNode *typed_parser_node;
-	PTCommand *command_val;
+	ParserCommand *command_val;
 	ValueNode *value_node;
 	OperatorNode *operator_node;
-	TableIdentifierNode *table_identifier_node;
-	ColumnIdentifierNode *column_identifier_node;
-	IndexIdentifierNode *index_identifier_node;
 
-	PTTableNode* table_node_val;
-	PTColumnNode* column_node_val;
-
-	std::vector<ColumnIdentifierNode*> *column_identifier_node_list;
+	ParserIndex *index_node_val;
+	ParserTable* table_node_val;
+	ParserColumn* column_node_val;
 
 	std::vector<ParserNode *>* parser_node_list;
-	std::vector<PTTableNode *>* table_node_list_val;
-	std::vector<PTColumnNode *>* column_node_list_val;
+	std::vector<ParserTable *>* table_node_list_val;
+	std::vector<ParserColumn *>* column_node_list_val;
 }
 
 %token AND
@@ -158,7 +155,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <table_node_val>	table_identifier
 %type <table_node_list_val>	table_identifier_list
 %type <column_node_val>	column_identifier
-%type <index_identifier_node>	index_identifier
+%type <index_node_val>	index_identifier
 
 // Data definition language
 %type <column_node_val>	column_definition
@@ -191,7 +188,7 @@ command
 exit_command
 	: EXIT
 		{
-			$$ = new PTCommand (PT_COMMAND_EXIT);
+			$$ = new ParserCommand (PT_COMMAND_EXIT);
 		}
 	;
 
@@ -233,7 +230,7 @@ statement
 select_statement
 	: SELECT expression_list FROM table_identifier
 		{
-			$$ = new PTSelectRoot ($2, $4, @1);
+			$$ = new ParserSelectStatement ($2, $4, @1);
 		}
 	;
 
@@ -244,28 +241,28 @@ insert_statement
 				new std::vector<std::vector<ParserNode *> *>;
 			values_list->push_back ($6);
 
-			$$ = new PTInsertRoot ($3, NULL, values_list, @1);
+			$$ = new ParserInsertStatement ($3, NULL, values_list, @1);
 		}
 	;
 
 delete_statement
 	: DELETE
 		{
-			$$ = new PTDeleteRoot (@1);
+			$$ = new ParserDeleteStatement (@1);
 		}
 	;
 
 update_statement
 	: UPDATE
 		{
-			$$ = new PTUpdateRoot (@1);
+			$$ = new ParserUpdateStatement (@1);
 		}
 	;
 
 create_table_statement
 	: CREATE TABLE table_identifier PAR_OPEN column_definition_list PAR_CLOSE
 		{
-			$$ = new PTCreateTableRoot ($3, $5, @1);
+			$$ = new ParserCreateTableStatement ($3, $5, @1);
 		}
 	;
 
@@ -277,7 +274,7 @@ column_definition_list
 		}
 	| column_definition
 		{
-			$$ = new std::vector <PTColumnNode *>;
+			$$ = new std::vector <ParserColumn *>;
 			$$->push_back ($1); 
 		}
 	;
@@ -303,21 +300,21 @@ column_definition
 create_index_statement
 	: CREATE INDEX index_identifier
 		{
-			$$ = new PTAlterTableRoot (@1);
+			$$ = new ParserAlterTableStatement (@1);
 		}
 	;
 
 drop_table_statement
 	: DROP TABLE table_identifier
 		{
-			$$ = new PTDropTableRoot ($3, @1);
+			$$ = new ParserDropTableStatement ($3, @1);
 		}
 	;
 
 drop_index_statement
 	: DROP INDEX index_identifier
 		{
-			$$ = new PTAlterTableRoot (@1);
+			$$ = new ParserAlterTableStatement (@1);
 		}
 	;
 
@@ -474,7 +471,7 @@ table_identifier_list
 		}
 	| table_identifier
 		{
-			$$ = new std::vector<PTTableNode *>;
+			$$ = new std::vector<ParserTable *>;
 			$$->push_back ($1);
 		}
 	;
@@ -482,7 +479,7 @@ table_identifier_list
 table_identifier
 	: IDENTIFIER
 		{
-			$$ = new PTTableNode (*($1));
+			$$ = new ParserTable (*($1));
 			delete ($1);
 			$$->setLocation (@1);
 		}
@@ -491,13 +488,13 @@ table_identifier
 column_identifier
 	: IDENTIFIER
 		{
-			$$ = new PTColumnNode (*($1));
+			$$ = new ParserColumn (*($1));
 			delete ($1);
 			$$->setLocation (@1);
 		}
 	| IDENTIFIER DOT IDENTIFIER
 		{
-			$$ = new PTColumnNode (*($3));
+			$$ = new ParserColumn (*($3));
 			delete ($3);
 			$$->set_table_name (*($1));
 			delete ($1);
@@ -508,15 +505,8 @@ column_identifier
 index_identifier
 	: IDENTIFIER
 		{
-			$$ = new IndexIdentifierNode (*($1));
+			$$ = new ParserIndex (*($1));
 			delete ($1);
-			$$->setLocation (@1);
-		}
-	| IDENTIFIER DOT IDENTIFIER
-		{
-			$$ = new IndexIdentifierNode (*($1), *($3));
-			delete ($1);
-			delete ($3);
 			$$->setLocation (@1);
 		}
 	;

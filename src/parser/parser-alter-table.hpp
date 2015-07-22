@@ -1,19 +1,19 @@
-#ifndef PT_ALTER_TABLE_HPP_
-#define PT_ALTER_TABLE_HPP_
+#ifndef PARSER_ALTER_TABLE_HPP_
+#define PARSER_ALTER_TABLE_HPP_
 
 #include "parser\parser-node.hpp"
 #include "parser\parser-root.hpp"
 
-class PTAlterTableRoot :
+class ParserAlterTableStatement :
 	public virtual ParserNode,
 	public virtual ParserRoot {
 
 public:
-	PTAlterTableRoot (yy::location loc) { setLocation (loc); };
-	~PTAlterTableRoot ();
+	ParserAlterTableStatement (yy::location loc) { setLocation (loc); };
+	~ParserAlterTableStatement ();
 
 protected:
-	PTAlterTableRoot () {};
+	ParserAlterTableStatement () {};
 
 	ErrorCode Compile () override;
 	ErrorCode Prepare () override { return NO_ERROR; };
@@ -22,4 +22,4 @@ protected:
 	std::string Print() override;
 };
 
-#endif // PT_ALTER_TABLE_HPP_
+#endif // PARSER_ALTER_TABLE_HPP_

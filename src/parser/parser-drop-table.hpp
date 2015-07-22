@@ -1,21 +1,21 @@
-#ifndef PT_DROP_TABLE_HPP_
-#define PT_DROP_TABLE_HPP_
+#ifndef PARSER_DROP_TABLE_HPP_
+#define PARSER_DROP_TABLE_HPP_
 
 #include "parser\parser-node.hpp"
 #include "parser\parser-root.hpp"
-#include "parser\pt-table.hpp"
+#include "parser\parser-table.hpp"
 
-class PTDropTableRoot :
+class ParserDropTableStatement :
 	public virtual ParserNode,
 	public virtual ParserRoot {
 
 public:
-	PTDropTableRoot (PTTableNode *table, yy::location loc)
+	ParserDropTableStatement (ParserTable *table, yy::location loc)
 		: table_ (table) {
 
 			setLocation (loc);
 		};
-	~PTDropTableRoot ();
+	~ParserDropTableStatement ();
 
 protected:
 	ErrorCode Compile () override;
@@ -24,6 +24,6 @@ protected:
 
 	std::string Print () override;
 private:
-	PTTableNode *table_;
+	ParserTable *table_;
 };
-#endif // PT_DROP_TABLE_HPP_
+#endif // PARSER_DROP_TABLE_HPP_

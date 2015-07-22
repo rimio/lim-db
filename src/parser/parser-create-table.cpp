@@ -1,15 +1,15 @@
-#include "parser\pt-create-table.hpp"
+#include "parser\parser-create-table.hpp"
 #include "base\generic-operations.hpp"
 #include "boot\boot.hpp"
 
-PTCreateTableRoot::~PTCreateTableRoot () {
+ParserCreateTableStatement::~ParserCreateTableStatement () {
 	delete table_;
 
 	vector_clear_and_delete (*columns_);
 	delete columns_;
 }
 
-std::string PTCreateTableRoot::Print () {
+std::string ParserCreateTableStatement::Print () {
 	std::string printed("CREATE TABLE ");
 
 	printed += table_ != NULL ? table_->ToString () : "(unknown name)";
@@ -22,7 +22,7 @@ std::string PTCreateTableRoot::Print () {
 	return printed;
 }
 
-ErrorCode PTCreateTableRoot::Compile () {
+ErrorCode ParserCreateTableStatement::Compile () {
 	std::string table_name = table_->name ();
 
 	// Lower case name is needed
@@ -53,7 +53,7 @@ ErrorCode PTCreateTableRoot::Compile () {
 	return NO_ERROR;
 }
 
-ErrorCode PTCreateTableRoot::Execute () {
+ErrorCode ParserCreateTableStatement::Execute () {
 
 	// Create schema for table
 	Table *t = new Table ();

@@ -1,13 +1,13 @@
-#ifndef PT_TABLE_HPP_
-#define PT_TABLE_HPP_
+#ifndef PARSER_INDEX_HPP_
+#define PARSER_INDEX_HPP_
 
 #include "parser\parser-node.hpp"
 #include "schema\table.hpp"
 
 // Parse-tree node containing data about a database table
-class PTTableNode : public virtual ParserNode {
+class ParserIndex : public virtual ParserNode {
 public:
-	PTTableNode (std::string name);
+	ParserIndex (std::string name);
 
 	std::string ToString ();
 
@@ -17,13 +17,12 @@ public:
 	void set_name (std::string name) { name_ = name; };
 
 private:
-	PTTableNode ();
+	ParserIndex ();
 
 	// Members
 	std::string name_;
 
 	// Future implementation
-	std::string alias_;
 	Table* table_;
 };
-#endif // PT_TABLE_HPP_
+#endif // PARSER_INDEX_HPP_

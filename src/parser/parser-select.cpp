@@ -1,11 +1,11 @@
-#include "parser\pt-select.hpp"
+#include "parser\parser-select.hpp"
 #include "base\generic-operations.hpp"
 
 //
 // PTSelectNode
 //
 
-PTSelectNode::~PTSelectNode () {
+ParserSelect::~ParserSelect () {
 	// delete select list
 	vector_clear_and_delete (*list_);
 	delete list_;
@@ -14,7 +14,7 @@ PTSelectNode::~PTSelectNode () {
 	delete from_;
 }
 
-std::string PTSelectNode::ToString () {
+std::string ParserSelect::ToString () {
 	std::string to_string = std::string ("SELECT ");
 
 	bool first_item = true;
@@ -37,8 +37,8 @@ std::string PTSelectNode::ToString () {
 // PTSelectRoot
 //
 
-PTSelectRoot::PTSelectRoot (std::vector<ParserNode *>* list,
-							PTTableNode* from, yy::location loc) {
+ParserSelectStatement::ParserSelectStatement (std::vector<ParserNode *>* list,
+											  ParserTable* from, yy::location loc) {
 
 	list_ = list;
 	from_ = from;
@@ -46,18 +46,18 @@ PTSelectRoot::PTSelectRoot (std::vector<ParserNode *>* list,
 	setLocation (loc);
 }
 
-ErrorCode PTSelectRoot::Compile () {
+ErrorCode ParserSelectStatement::Compile () {
 	return NO_ERROR;
 }
 
-ErrorCode PTSelectRoot::Prepare () {
+ErrorCode ParserSelectStatement::Prepare () {
 	return NO_ERROR;
 }
 
-ErrorCode PTSelectRoot::Execute () {
+ErrorCode ParserSelectStatement::Execute () {
 	return NO_ERROR;
 }
 
-std::string PTSelectRoot::Print () {
+std::string ParserSelectStatement::Print () {
 	return ToString ();
 }

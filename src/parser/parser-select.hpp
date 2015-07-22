@@ -1,32 +1,32 @@
-#ifndef PT_SELECT_HPP_
-#define PT_SELECT_HPP_
+#ifndef PARSER_SELECT_HPP_
+#define PARSER_SELECT_HPP_
 
 #include "parser\parser-node.hpp"
 #include "parser\parser-root.hpp"
-#include "parser\pt-table.hpp"
-#include "parser\pt-column.hpp"
+#include "parser\parser-table.hpp"
+#include "parser\parser-column.hpp"
 
-class PTSelectNode :
+class ParserSelect :
 	public virtual ParserNode {
 
 public:
-	~PTSelectNode ();
+	~ParserSelect ();
 
 	std::string ToString () override;
 
 protected:
 	
-	PTTableNode* from_;
+	ParserTable* from_;
 	std::vector<ParserNode *>* list_;
 };
 
-class PTSelectRoot :
-	public virtual PTSelectNode,
+class ParserSelectStatement :
+	public virtual ParserSelect,
 	public virtual ParserRoot {
 
 public:
-	PTSelectRoot (std::vector<ParserNode *>* list, PTTableNode* from,
-				  yy::location loc);
+	ParserSelectStatement (std::vector<ParserNode *>* list, ParserTable* from,
+						   yy::location loc);
 
 protected:
 	ErrorCode Compile () override;
@@ -36,4 +36,4 @@ protected:
 	std::string Print () override;
 };
 
-#endif // PT_SELECT_HPP_
+#endif // PARSER_SELECT_HPP_

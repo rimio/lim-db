@@ -1,11 +1,11 @@
-#include "parser\pt-insert.hpp"
+#include "parser\parser-insert.hpp"
 #include "base\generic-operations.hpp"
 
 //
 // PTInsertNode
 //
 
-PTInsertNode::~PTInsertNode () {
+ParserInsert::~ParserInsert () {
 	// delete table node
 	delete table_;
 	
@@ -22,7 +22,7 @@ PTInsertNode::~PTInsertNode () {
 	delete values_;
 }
 
-std::string PTInsertNode::ToString () {
+std::string ParserInsert::ToString () {
 	std::string to_string = std::string ("INSERT INTO ");
 	bool first_value = false;
 
@@ -54,10 +54,10 @@ std::string PTInsertNode::ToString () {
 // PTInsertRoot
 //
 
-PTInsertRoot::PTInsertRoot (PTTableNode* table,
-							std::vector<PTColumnNode *>* columns,
-							std::vector<std::vector<ParserNode *> *> *values,
-							yy::location loc) {
+ParserInsertStatement::ParserInsertStatement (ParserTable* table,
+											  std::vector<ParserColumn *>* columns,
+											  std::vector<std::vector<ParserNode *> *> *values,
+											  yy::location loc) {
 
 	table_ = table;
 	columns_ = columns;
@@ -66,18 +66,18 @@ PTInsertRoot::PTInsertRoot (PTTableNode* table,
 	setLocation (loc);
 }
 
-ErrorCode PTInsertRoot::Compile () {
+ErrorCode ParserInsertStatement::Compile () {
 	return NO_ERROR;
 }
 
-ErrorCode PTInsertRoot::Prepare () {
+ErrorCode ParserInsertStatement::Prepare () {
 	return NO_ERROR;
 }
 
-ErrorCode PTInsertRoot::Execute () {
+ErrorCode ParserInsertStatement::Execute () {
 	return NO_ERROR;
 }
 
-std::string PTInsertRoot::Print () {
+std::string ParserInsertStatement::Print () {
 	return ToString ();
 }

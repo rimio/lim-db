@@ -1,9 +1,9 @@
-#include "parser\pt-command.hpp"
+#include "parser\parser-command.hpp"
 #include "boot\boot.hpp"
 
 #include <cassert>
 
-ErrorCode PTCommand::Execute ()
+ErrorCode ParserCommand::Execute ()
 {
 	switch (type_) {
 	case PT_COMMAND_EXIT:
@@ -16,7 +16,7 @@ ErrorCode PTCommand::Execute ()
 	}
 }
 
-std::string PTCommand::Print ()
+std::string ParserCommand::Print ()
 {
 	return std::string("EXIT");
 }

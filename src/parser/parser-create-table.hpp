@@ -3,26 +3,26 @@
 
 #include "parser\parser-node.hpp"
 #include "parser\parser-root.hpp"
-#include "parser\pt-table.hpp"
-#include "parser\pt-column.hpp"
+#include "parser\parser-table.hpp"
+#include "parser\parser-column.hpp"
 
-class PTCreateTableRoot :
+class ParserCreateTableStatement :
 	public virtual ParserNode,
 	public virtual ParserRoot {
 
 public:
-	PTCreateTableRoot (PTTableNode* table,
-					   std::vector<PTColumnNode*>* columns,
+	ParserCreateTableStatement (ParserTable* table,
+					   std::vector<ParserColumn *>* columns,
 					   yy::location loc)
 		: table_(table),
 		  columns_(columns) {
 
 			setLocation (loc);
 		};
-	~PTCreateTableRoot ();
+	~ParserCreateTableStatement ();
 
 protected:
-	PTCreateTableRoot () {};
+	ParserCreateTableStatement () {};
 
 	ErrorCode Compile () override;
 	ErrorCode Prepare () override { return NO_ERROR; };
@@ -30,8 +30,8 @@ protected:
 
 	std::string Print() override;
 private:
-	PTTableNode* table_;
-	std::vector<PTColumnNode *>* columns_;
+	ParserTable* table_;
+	std::vector<ParserColumn *>* columns_;
 };
 
 #endif // PT_CREATE_TABLE_HPP_
