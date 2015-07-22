@@ -28,21 +28,22 @@ Bitmap::Bitmap(int bits_number, bool set_bits) {
 		for (int i = 0; i < bits_array_size_; ++i)
 			bit_array_[i] = BITMAP_EMPTY_UNIT;
 	}
-
+	 
 	// Bits that are out of range must be set to 1 (we could consider them used, therefore, inaccessible )
 	// Reversed process if set_bits is true
-	for (int i = bits_number; i < bits_array_size_ * BITMAP_UNIT_SIZE; i++) {
-		if (set_bits)
-			(void) ClearBit(i);
-		else
-			(void) SetBit(i);
+	int i = bits_number - (bits_array_size_-1) * BITMAP_UNIT_SIZE;
+	if (!set_bits) {
+		if (i != BITMAP_UNIT_SIZE) bit_array_[bits_array_size_ - 1] = (BITMAP_FULL_UNIT << i);
+	}
+	else {
+		if (i != BITMAP_UNIT_SIZE) bit_array_[bits_array_size_ - 1] = (BITMAP_FULL_UNIT >> (BITMAP_UNIT_SIZE - i));
 	}
 };
 
 bool Bitmap::SetBit(int index) {
 	
 	//Check if the desired bit is in range
-	if (index < 0 && index >= bits_number_)
+	if (index < 0 || index >= bits_number_)
 		return false;
 
 	//Locate the bit 
@@ -61,7 +62,7 @@ bool Bitmap::SetBit(int index) {
 
 bool Bitmap::ClearBit(int index) {
 	//Check if the desired bit is in range
-	if (index < 0 && index >= bits_number_)
+	if (index < 0 || index >= bits_number_)
 		return false;
 
 	//Locate the bit 
@@ -79,7 +80,7 @@ bool Bitmap::ClearBit(int index) {
 
 bool Bitmap::IsBitSet(int index) {
 	//Check if the desired bit is in range
-	if (index < 0 && index >= bits_number_)
+	if (index < 0 || index >= bits_number_)
 		return true;
 
 	//locate the bit 

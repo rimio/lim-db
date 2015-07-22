@@ -41,6 +41,8 @@ CMakeFiles
 Makefile
 cmake_install.cmake
 install_manifest.txt
+src/configure.hpp
+src/win/configure.hpp
 ~m4*
 
 ##
