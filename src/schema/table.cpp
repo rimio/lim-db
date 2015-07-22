@@ -57,7 +57,7 @@ void Table::set_table_name(std::string table_name) {
 }
 
 void Table::AddAttribute(std::string attr_name, DataType attr_type, INT32 position) {
-	attributes_.emplace_back(attr_type,attr_name,position);
+	attributes_.emplace_back(attr_type, attr_name, position);
 }
 
 void Table::set_nr_string(int nr) {

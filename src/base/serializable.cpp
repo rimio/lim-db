@@ -1,6 +1,6 @@
 #include "base\serializable.hpp"
 
-BYTE* Serializable::SerializeInt(INT32 arg, BYTE* ptr) {
+BYTE* Serializable::SerializeInt(int arg, BYTE* ptr) {
 	INT32 *p = (INT32*)ptr;
 	*p = arg;
 	return ptr + 4;
@@ -26,19 +26,19 @@ BYTE* Serializable::SerializeString(std::string arg, BYTE* ptr) {
 	return ptr + length + 1;
 }
 
-INT32 Serializable::DeserializeInt(BYTE** ptr) {
+BYTE* Serializable::DeserializeInt(BYTE* ptr, int *arg) {
 	*ptr += 4;
-	return (int)(**ptr);
+	return (int)(*ptr);
 }
 
-float Serializable::DeserializeFloat(BYTE** ptr) {
+BYTE* Serializable::DeserializeFloat(BYTE* ptr, float *arg) {
 	*ptr += 8;
-	return (float)(**ptr);
+	return (float)(*ptr);
 }
 
-std::string Serializable::DeserializeString(BYTE** ptr){
+BYTE* Serializable::DeserializeString(BYTE* ptr, std::string *arg){
 	std::string result;
-	char c = (char)(**ptr);
+	char c = (char)(*ptr);
 	
 	while (c != '\0') {
 		result += c;
