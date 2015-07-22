@@ -8,7 +8,13 @@
 //
 class ParserIdentifier : public virtual ParserNode
 {
-private:
+public:
+
+	std::string ToString () { return name_; };
+
+	std::string name () { return name_; };
+	void set_name (std::string name) { name_ = name; };
+
 protected:
 	// The identifier name
 	std::string name_;
@@ -17,12 +23,16 @@ protected:
 	ParserIdentifier () { };
 	ParserIdentifier (std::string name) : name_ (name) { };
 
-public:
+	// Override virtual functions from ParserNode
+	ErrorCode TypeCheckPre (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
+	ErrorCode TypeCheckPost (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
 
-	std::string ToString () { return name_; };
+	ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
+	ErrorCode NameResolvePost (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
 
-	std::string name () { return name_; };
-	void set_name (std::string name) { name_ = name; };
+	ErrorCode ConstantFoldPost (void) override { return NO_ERROR; }
+
+	void GetChildren (std::vector<ParserNode *>* children) {};
 };
 
 #endif // PT_IDENTIFIER_HPP_

@@ -29,7 +29,7 @@ typedef enum
 //
 // Base operator node
 //
-class OperatorNode : public TypedParserNode
+class OperatorNode : public ParserNode
 {
 private:
 	// Inaccessible default constructor
@@ -37,28 +37,9 @@ private:
 
 protected:
 	// Left/right part of expression
-	TypedParserNode *left_;
-	TypedParserNode *right_;
-
-	// Return type
-	DataType return_type_;
-
-	// Hidden constructors
-	OperatorNode (TypedParserNode *left) : left_ (left), right_ (nullptr), return_type_ (DB_UNKNOWN) { };
-	OperatorNode (TypedParserNode *left, TypedParserNode *right) : left_ (left), right_ (right), return_type_ (DB_UNKNOWN) { };
 
 public:
 	// Implementation of pure virtual functions
-	virtual ParserNodeType getNodeType () const { return PT_OPERATOR; };
-	virtual DataType getDataType () const { return return_type_; };
-	virtual std::string ToString ();
-	
-	// Returns the statement type
-	virtual OperatorType getOperatorType () const = 0;
-
-	// Getters for left and right
-	TypedParserNode *getLeft () const { return left_; }
-	TypedParserNode *getRight () const { return right_; }
 };
 
 // ---------------------------- Logical Operators --------------------------- //
@@ -67,12 +48,6 @@ class OrOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	OrOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "OR"; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_OR; };
-	virtual DataType getDataType () const { return DB_BOOLEAN; };
 };
 
 class AndOperatorNode : public OperatorNode
@@ -80,12 +55,6 @@ class AndOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	AndOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "AND"; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_AND; };
-	virtual DataType getDataType () const { return DB_BOOLEAN; };
 };
 
 class NotOperatorNode : public OperatorNode
@@ -93,12 +62,6 @@ class NotOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	NotOperatorNode (TypedParserNode *left) : OperatorNode (left, nullptr) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "NOT"; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_NOT; };
-	virtual DataType getDataType () const { return DB_BOOLEAN; };
 };
 
 // -------------------------- Comparison operators -------------------------- //
@@ -107,12 +70,6 @@ class LtOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	LtOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "<"; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_LT; };
-	virtual DataType getDataType () const { return DB_BOOLEAN; };
 };
 
 class LtEqOperatorNode : public OperatorNode
@@ -120,12 +77,6 @@ class LtEqOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	LtEqOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "<="; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_LT_EQ; };
-	virtual DataType getDataType () const { return DB_BOOLEAN; };
 };
 
 class GtOperatorNode : public OperatorNode
@@ -133,12 +84,6 @@ class GtOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	GtOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return ">"; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_GT; };
-	virtual DataType getDataType () const { return DB_BOOLEAN; };
 };
 
 class GtEqOperatorNode : public OperatorNode
@@ -146,12 +91,6 @@ class GtEqOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	GtEqOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return ">="; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_GT_EQ; };
-	virtual DataType getDataType () const { return DB_BOOLEAN; };
 };
 
 class EqualOperatorNode : public OperatorNode
@@ -159,12 +98,6 @@ class EqualOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	EqualOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "="; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_EQUAL; };
-	virtual DataType getDataType () const { return DB_BOOLEAN; };
 };
 
 class NotEqualOperatorNode : public OperatorNode
@@ -172,12 +105,6 @@ class NotEqualOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	NotEqualOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "<>"; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_NOT_EQUAL; };
-	virtual DataType getDataType () const { return DB_BOOLEAN; };
 };
 
 // -------------------------- Arithmetic operators -------------------------- //
@@ -186,11 +113,6 @@ class PlusOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	PlusOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "+"; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_PLUS; };
 };
 
 class MinusOperatorNode : public OperatorNode
@@ -198,11 +120,6 @@ class MinusOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	MinusOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "-"; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_MINUS; };
 };
 
 class MultiplicationOperatorNode : public OperatorNode
@@ -210,11 +127,6 @@ class MultiplicationOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	MultiplicationOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "*"; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_MULTIPLICATION; };
 };
 
 class DivisionOperatorNode : public OperatorNode
@@ -222,11 +134,6 @@ class DivisionOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	DivisionOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "/"; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_DIVISION; };
 };
 
 class ModuloOperatorNode : public OperatorNode
@@ -234,11 +141,6 @@ class ModuloOperatorNode : public OperatorNode
 private:
 protected:
 public:
-	ModuloOperatorNode (TypedParserNode *left, TypedParserNode *right) : OperatorNode (left, right) { };
-
-	// Implementation of pure virtual functions
-	virtual std::string toString () { return "MOD"; };
-	virtual OperatorType getOperatorType () const { return PT_OPERATOR_MODULO; };
 };
 
 #endif

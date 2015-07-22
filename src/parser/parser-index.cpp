@@ -5,8 +5,7 @@ ParserIndex::ParserIndex () {
 }
 
 ParserIndex::ParserIndex (std::string name) {
-	ParserIndex ();
-
+	table_ = NULL;
 	name_ = name;
 }
 

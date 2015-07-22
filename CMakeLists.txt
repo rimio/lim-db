@@ -101,6 +101,12 @@ set (SRC_PARSER_FILES
 	)
 source_group("src\\parser" FILES ${SRC_PARSER_FILES})
 
+set (SRC_PARSER_EXPRESSION_FILES
+	${SOURCE_DIR}/parser/expression/parser-expression.hpp
+	${SOURCE_DIR}/parser/expression/parser-expression.cpp
+	)
+source_group("src\\parser\\expression" FILES ${SRC_PARSER_EXPRESSION_FILES})
+
 set (SRC_BASE_FILES
 	${SOURCE_DIR}/base/bitmap.hpp
 	${SOURCE_DIR}/base/bitmap.cpp
@@ -170,6 +176,7 @@ set (UNIT_TEST_SOURCE_FILES
 
 add_library(lim-db
 			${SRC_PARSER_FILES}
+			${SRC_PARSER_EXPRESSION_FILES}
 			${SRC_BASE_FILES}
 			${SRC_BOOT_FILES}
 			${SRC_STORAGE_FILES}

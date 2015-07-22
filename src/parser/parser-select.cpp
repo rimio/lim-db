@@ -33,6 +33,16 @@ std::string ParserSelect::ToString () {
 	return to_string;
 }
 
+void ParserSelect::GetChildren (std::vector<ParserNode *>* children) {
+	// Add select list
+	for (auto item = list_->begin (); item != list_->end (); ++item) {
+		children->push_back (*item);
+	}
+
+	// Add from_
+	children->push_back (from_);
+}
+
 //
 // PTSelectRoot
 //

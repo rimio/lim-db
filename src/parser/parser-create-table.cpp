@@ -69,3 +69,13 @@ ErrorCode ParserCreateTableStatement::Execute () {
 	// Add table schema
 	return GET_SCHEMA_MANAGER ()->AddTable (t);
 }
+
+void ParserCreateTableStatement::GetChildren (std::vector<ParserNode *>* children) {
+	// Add table
+	children->push_back (table_);
+
+	// Add columns
+	for (auto column = columns_->begin (); column != columns_->end (); ++column) {
+		children->push_back (*column);
+	}
+}

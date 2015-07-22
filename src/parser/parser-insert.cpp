@@ -50,6 +50,31 @@ std::string ParserInsert::ToString () {
 	return to_string;
 }
 
+void ParserInsert::GetChildren (std::vector<ParserNode *>* children) {
+	// Add table
+	children->push_back (table_);
+
+	// Add columns
+	if (columns_ != NULL) {
+		for (auto column = columns_->begin(); column != columns_->end (); ++column) {
+			children->push_back (*column);
+		}
+	}
+
+	// Add values
+	if (values_ != NULL) {
+		for (auto values_list = values_->begin ();
+			 values_list != values_->end ();
+			 ++values_list) {
+			for (auto value = (*values_list)->begin ();
+				 value != (*values_list)->end ();
+				 ++value) {
+				children->push_back (*value);
+			}
+		}
+	}
+}
+
 //
 // PTInsertRoot
 //

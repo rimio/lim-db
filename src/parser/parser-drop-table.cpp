@@ -43,3 +43,7 @@ std::string ParserDropTableStatement::Print () {
 		std::string ("DROP TABLE ")
 		+ (table_ != NULL ? table_->name () : "(unknown)");
 }
+
+void ParserDropTableStatement::GetChildren (std::vector<ParserNode *>* children) {
+	children->push_back (table_);
+}

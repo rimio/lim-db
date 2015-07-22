@@ -18,6 +18,17 @@ protected:
 	
 	ParserTable* from_;
 	std::vector<ParserNode *>* list_;
+
+	// Override virtual functions from ParserNode
+	ErrorCode TypeCheckPre (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
+	ErrorCode TypeCheckPost (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
+
+	ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
+	ErrorCode NameResolvePost (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
+
+	ErrorCode ConstantFoldPost (void) override { return NO_ERROR; }
+
+	void GetChildren (std::vector<ParserNode *>* children);
 };
 
 class ParserSelectStatement :

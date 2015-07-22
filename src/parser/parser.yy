@@ -60,7 +60,6 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 
 	ParserRoot *parser_root_val;
 	ParserNode *parser_node;
-	TypedParserNode *typed_parser_node;
 	ParserCommand *command_val;
 	OperatorNode *operator_node;
 
@@ -147,8 +146,8 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 
 // Typed nodes
 %type <value_node_val>			literal
-%type <typed_parser_node>		operand
-%type <typed_parser_node>		expression
+%type <parser_node>		operand
+%type <parser_node>		expression
 %type <parser_node_list>		expression_list
 
 // Identifiers
@@ -334,78 +333,63 @@ expression_list
 expression
 	: expression OR expression
 		{
-			$$ = new OrOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression AND expression
 		{
-			$$ = new AndOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| NOT expression
 		{
-			$$ = new NotOperatorNode ($2);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression LT expression
 		{	
-			$$ = new LtOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression LT_EQ expression
 		{
-			$$ = new LtEqOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression GT expression
 		{
-			$$ = new GtOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression GT_EQ expression
 		{
-			$$ = new GtEqOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression EQUAL expression
 		{
-			$$ = new EqualOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression NOT_EQUAL expression
 		{
-			$$ = new NotEqualOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression PLUS expression
 		{
-			$$ = new PlusOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression MINUS expression
 		{
-			$$ = new MinusOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression STAR expression
 		{
-			$$ = new MultiplicationOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression SLASH expression
 		{
-			$$ = new DivisionOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| expression MODULO expression
 		{
-			$$ = new ModuloOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			$$ = NULL;
 		}
 	| MINUS expression %prec NEGATION
 		{
-			$$ = new MinusOperatorNode ($2, nullptr);
-			$$->setLocation (@1);
+			$$ = NULL;
 
 			// Check for chained negations
 			//if ($2->getNodeType () == PT_OPERATOR)
