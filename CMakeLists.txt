@@ -44,7 +44,7 @@ set (SRC_PARSER_FILES
 	
 	${SOURCE_DIR}/parser/command-node.hpp
 	${SOURCE_DIR}/parser/command-node.cpp
-	
+
 	${SOURCE_DIR}/parser/identifier-node.hpp
 	${SOURCE_DIR}/parser/identifier-node.cpp
 
@@ -104,6 +104,12 @@ set (SRC_BOOT_FILES
 source_group("src\\boot" FILES ${SRC_BOOT_FILES})
 
 set (SRC_STORAGE_FILES
+	${SOURCE_DIR}/storage/data-sector.hpp
+	${SOURCE_DIR}/storage/data-sector.cpp
+
+	${SOURCE_DIR}/storage/row-data.hpp
+	${SOURCE_DIR}/storage/row-data.cpp
+
 	${SOURCE_DIR}/storage/sector.hpp
 	${SOURCE_DIR}/storage/sector.cpp
 
@@ -127,6 +133,9 @@ source_group("src\\schema" FILES ${SRC_SCHEMA_FILES})
 set (SRC_METADATA_FILES
 	${SOURCE_DIR}/metadata/sector-group.hpp
 	${SOURCE_DIR}/metadata/sector-group.cpp
+
+	${SOURCE_DIR}/metadata/database-value.hpp
+	${SOURCE_DIR}/metadata/database-value.cpp
 	)
 source_group("src\\metadata" FILES ${SRC_METADATA_FILES})
 
@@ -134,12 +143,14 @@ source_group("src\\metadata" FILES ${SRC_METADATA_FILES})
 set (UNIT_TEST_HEADER_FILES
 	${SOURCE_DIR}/unit-test/bitmap-test.hpp
 	${SOURCE_DIR}/unit-test/sector-manager-test.hpp
+	${SOURCE_DIR}/unit-test/data-sector-test.hpp
 	)
 
 # Unit-testing Source files
 set (UNIT_TEST_SOURCE_FILES
 	${SOURCE_DIR}/unit-test/bitmap-test.cpp
 	${SOURCE_DIR}/unit-test/sector-manager-test.cpp
+	${SOURCE_DIR}/unit-test/data-sector-test.cpp
 	)
 
 add_library(lim-db
