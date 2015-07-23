@@ -27,7 +27,9 @@
 	#include "parser/parser-select.hpp"
 	#include "parser/parser-update.hpp"
 
-	#include "parser/operator-node.hpp"
+	#include "parser/expression/parser-expression-arithmetic.hpp"
+	#include "parser/expression/parser-expression-compare.hpp"
+	#include "parser/expression/parser-expression-logical.hpp"
 
 	#include <iostream>
 	#include <vector>
@@ -61,7 +63,6 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 	ParserRoot *parser_root_val;
 	ParserNode *parser_node;
 	ParserCommand *command_val;
-	OperatorNode *operator_node;
 
 	ParserIndex *index_node_val;
 	ParserTable* table_node_val;
@@ -146,8 +147,8 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 
 // Typed nodes
 %type <value_node_val>			literal
-%type <parser_node>		operand
-%type <parser_node>		expression
+%type <parser_node>				operand
+%type <parser_node>				expression
 %type <parser_node_list>		expression_list
 
 // Identifiers
@@ -333,77 +334,105 @@ expression_list
 expression
 	: expression OR expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionLogical (args, LogicalOperators::OR);
 		}
 	| expression AND expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionLogical (args, LogicalOperators::AND);
 		}
 	| NOT expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($2);
+			$$ = new ParserExpressionLogical (args, LogicalOperators::NOT);
 		}
 	| expression LT expression
 		{	
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::LT);
 		}
 	| expression LT_EQ expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::LT_EQ);
 		}
 	| expression GT expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::GT);
 		}
 	| expression GT_EQ expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::GT_EQ);
 		}
 	| expression EQUAL expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::EQ);
 		}
 	| expression NOT_EQUAL expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::NOT_EQ);
 		}
 	| expression PLUS expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionArithmetic (args, ArithmeticOperators::PLUS);
 		}
 	| expression MINUS expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionArithmetic (args, ArithmeticOperators::MINUS);
 		}
 	| expression STAR expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionArithmetic (args, ArithmeticOperators::MULTIPLY);
 		}
 	| expression SLASH expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionArithmetic (args, ArithmeticOperators::DIVIDE);
 		}
 	| expression MODULO expression
 		{
-			$$ = NULL;
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionArithmetic (args, ArithmeticOperators::MODULO);
 		}
 	| MINUS expression %prec NEGATION
 		{
+			// TODO
 			$$ = NULL;
-
-			// Check for chained negations
-			//if ($2->getNodeType () == PT_OPERATOR)
-			//{
-				//OperatorNode *opn = (OperatorNode *) $2;
-				//if (opn->getOperatorType () == PT_OPERATOR_MINUS)
-				//{
-					//MinusOperatorNode *mopn = (MinusOperatorNode *) opn;
-					//if (mopn->getRight () == nullptr)
-					//{
-						//error (@2, "chained negation not allowed");
-					//}
-				//}
-			//}
 		}
 	| PAR_OPEN expression PAR_CLOSE
 		{
@@ -419,13 +448,11 @@ expression
 operand
 	: literal
 		{
-			// $$ = $1;
-			$$ = NULL;
+			$$ = $1;
 		}
 	| column_identifier
 		{
-			// $$ = $1;
-			$$ = NULL;
+			$$ = $1;
 		}
 	;
 

@@ -41,10 +41,6 @@ add_flex_bison_dependency (lexer parser)
 
 # Parser files
 set (SRC_PARSER_FILES
-
-	${SOURCE_DIR}/parser/operator-node.hpp
-	${SOURCE_DIR}/parser/operator-node.cpp
-
 	${SOURCE_DIR}/parser/parser-context.hpp
 	${SOURCE_DIR}/parser/parser-context.cpp
 
@@ -104,6 +100,15 @@ source_group("src\\parser" FILES ${SRC_PARSER_FILES})
 set (SRC_PARSER_EXPRESSION_FILES
 	${SOURCE_DIR}/parser/expression/parser-expression.hpp
 	${SOURCE_DIR}/parser/expression/parser-expression.cpp
+	
+	${SOURCE_DIR}/parser/expression/parser-expression-arithmetic.hpp
+	${SOURCE_DIR}/parser/expression/parser-expression-arithmetic.cpp
+
+	${SOURCE_DIR}/parser/expression/parser-expression-compare.hpp
+	${SOURCE_DIR}/parser/expression/parser-expression-compare.cpp
+
+	${SOURCE_DIR}/parser/expression/parser-expression-logical.hpp
+	${SOURCE_DIR}/parser/expression/parser-expression-logical.cpp
 	)
 source_group("src\\parser\\expression" FILES ${SRC_PARSER_EXPRESSION_FILES})
 
