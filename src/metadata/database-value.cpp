@@ -13,15 +13,11 @@ void IntDatabaseValue::set_value(INT32 value) {
 }
 
 BYTE* IntDatabaseValue::Serialize(BYTE *ptr) {
-	INT32 *p = (INT32*)ptr;
-	*p = value_;
-	return ptr + 4;
+	return Serializable::SerializeInt(value_, ptr);
 }
 
 BYTE* IntDatabaseValue::Deserialize(BYTE *ptr) {
-	INT32 *p = (INT32*)ptr;
-	value_ = *p;
-	return ptr + 4;
+	return Serializable::DeserializeInt(ptr, &value_);
 }
 
 FloatDatabaseValue::FloatDatabaseValue(float val) {
@@ -37,15 +33,11 @@ void FloatDatabaseValue::set_value(float value) {
 }
 
 BYTE* FloatDatabaseValue::Serialize(BYTE *ptr) {
-	float *p = (float*)ptr;
-	*p = value_;
-	return ptr + 8;
+	return Serializable::SerializeFloat(value_, ptr);
 }
 
 BYTE* FloatDatabaseValue::Deserialize(BYTE *ptr) {
-	float *p = (float*)ptr;
-	value_ = *p;
-	return ptr + 8;
+	return Serializable::DeserializeFloat(ptr, &value_);
 }
 
 StringDatabaseValue::StringDatabaseValue(std::string val) {
@@ -61,29 +53,10 @@ void StringDatabaseValue::set_value(std::string value) {
 }
 
 BYTE* StringDatabaseValue::Serialize(BYTE *ptr) {
-	int length = value_.length();
-
-	//Length increases by 1 because the equivalent in c of a string must end in a null-character '\0'
-	char *s = new char[length + 1];
-	std::strcpy(s, value_.c_str());
-
-	for (int i = 0; i <= length; i++) {
-		*(ptr + i) = (BYTE)s[i];
-	}
-
-	return ptr + length + 1;
+	return Serializable::SerializeString(value_, ptr);
 }
 
 BYTE* StringDatabaseValue::Deserialize(BYTE *ptr) {
 	value_.clear();
-	char c = (char)(*ptr);
-
-	while (c != '\0') {
-		value_ += c;
-		ptr++;
-		c = (char)(*ptr);
-	}
-
-	ptr++;
-	return ptr;
+	return Serializable::DeserializeString(ptr,&value_);
 }

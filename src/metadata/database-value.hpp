@@ -7,8 +7,6 @@
 class DatabaseValue: public Serializable {
 public:
 	//Pure virtual functions
-	virtual BYTE* Serialize(BYTE *ptr) = 0;
-	virtual BYTE* Deserialize(BYTE *ptr) = 0;
 	virtual DataType get_type() = 0;
 };
 

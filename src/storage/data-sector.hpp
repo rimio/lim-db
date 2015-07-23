@@ -7,19 +7,25 @@
 #include "metadata\database-value.hpp"
 #include "schema\attribute.hpp"
 #include "schema\table.hpp"
+#include "storage\sector.hpp"
 
 #include <vector>
 
-class DataSector {
+class DataSector: Sector {
+	struct Slot {
+		UINT16 offset;
+		UINT16 length;
+	};
+
 public:
-	//Constructor
-	DataSector(INT32 sector_id);
 	~DataSector();
 	BYTE* Select(int row_number);
 	BYTE* Select();
 private:
 	BYTE* starting_pointer_;
-	std::vector<int> rows_;
+	INT16 num_rows_;
+	Slot slots_[1];
+
 };
 
 #endif

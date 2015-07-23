@@ -18,8 +18,7 @@ enum SectorType
 	SECTOR_INDEX
 };
 
-class Sector
-{
+class Sector {
 private:
 	// TODO: Include here all data required
 	SectorID self_ref_;
@@ -42,16 +41,10 @@ private:
 	// Statistics Related
 
 	// Sector actual data starts here. It should have 6k - offset of Sector::data in Sector.
-	char data_[1];
+	char *data_;
 
 private:
-	Sector ();
+	Sector();
 
-public:
-	static void UseSector (Sector *sector_p, SectorID id, SectorType type);
-
-	// TODO: Return pointer to first object or NULL
-	ErrorCode ScanStart (void ** ptr);
-	ErrorCode ScanIterate (void ** ptr);
 };
 #endif // SECTOR_HPP_
