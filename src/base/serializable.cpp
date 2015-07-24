@@ -37,8 +37,9 @@ BYTE* Serializable::DeserializeString(BYTE *ptr, std::string *arg){
 	// Deserialize the length of the string
 	memcpy(&length, ptr, sizeof(int));
 	ptr += 4;
-	
-	char * buffer = (char*)malloc((length+1)*sizeof(char));
+
+	char * buffer = new char[length + 1];
+
 	// Put the stirng intr an array of chars
 	memcpy(buffer, ptr, length);
 	buffer[length] = '\0';
@@ -46,7 +47,7 @@ BYTE* Serializable::DeserializeString(BYTE *ptr, std::string *arg){
 	// Put the string into the std::string argument
 	(*arg) += buffer;
 
-	free(buffer);
+	delete buffer;
 
 	return ptr + length;
 }

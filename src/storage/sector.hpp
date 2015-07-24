@@ -1,9 +1,11 @@
 #ifndef SECTOR_HPP_
 #define SECTOR_HPP_
 
+#include "base\error-manager.hpp"
+#include "base\error-codes.hpp"
 #include "base\generic-type-definitions.hpp"
 #include "base\generic-constants.hpp"
-#include "base\error-codes.hpp"
+
 
 typedef INT64 SectorID;
 typedef UINT16 SectorSize;
@@ -19,6 +21,14 @@ enum SectorType
 };
 
 class Sector {
+public:
+	BYTE* get_data();
+
+	void UseSector(Sector *sector_p, int meta_data_size);
+
+protected:
+	Sector(){};
+
 private:
 	// TODO: Include here all data required
 	SectorID self_ref_;
@@ -41,10 +51,6 @@ private:
 	// Statistics Related
 
 	// Sector actual data starts here. It should have 6k - offset of Sector::data in Sector.
-	char *data_;
-
-private:
-	Sector();
-
+	BYTE *data_;
 };
 #endif // SECTOR_HPP_

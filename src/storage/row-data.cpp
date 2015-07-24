@@ -38,8 +38,8 @@ BYTE* RowData::SerializeRow(Table * t, BYTE* start) {
 				break;
 			case DB_STRING:
 				//Tracks where the string starts
-				INT32 *p = (INT32*)o_pos;
-				*p = (INT32)(s_pos - start);
+				INT32 arg = s_pos - start;
+				memcpy(o_pos, &arg, sizeof(arg));
 				o_pos += 4;
 				s_pos = (*values_.at(i)).Serialize(s_pos);
 			break;

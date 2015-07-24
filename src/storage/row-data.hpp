@@ -1,7 +1,11 @@
 #ifndef ROW_DATA_HPP_
 #define ROW_DATA_HPP_
 
+#include "metadata\database-value.hpp"
+#include "schema\attribute.hpp"
+#include "schema\table.hpp"
 #include "storage\data-sector.hpp"
+
 #include <vector>
 
 class RowData {
