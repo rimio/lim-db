@@ -16,20 +16,16 @@ enum SectorType
 {
 	SECTOR_UNKNOWN = 0,
 	SECTOR_HEAD,
-	SECTOR_HEAP,
+	SECTOR_DATA,
 	SECTOR_INDEX
 };
 
 class Sector {
 public:
-	BYTE* get_data();
-
-	void UseSector(Sector *sector_p, int meta_data_size);
 
 protected:
 	Sector(){};
 
-private:
 	// TODO: Include here all data required
 	SectorID self_ref_;
 
@@ -49,8 +45,5 @@ private:
 	SectorSize deleted_;
 
 	// Statistics Related
-
-	// Sector actual data starts here. It should have 6k - offset of Sector::data in Sector.
-	BYTE *data_;
 };
 #endif // SECTOR_HPP_

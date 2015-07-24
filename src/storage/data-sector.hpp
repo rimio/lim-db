@@ -19,14 +19,15 @@ public:
 	//Row_number starts with 0
 	BYTE* Select(int row_number);
 	//Returns all rows contained
-	BYTE* Select();
+	std::vector<BYTE*> Select();
 	//Inserts a row in the DataSector
 	ErrorCode Insert(BYTE* ptr, int length_required);
 
-	void UseDataSector(DataSector *sector, int meta_data_size);
+	void UseDataSector(DataSector *sector);
 
 private:
 	INT16 num_rows_;
+	UINT16 offset_to_last_row_data_;
 	Slot slots_[1];
 };
 

@@ -3,9 +3,14 @@
 #include "storage\row-data.hpp"
 #include "storage\data-sector.hpp"
 #include "boot\boot.hpp"
+#include "base\generic-operations.hpp"
+
+#define INT32_ALIGNMENT 4
 
 void DataSectorTest::check() {
 	Table *t = new Table();
+	BYTE row_data_buffer[SECTOR_MAX_SIZE + INT32_ALIGNMENT];
+
 	t->AddAttribute("COD", DB_INTEGER, 1);
 	t->AddAttribute("NUME", DB_STRING, 2);
 	t->AddAttribute("PRENUME", DB_STRING, 3);
@@ -22,13 +27,12 @@ void DataSectorTest::check() {
 
 	void *buffer = malloc(SECTOR_MAX_SIZE*sizeof(BYTE));
 	DataSector *ds = reinterpret_cast<DataSector*> (buffer);
-	ds->UseDataSector(ds,4096);
+	ds->UseDataSector(ds);
 
 	RowData *rd = new RowData(t);
 
-	BYTE *start = new BYTE;
-	BYTE *keep = new BYTE;
-	keep = start;
+	BYTE *start = PTR_ALIGN_UPPER(row_data_buffer, INT32_ALIGNMENT);
+	BYTE *ptr;
 	
 	std::vector<DatabaseValue*> v1;
 	v1.push_back(new IntDatabaseValue(17));
@@ -41,12 +45,13 @@ void DataSectorTest::check() {
 
 	rd->set_data_values(v1);
 
-	BYTE *end = rd->SerializeRow(t, start);
+	ptr = rd->SerializeRow(t, start);
+
 	//insert first serialized row
-	ds->Insert(keep, end - keep );
+	ds->Insert(start, ptr - start);
 	
 	BYTE* where = ds->Select(0);
-	end = rd->DeserializeRow(t, where);
+	ptr = rd->DeserializeRow(t, where);
 
 	std::vector<DatabaseValue*> v2;
 	v2.push_back(new IntDatabaseValue(117));
@@ -59,17 +64,24 @@ void DataSectorTest::check() {
 
 	rd->set_data_values(v2);
 	
-	end = rd->SerializeRow(t, start);
+	ptr = rd->SerializeRow(t, start);
 	//insert second serialized row
-	ds->Insert(keep, end - keep);
+	ds->Insert(start, ptr - start);
+	
+	where = ds->Select(1);
+	ptr = rd->DeserializeRow(t, where);
 
 	where = ds->Select(1);
-	end = rd->DeserializeRow(t, where);
-
-	where = ds->Select(1);
-	end = rd->DeserializeRow(t, where);
+	ptr = rd->DeserializeRow(t, where);
 
 	where = ds->Select(0);
-	end = rd->DeserializeRow(t, where);
+	ptr = rd->DeserializeRow(t, where);
+	
+	std::vector<BYTE*> res;
+	res = ds->Select();
+
+	for (int i = 0; i < res.size(); i++) {
+		ptr = rd->DeserializeRow(t, res.at(i));
+	}
 
 }

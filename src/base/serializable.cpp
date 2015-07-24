@@ -6,15 +6,17 @@ BYTE* Serializable::SerializeInt(int arg, BYTE* ptr) {
 }
 
 BYTE* Serializable::SerializeFloat(float arg, BYTE* ptr) {
-	memcpy(ptr, &arg, sizeof(arg));
+	INT32 to_int32 = (INT32)arg;
+	memcpy(ptr, &to_int32, sizeof(arg));
 	return ptr + 8;
 }
 
 BYTE* Serializable::SerializeString(std::string arg, BYTE* ptr) {
 	int length = arg.length();
-
+	INT32 to_int32 = (INT32)length;
+	
 	// Serialize the length of the string
-	memcpy(ptr, &length, sizeof(length));
+	memcpy(ptr, &to_int32, sizeof(length));
 	ptr += 4;
 	
 	// Serialize the string
@@ -23,7 +25,9 @@ BYTE* Serializable::SerializeString(std::string arg, BYTE* ptr) {
 }
 
 BYTE* Serializable::DeserializeInt(BYTE *ptr, int *arg) {
-	memcpy(arg, ptr, sizeof(int));
+	INT32 from_int32;
+	memcpy(&from_int32, ptr, sizeof(from_int32));
+	*arg = (int)(from_int32);
 	return ptr+4;
 }
 
@@ -33,9 +37,10 @@ BYTE* Serializable::DeserializeFloat(BYTE *ptr, float *arg) {
 }
 
 BYTE* Serializable::DeserializeString(BYTE *ptr, std::string *arg){
-	int length;
+	INT32 from_int32;
 	// Deserialize the length of the string
-	memcpy(&length, ptr, sizeof(int));
+	memcpy(&from_int32, ptr, sizeof(from_int32));
+	int length = (int)(from_int32);
 	ptr += 4;
 
 	char * buffer = new char[length + 1];
