@@ -3,19 +3,23 @@
 #include "boot\boot.hpp"
 
 ParserCreateTableStatement::~ParserCreateTableStatement () {
-	delete table_;
+	//delete table_;
 
-	vector_clear_and_delete (*columns_);
-	delete columns_;
+	//vector_clear_and_delete (*columns_);
+	//delete columns_;
 }
 
 std::string ParserCreateTableStatement::Print () {
 	std::string printed("CREATE TABLE ");
+	bool is_first = true;
 
 	printed += table_ != NULL ? table_->ToString () : "(unknown name)";
 	printed += std::string("(");
 	for (auto col = columns_->begin(); col != columns_->end(); ++col) {
-		printed += (*col)->ToString () + std::string(", ");
+		if (!is_first)
+			printed += std::string(", ");
+		is_first = false;
+		printed += (*col)->ToString ();
 	}
 	printed += std::string(")");
 

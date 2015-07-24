@@ -10,7 +10,7 @@ class ParserSelect :
 	public virtual ParserNode {
 
 public:
-	~ParserSelect ();
+	virtual ~ParserSelect ();
 
 	std::string ToString () override;
 

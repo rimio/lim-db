@@ -8,7 +8,7 @@ class ParserDelete :
 	public virtual ParserNode {
 
 public:
-	~ParserDelete ();
+	virtual ~ParserDelete ();
 
 	std::string ToString () override;
 

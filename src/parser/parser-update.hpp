@@ -8,7 +8,7 @@ class ParserUpdate :
 	public virtual ParserNode {
 
 public:
-	~ParserUpdate ();
+	virtual ~ParserUpdate ();
 
 	std::string ToString () override;
 

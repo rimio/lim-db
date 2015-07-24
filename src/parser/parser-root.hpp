@@ -5,11 +5,13 @@
 
 class ParserRoot {
 public:
+	virtual ~ParserRoot () {}
+
 	virtual ErrorCode Process() final;
 	virtual std::string Print() = 0;
 
 protected:
-	ParserRoot () {};
+	ParserRoot () {}
 
 	virtual ErrorCode Compile() = 0;
 	virtual ErrorCode Prepare() = 0;

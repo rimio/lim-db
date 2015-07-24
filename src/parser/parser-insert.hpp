@@ -10,7 +10,7 @@ class ParserInsert :
 	public virtual ParserNode {
 
 public:
-	~ParserInsert ();
+	virtual ~ParserInsert ();
 
 	std::string ToString () override;
 

@@ -10,7 +10,7 @@ class ParserExpression : public ParserNode {
 	
 protected:
 	ParserExpression (std::vector<ParserNode*>* arguments);
-	~ParserExpression ();
+	virtual ~ParserExpression ();
 
 	// Override virtual functions from ParserNode
 	void GetChildren (std::vector<ParserNode*>* children);
