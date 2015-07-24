@@ -9,12 +9,30 @@
 %code requires
 {
 	/* Node includes */
+	#include "parser/parser-root.hpp"
 	#include "parser/parser-node.hpp"
-	#include "parser/command-node.hpp"
-	#include "parser/statement-node.hpp"
-	#include "parser/identifier-node.hpp"
-	#include "parser/operator-node.hpp"
-	#include "parser/value-node.hpp"
+	#include "parser/parser-command.hpp"
+	
+	#include "parser/parser-column.hpp"
+	#include "parser/parser-identifier.hpp"
+	#include "parser/parser-table.hpp"
+	#include "parser/parser-value.hpp"
+
+	#include "parser/parser-alter-table.hpp"
+	#include "parser/parser-create-table.hpp"
+	#include "parser/parser-delete.hpp"
+	#include "parser/parser-drop-table.hpp"
+	#include "parser/parser-index.hpp"
+	#include "parser/parser-insert.hpp"
+	#include "parser/parser-select.hpp"
+	#include "parser/parser-update.hpp"
+
+	#include "parser/expression/parser-expression-arithmetic.hpp"
+	#include "parser/expression/parser-expression-compare.hpp"
+	#include "parser/expression/parser-expression-logical.hpp"
+
+	#include <iostream>
+	#include <vector>
 
 	class ParserContext;
 	class Lexer;
@@ -24,13 +42,11 @@
 %parse-param	{ Lexer &lexer  }
 %lex-param		{ ParserContext &context }
 %parse-param	{ ParserContext &context }
-%parse-param	{ ParserNode **root_node }
+%parse-param	{ ParserRoot **root_node }
 
 %code
 {
 
-#include <iostream>
-#include <vector>
 #include "base/error-manager.hpp"
 #include "parser/parser-context.hpp"
 #include "parser/lexer.hpp"
@@ -44,17 +60,18 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 	float fval;
 	std::string *sval;
 
+	ParserRoot *parser_root_val;
 	ParserNode *parser_node;
-	TypedParserNode *typed_parser_node;
-	StatementNode *statement_node;
-	CommandNode *command_node;
-	ValueNode *value_node;
-	OperatorNode *operator_node;
-	TableIdentifierNode *table_identifier_node;
-	ColumnIdentifierNode *column_identifier_node;
-	IndexIdentifierNode *index_identifier_node;
+	ParserCommand *command_val;
 
-	std::vector<ColumnIdentifierNode*> *column_identifier_node_list;
+	ParserIndex *index_node_val;
+	ParserTable* table_node_val;
+	ParserColumn* column_node_val;
+	ParserValue* value_node_val;
+
+	std::vector<ParserNode *>* parser_node_list;
+	std::vector<ParserTable *>* table_node_list_val;
+	std::vector<ParserColumn *>* column_node_list_val;
 }
 
 %token AND
@@ -114,35 +131,35 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <parser_node>		statement_or_command
 
 // Commands
-%type <command_node>			command
-%type <command_node>			exit_command
+%type <command_val>			command
+%type <command_val>			exit_command
 
 // Statements
-%type <statement_node>			statement
-%type <statement_node>			select_statement
-%type <statement_node>			insert_statement
-%type <statement_node>			delete_statement
-%type <statement_node>			update_statement
-%type <statement_node>			create_table_statement
-%type <statement_node>			create_index_statement
-%type <statement_node>			drop_table_statement
-%type <statement_node>			drop_index_statement
+%type <parser_root_val>			statement
+%type <parser_root_val>			select_statement
+%type <parser_root_val>			insert_statement
+%type <parser_root_val>			delete_statement
+%type <parser_root_val>			update_statement
+%type <parser_root_val>			create_table_statement
+%type <parser_root_val>			create_index_statement
+%type <parser_root_val>			drop_table_statement
+%type <parser_root_val>			drop_index_statement
 
 // Typed nodes
-%type <value_node>				literal
-%type <typed_parser_node>		operand
-%type <typed_parser_node>		expression
-%type <typed_parser_node>		expression_list
+%type <value_node_val>			literal
+%type <parser_node>				operand
+%type <parser_node>				expression
+%type <parser_node_list>		expression_list
 
 // Identifiers
-%type <table_identifier_node>	table_identifier
-%type <table_identifier_node>	table_identifier_list
-%type <column_identifier_node>	column_identifier
-%type <index_identifier_node>	index_identifier
+%type <table_node_val>	table_identifier
+%type <table_node_list_val>	table_identifier_list
+%type <column_node_val>	column_identifier
+%type <index_node_val>	index_identifier
 
 // Data definition language
-%type <column_identifier_node>	column_definition
-%type <column_identifier_node_list>	column_definition_list
+%type <column_node_val>	column_definition
+%type <column_node_list_val>	column_definition_list
 
 %%
 
@@ -171,8 +188,7 @@ command
 exit_command
 	: EXIT
 		{
-			$$ = new ExitCommandNode ();
-			$$->setLocation (@1);
+			$$ = new ParserCommand (PT_COMMAND_EXIT);
 		}
 	;
 
@@ -212,42 +228,41 @@ statement
 	;
 
 select_statement
-	: SELECT expression_list FROM table_identifier_list
+	: SELECT expression_list FROM table_identifier
 		{
-			$$ = new SelectStatementNode ($2, $4);
-			$$->setLocation (@1);
+			$$ = new ParserSelectStatement ($2, $4, @1);
 		}
 	;
 
 insert_statement
 	: INSERT INTO table_identifier VALUES PAR_OPEN expression_list PAR_CLOSE
 		{
-			$$ = new InsertStatementNode ($3, $6);
-			$$->setLocation (@1);
+			std::vector<std::vector<ParserNode *> *> *values_list =
+				new std::vector<std::vector<ParserNode *> *>;
+			values_list->push_back ($6);
+
+			$$ = new ParserInsertStatement ($3, NULL, values_list, @1);
 		}
 	;
 
 delete_statement
 	: DELETE
 		{
-			$$ = new DeleteStatementNode ();
-			$$->setLocation (@1);
+			$$ = new ParserDeleteStatement (@1);
 		}
 	;
 
 update_statement
 	: UPDATE
 		{
-			$$ = new UpdateStatementNode ();
-			$$->setLocation (@1);
+			$$ = new ParserUpdateStatement (@1);
 		}
 	;
 
 create_table_statement
 	: CREATE TABLE table_identifier PAR_OPEN column_definition_list PAR_CLOSE
 		{
-			$$ = new CreateTableStatementNode ($3, $5);
-			$$->setLocation (@1);
+			$$ = new ParserCreateTableStatement ($3, $5, @1);
 		}
 	;
 
@@ -255,12 +270,12 @@ column_definition_list
 	: column_definition_list COMMA column_definition 
 		{
 			$$ = $1;
-			$$->push_back($3);
+			$$->push_back ($3);
 		}
 	| column_definition
 		{
-			$$ = new std::vector <ColumnIdentifierNode*>;
-			$$->push_back($1); 
+			$$ = new std::vector <ParserColumn *>;
+			$$->push_back ($1); 
 		}
 	;
 
@@ -268,145 +283,156 @@ column_definition
 	: column_identifier INT
 		{
 			$$ = $1;
-			$$->setDataType (DB_INTEGER);
+			$$->set_data_type (DB_INTEGER);
 		}
 	| column_identifier FLOAT
 		{
 			$$ = $1;
-			$$->setDataType (DB_FLOAT);
+			$$->set_data_type (DB_FLOAT);
 		}
 	| column_identifier STRING
 		{
 			$$ = $1;
-			$$->setDataType (DB_STRING);
+			$$->set_data_type (DB_STRING);
 		}
 	;
 
 create_index_statement
 	: CREATE INDEX index_identifier
 		{
-			$$ = new CreateIndexStatementNode ();
-			$$->setLocation (@1);
+			$$ = new ParserAlterTableStatement (@1);
 		}
 	;
 
 drop_table_statement
 	: DROP TABLE table_identifier
 		{
-			$$ = new DropTableStatementNode ($3);
-			$$->setLocation (@1);
+			$$ = new ParserDropTableStatement ($3, @1);
 		}
 	;
 
 drop_index_statement
 	: DROP INDEX index_identifier
 		{
-			$$ = new DropIndexStatementNode ();
-			$$->setLocation (@1);
+			$$ = new ParserAlterTableStatement (@1);
 		}
 	;
 
 expression_list
-	: expression COMMA expression_list
+	: expression_list COMMA expression
 		{
 			$$ = $1;
-			$$->setNext ($3);
+			$$->push_back ($3);
 		}
 	| expression
 		{
-			$$ = $1;
+			$$ = new std::vector<ParserNode *>;
+			$$->push_back ($1);
 		}
 	;
 
 expression
 	: expression OR expression
 		{
-			$$ = new OrOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionLogical (args, LogicalOperators::OR);
 		}
 	| expression AND expression
 		{
-			$$ = new AndOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionLogical (args, LogicalOperators::AND);
 		}
 	| NOT expression
 		{
-			$$ = new NotOperatorNode ($2);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($2);
+			$$ = new ParserExpressionLogical (args, LogicalOperators::NOT);
 		}
 	| expression LT expression
 		{	
-			$$ = new LtOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::LT);
 		}
 	| expression LT_EQ expression
 		{
-			$$ = new LtEqOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::LT_EQ);
 		}
 	| expression GT expression
 		{
-			$$ = new GtOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::GT);
 		}
 	| expression GT_EQ expression
 		{
-			$$ = new GtEqOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::GT_EQ);
 		}
 	| expression EQUAL expression
 		{
-			$$ = new EqualOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::EQ);
 		}
 	| expression NOT_EQUAL expression
 		{
-			$$ = new NotEqualOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionCompare (args, CompareOperators::NOT_EQ);
 		}
 	| expression PLUS expression
 		{
-			$$ = new PlusOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionArithmetic (args, ArithmeticOperators::PLUS);
 		}
 	| expression MINUS expression
 		{
-			$$ = new MinusOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionArithmetic (args, ArithmeticOperators::MINUS);
 		}
 	| expression STAR expression
 		{
-			$$ = new MultiplicationOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionArithmetic (args, ArithmeticOperators::MULTIPLY);
 		}
 	| expression SLASH expression
 		{
-			$$ = new DivisionOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionArithmetic (args, ArithmeticOperators::DIVIDE);
 		}
 	| expression MODULO expression
 		{
-			$$ = new ModuloOperatorNode ($1, $3);
-			$$->setLocation (@1);
+			std::vector<ParserNode*>* args = new std::vector<ParserNode*>;
+			args->push_back($1);
+			args->push_back($3);
+			$$ = new ParserExpressionArithmetic (args, ArithmeticOperators::MODULO);
 		}
 	| MINUS expression %prec NEGATION
 		{
-			$$ = new MinusOperatorNode ($2, nullptr);
-			$$->setLocation (@1);
-
-			// Check for chained negations
-			if ($2->getNodeType () == PT_OPERATOR)
-			{
-				OperatorNode *opn = (OperatorNode *) $2;
-				if (opn->getOperatorType () == PT_OPERATOR_MINUS)
-				{
-					MinusOperatorNode *mopn = (MinusOperatorNode *) opn;
-					if (mopn->getRight () == nullptr)
-					{
-						error (@2, "chained negation not allowed");
-					}
-				}
-			}
+			// TODO
+			$$ = NULL;
 		}
 	| PAR_OPEN expression PAR_CLOSE
 		{
@@ -433,38 +459,38 @@ operand
 literal
 	: ILITERAL
 		{
-			$$ = new IntegerValueNode ($1);
-			$$->setLocation (@1);
+			// TODO
+			$$ = NULL;
 		}
 	| FLITERAL
 		{
-			$$ = new FloatValueNode ($1);
-			$$->setLocation (@1);
+			// TODO
+			$$ = NULL;
 		}
 	| SLITERAL
 		{
-			$$ = new StringValueNode (*($1));
-			delete ($1);
-			$$->setLocation (@1);
+			// TODO
+			$$ = NULL;
 		}
 	;
 
 table_identifier_list
-	: table_identifier COMMA table_identifier_list
+	: table_identifier_list COMMA table_identifier
 		{
 			$$ = $1;
-			$$->setNext ($3);
+			$$->push_back ($3);
 		}
 	| table_identifier
 		{
-			$$ = $1;
+			$$ = new std::vector<ParserTable *>;
+			$$->push_back ($1);
 		}
 	;
 
 table_identifier
 	: IDENTIFIER
 		{
-			$$ = new TableIdentifierNode (*($1));
+			$$ = new ParserTable (*($1));
 			delete ($1);
 			$$->setLocation (@1);
 		}
@@ -473,15 +499,16 @@ table_identifier
 column_identifier
 	: IDENTIFIER
 		{
-			$$ = new ColumnIdentifierNode (*($1));
+			$$ = new ParserColumn (*($1));
 			delete ($1);
 			$$->setLocation (@1);
 		}
 	| IDENTIFIER DOT IDENTIFIER
 		{
-			$$ = new ColumnIdentifierNode (*($1), *($3));
-			delete ($1);
+			$$ = new ParserColumn (*($3));
 			delete ($3);
+			$$->set_table_name (*($1));
+			delete ($1);
 			$$->setLocation (@1);
 		}
 	;
@@ -489,15 +516,8 @@ column_identifier
 index_identifier
 	: IDENTIFIER
 		{
-			$$ = new IndexIdentifierNode (*($1));
+			$$ = new ParserIndex (*($1));
 			delete ($1);
-			$$->setLocation (@1);
-		}
-	| IDENTIFIER DOT IDENTIFIER
-		{
-			$$ = new IndexIdentifierNode (*($1), *($3));
-			delete ($1);
-			delete ($3);
 			$$->setLocation (@1);
 		}
 	;

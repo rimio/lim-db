@@ -25,32 +25,6 @@ void Deinitialize ()
 }
 
 //
-// Execute an internal command
-//
-ErrorCode ExecuteCommand (CommandNode& command, bool& shutdown)
-{
-	// Interpret command
-	switch (command.getCommandType ())
-	{
-	case PT_COMMAND_EXIT:
-		shutdown = true;
-		break;
-	default:
-		return ErrorManager::error (__HERE__, ER_INVALID_PARSER_NODE);
-	}
-	
-	// All ok
-	return NO_ERROR;
-}
-
-ErrorCode ExecuteStatement(StatementNode *statement){
-	ErrorCode er = statement->compile();
-	if (er == NO_ERROR)
-		er = statement->execute();
-	return er;
-}
-
-//
 // Input loop
 //
 ErrorCode InputLoop ()
@@ -74,7 +48,7 @@ ErrorCode InputLoop ()
 			continue;
 
 		// Check we have a root node
-		ParserNode *root = context.getRootNode ();
+		ParserRoot *root = context.getRootNode ();
 	
 		if (root == nullptr)
 		{
@@ -83,26 +57,15 @@ ErrorCode InputLoop ()
 		}
 
 		// DEBUG CODE: Print parse tree
-		std::cout << std::endl << "statement: " << root->print () << std::endl;
+		std::cout << std::endl << "statement: " << root->Print () << std::endl;
 
 		// TODO: Semantic checking
 		
 		// Execute statement or internal command
-		switch (root->getNodeType ())
-		{
-		case PT_COMMAND:
-			rc = ExecuteCommand (* ((CommandNode *)root), shutdown);
-			break;
-		
-		case PT_STATEMENT:
-			// TODO: Compile and execute
-			rc = ExecuteStatement(static_cast<StatementNode *>(root));
-			break;
+		root->Process();
 
-		default:
-			ErrorManager::error (__HERE__, ER_INVALID_PARSER_NODE);
-			continue;
-		}
+		// Delete parser resource for statement or internal command
+		delete root;
 		
 		// Check execution return code
 		if (rc != NO_ERROR)
@@ -110,8 +73,6 @@ ErrorCode InputLoop ()
 			ErrorManager::error (__HERE__, ER_INVALID_PARSER_NODE);
 			continue;
 		}
-
-		delete root;
 	}
 
 	// All ok?

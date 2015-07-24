@@ -41,27 +41,53 @@ add_flex_bison_dependency (lexer parser)
 
 # Parser files
 set (SRC_PARSER_FILES
-	
-	${SOURCE_DIR}/parser/command-node.hpp
-	${SOURCE_DIR}/parser/command-node.cpp
-
-	${SOURCE_DIR}/parser/identifier-node.hpp
-	${SOURCE_DIR}/parser/identifier-node.cpp
-
-	${SOURCE_DIR}/parser/operator-node.hpp
-	${SOURCE_DIR}/parser/operator-node.cpp
-
 	${SOURCE_DIR}/parser/parser-context.hpp
 	${SOURCE_DIR}/parser/parser-context.cpp
 
 	${SOURCE_DIR}/parser/parser-node.hpp
 	${SOURCE_DIR}/parser/parser-node.cpp
 
-	${SOURCE_DIR}/parser/statement-node.hpp
-	${SOURCE_DIR}/parser/statement-node.cpp
+	${SOURCE_DIR}/parser/parser-root.hpp
+	${SOURCE_DIR}/parser/parser-root.cpp
 
-	${SOURCE_DIR}/parser/value-node.hpp
-	${SOURCE_DIR}/parser/value-node.cpp
+	${SOURCE_DIR}/parser/parser-alter-table.hpp
+	${SOURCE_DIR}/parser/parser-alter-table.cpp
+
+	${SOURCE_DIR}/parser/parser-column.hpp
+	${SOURCE_DIR}/parser/parser-column.cpp
+
+	${SOURCE_DIR}/parser/parser-command.hpp
+	${SOURCE_DIR}/parser/parser-command.cpp
+
+	${SOURCE_DIR}/parser/parser-create-table.hpp
+	${SOURCE_DIR}/parser/parser-create-table.cpp
+
+	${SOURCE_DIR}/parser/parser-delete.hpp
+	${SOURCE_DIR}/parser/parser-delete.cpp
+
+	${SOURCE_DIR}/parser/parser-drop-table.hpp
+	${SOURCE_DIR}/parser/parser-drop-table.cpp
+
+	${SOURCE_DIR}/parser/parser-identifier.hpp
+	${SOURCE_DIR}/parser/parser-identifier.cpp
+
+	${SOURCE_DIR}/parser/parser-index.hpp
+	${SOURCE_DIR}/parser/parser-index.cpp
+
+	${SOURCE_DIR}/parser/parser-insert.hpp
+	${SOURCE_DIR}/parser/parser-insert.cpp
+
+	${SOURCE_DIR}/parser/parser-select.hpp
+	${SOURCE_DIR}/parser/parser-select.cpp
+
+	${SOURCE_DIR}/parser/parser-table.hpp
+	${SOURCE_DIR}/parser/parser-table.cpp
+
+	${SOURCE_DIR}/parser/parser-update.hpp
+	${SOURCE_DIR}/parser/parser-update.cpp
+
+	${SOURCE_DIR}/parser/parser-value.hpp
+	${SOURCE_DIR}/parser/parser-value.cpp
 
 	# flex/bison
 	${BISON_parser_OUTPUT_HEADER}
@@ -71,6 +97,20 @@ set (SRC_PARSER_FILES
 	)
 source_group("src\\parser" FILES ${SRC_PARSER_FILES})
 
+set (SRC_PARSER_EXPRESSION_FILES
+	${SOURCE_DIR}/parser/expression/parser-expression.hpp
+	${SOURCE_DIR}/parser/expression/parser-expression.cpp
+	
+	${SOURCE_DIR}/parser/expression/parser-expression-arithmetic.hpp
+	${SOURCE_DIR}/parser/expression/parser-expression-arithmetic.cpp
+
+	${SOURCE_DIR}/parser/expression/parser-expression-compare.hpp
+	${SOURCE_DIR}/parser/expression/parser-expression-compare.cpp
+
+	${SOURCE_DIR}/parser/expression/parser-expression-logical.hpp
+	${SOURCE_DIR}/parser/expression/parser-expression-logical.cpp
+	)
+source_group("src\\parser\\expression" FILES ${SRC_PARSER_EXPRESSION_FILES})
 
 set (SRC_BASE_FILES
 	${SOURCE_DIR}/base/bitmap.hpp
@@ -155,6 +195,7 @@ set (UNIT_TEST_SOURCE_FILES
 
 add_library(lim-db
 			${SRC_PARSER_FILES}
+			${SRC_PARSER_EXPRESSION_FILES}
 			${SRC_BASE_FILES}
 			${SRC_BOOT_FILES}
 			${SRC_STORAGE_FILES}
@@ -180,7 +221,6 @@ target_link_libraries(unit-test lim-db)
 set_property(TARGET lim-db PROPERTY FOLDER "libraries")
 set_property(TARGET lim-db-console PROPERTY FOLDER "executables")
 set_property(TARGET unit-test PROPERTY FOLDER "executables")
-
 
 # C++11
 set_property(TARGET lim-db PROPERTY CXX_STANDARD 11)
