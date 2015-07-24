@@ -1,13 +1,13 @@
 #include "base\serializable.hpp"
 
 BYTE* Serializable::SerializeInt(int arg, BYTE* ptr) {
-	memcpy(ptr, &arg, sizeof(arg));
+	INT32 to_int32 = (INT32)arg;
+	memcpy(ptr, &to_int32, sizeof(arg));
 	return ptr + 4;
 }
 
 BYTE* Serializable::SerializeFloat(float arg, BYTE* ptr) {
-	INT32 to_int32 = (INT32)arg;
-	memcpy(ptr, &to_int32, sizeof(arg));
+	memcpy(ptr, &arg, sizeof(arg));
 	return ptr + 8;
 }
 
