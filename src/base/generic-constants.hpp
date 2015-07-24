@@ -9,10 +9,10 @@
 #define MIN_UINT8 ((UINT8) 0x00)
 #define MAX_UINT8 ((UINT8) 0xFF)
 
-#define MIN_INT16 ((INT8) 0x8000)
-#define MAX_INT16 ((INT8) 0x7FFF)
+#define MIN_INT16 ((INT16) 0x8000)
+#define MAX_INT16 ((INT16) 0x7FFF)
 
-#define MIN_UINT16 ((UINT8) 0x0000)
-#define MAX_UINT16 ((UINT8) 0xFFFF)
+#define MIN_UINT16 ((UINT16) 0x0000)
+#define MAX_UINT16 ((UINT16) 0xFFFF)
 
 #endif // GENERIC_CONSTANTS_

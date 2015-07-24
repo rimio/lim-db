@@ -14,8 +14,14 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 // Align pointer to desired alignment
-#define PTR_ALIGN(ptr, alignment) \
-	((ptr) = (char *) ((((UINTPTR) (ptr)) + ((UINTPTR) ((alignment) - 1))) & ~((UINTPTR) ((alignment) - 1))))
+#define PTR_ALIGN_UPPER(ptr, alignment) \
+	((BYTE*) ((((UINTPTR) (ptr)) + ((UINTPTR) ((alignment) - 1))) & ~((UINTPTR) ((alignment) - 1))))
+
+#define PTR_ALIGN_LOWER (ptr, alignment) \
+	((BYTE*)(((UINTPTR) (ptr)) & ~((UINTPTR)((aligment) -1)))
+
+#define ALIGN_SIZE(size, alignment) \
+	(((size) + ((alignment) - 1)) & ~((alignment) - 1))
 
 #define STRING_TO_LOWER(a) \
 	std::transform((a).begin(), (a).end(), (a).begin(), ::tolower)

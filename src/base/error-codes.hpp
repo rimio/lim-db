@@ -25,6 +25,7 @@ typedef enum
 	ER_TABLE_ALREADY_EXISTS,
 	ER_SAME_ATTRIBUTE,
 	ER_TABLE_DOES_NOT_EXIST,
+	ER_ALLOCATION_DATASECTOR_FULL,
 	ER_LAST_ERROR
 } ErrorCode;
 
@@ -48,6 +49,7 @@ static const std::string kErrorMessages[] = {
 	"a table with the name %s already exists",
 	"attribute with the name %s is duplicated",
 	"Can not delete table with the name %s. There is no such table",
+	"Can not serialize the row. Datasector is full.",
 };
 
 #endif

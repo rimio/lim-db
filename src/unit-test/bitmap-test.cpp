@@ -58,7 +58,7 @@ void BitmapTest::check() {
 
 	//When bit is out of range
 	result = t1.IsBitSet(5000);
-	assert(!result);
+	assert(result);
 	
 	//Ocuppy first 500 places 
 	for (int i = 0; i < 500; i++) t1.SetBit(i);

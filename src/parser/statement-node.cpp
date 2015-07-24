@@ -88,9 +88,25 @@ ErrorCode CreateTableStatementNode::compile() {
 
 	t->set_table_name(table_->name()); 
 	
+	INT32 position = 1;
+	//Number of attributes with type DB_STRING
+	int str = 0;
+	//Number of attributes with type DB_FLOAT
+	int fl = 0;
+	//Number of attributes with type DB_INTEGER
+	int i = 0;
+
 	for (std::vector<ColumnIdentifierNode*>::iterator attr = (*definition_).begin(); attr != (*definition_).end(); ++attr) {
-		t->AddAttribute((*attr)->name(), ((*attr)->getDataType()));
+		t->AddAttribute((*attr)->name(), ((*attr)->getDataType()), position);
+		++position;
+		if ((*attr)->getDataType() == DB_INTEGER) ++i;
+		else if ((*attr)->getDataType() == DB_FLOAT) ++fl;
+		else ++str;
 	}
+
+	t->set_nr_int(i);
+	t->set_nr_float(fl);
+	t->set_nr_string(str);
 	
 	ErrorCode er = GET_SCHEMA_MANAGER()->AddTable(t);
 

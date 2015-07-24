@@ -1,9 +1,11 @@
 #ifndef SECTOR_HPP_
 #define SECTOR_HPP_
 
+#include "base\error-manager.hpp"
+#include "base\error-codes.hpp"
 #include "base\generic-type-definitions.hpp"
 #include "base\generic-constants.hpp"
-#include "base\error-codes.hpp"
+
 
 typedef INT64 SectorID;
 typedef UINT16 SectorSize;
@@ -14,13 +16,16 @@ enum SectorType
 {
 	SECTOR_UNKNOWN = 0,
 	SECTOR_HEAD,
-	SECTOR_HEAP,
+	SECTOR_DATA,
 	SECTOR_INDEX
 };
 
-class Sector
-{
-private:
+class Sector {
+public:
+
+protected:
+	Sector(){};
+
 	// TODO: Include here all data required
 	SectorID self_ref_;
 
@@ -40,18 +45,5 @@ private:
 	SectorSize deleted_;
 
 	// Statistics Related
-
-	// Sector actual data starts here. It should have 6k - offset of Sector::data in Sector.
-	char data_[1];
-
-private:
-	Sector ();
-
-public:
-	static void UseSector (Sector *sector_p, SectorID id, SectorType type);
-
-	// TODO: Return pointer to first object or NULL
-	ErrorCode ScanStart (void ** ptr);
-	ErrorCode ScanIterate (void ** ptr);
 };
 #endif // SECTOR_HPP_
