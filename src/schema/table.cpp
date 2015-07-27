@@ -1,5 +1,7 @@
 #include "table.hpp"
 
+#include <cassert>
+
 Table::Table ()
 {
 	id_ = 0;
@@ -56,8 +58,25 @@ void Table::set_table_name(std::string table_name) {
 	name_ = table_name;
 }
 
-void Table::AddAttribute(std::string attr_name, DataType attr_type, INT32 position) {
+ErrorCode Table::AddAttribute(std::string attr_name, DataType attr_type, INT32 position) {
 	attributes_.emplace_back(attr_type, attr_name, position);
+	
+	switch (attr_type) {
+	case DB_INTEGER:
+		++nr_int_;
+		break;
+	case DB_FLOAT:
+		++nr_float_;
+		break;
+	case DB_STRING:
+		++nr_string_;
+		break;
+	default:
+		assert(false);
+		return ER_FAILED;
+	}
+
+	return NO_ERROR;
 }
 
 void Table::set_nr_string(int nr) {

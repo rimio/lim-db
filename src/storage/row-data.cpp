@@ -1,4 +1,7 @@
 #include "storage\row-data.hpp"
+#include "metadata\int-database-value.hpp"
+#include "metadata\float-database-value.hpp"
+#include "metadata\string-database-value.hpp"
 
 RowData::RowData(Table *t) {
 	std::vector<Attribute> attributes = t->get_table_attributes();
@@ -19,8 +22,9 @@ RowData::RowData(Table *t) {
 
 BYTE* RowData::SerializeRow(Table * t, BYTE* start) {
 	std::vector<Attribute> attributes = t->get_table_attributes();
+	// First 8 bytes allocated for 2 dummy variables
 	// Starting position of the offset values
-	BYTE *o_pos = start;
+	BYTE *o_pos = start + 8;
 	// Starting position of the integer values
 	BYTE *i_pos = o_pos + 4 * (t->get_nr_string());
 	// Starting position of the float values
@@ -50,8 +54,9 @@ BYTE* RowData::SerializeRow(Table * t, BYTE* start) {
 
 BYTE* RowData::DeserializeRow(Table *t, BYTE *start) {
 	std::vector<Attribute> attributes = t->get_table_attributes();
+	// First 8 bytes allocated for 2 dummy variables
 	// Starting position of the offset values
-	BYTE *o_pos = start;
+	BYTE *o_pos = start + 8;
 	// Starting position of the integer values
 	BYTE *i_pos = o_pos + 4 * (t->get_nr_string());
 	// Starting position of the float values

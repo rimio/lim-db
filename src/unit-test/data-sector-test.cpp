@@ -4,6 +4,9 @@
 #include "storage\data-sector.hpp"
 #include "boot\boot.hpp"
 #include "base\generic-operations.hpp"
+#include "metadata\int-database-value.hpp"
+#include "metadata\float-database-value.hpp"
+#include "metadata\string-database-value.hpp"
 
 #define INT32_ALIGNMENT 4
 
