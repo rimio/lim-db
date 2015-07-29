@@ -65,3 +65,9 @@ ErrorCode ParserNode::ParserWalkInternal (ErrorCode (ParserNode::*pre_func) (),
 
 	return (this->*post_func) ();
 }
+
+ErrorCode ParserNode::NameResolve() {
+	NameResolveArg arg;
+
+	return ParserWalk(&ParserNode::NameResolvePre, &arg, &ParserNode::NameResolvePost, &arg);
+}

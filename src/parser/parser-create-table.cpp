@@ -62,14 +62,12 @@ ErrorCode ParserCreateTableStatement::Execute () {
 	// Create schema for table
 	Table *t = new Table ();
 
-	INT32 position = 1;
-
 	// Set table name
 	t->set_table_name (table_->name ());
 
 	// Add columns
 	for (auto attr = columns_->begin (); attr != columns_->end (); ++attr) {
-		ErrorCode er =t->AddAttribute((*attr)->name (), ((*attr)->data_type ()), position++);
+		ErrorCode er =t->AddAttribute((*attr)->name (), ((*attr)->data_type ()));
 		if (er != NO_ERROR) 
 			return er;
 	}

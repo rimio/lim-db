@@ -14,6 +14,7 @@ public:
 	// Accessors
 	// TODO: Is it better to use pointers/references?
 	std::string name () { return name_; };
+	Table* table() { return table_; }
 	void set_name (std::string name) { name_ = name; };
 
 protected:
@@ -22,7 +23,7 @@ protected:
 	ErrorCode TypeCheckPre (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
 	ErrorCode TypeCheckPost (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
 
-	ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
+	ErrorCode NameResolvePre(NameResolveArg* arg, bool* stop_walk) override;
 	ErrorCode NameResolvePost (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
 
 	ErrorCode ConstantFoldPost (void) override { return NO_ERROR; }

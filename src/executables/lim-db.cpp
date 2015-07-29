@@ -29,9 +29,7 @@ void Deinitialize ()
 //
 ErrorCode InputLoop ()
 {
-	bool shutdown = false;
-	
-	while (!shutdown)
+	while (!Boot::IsShutdownRequested())
 	{
 		// Print prompt
 		std::cout << std::endl << "lim-sql> ";

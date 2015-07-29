@@ -9,7 +9,9 @@ class ParserColumn : public virtual ParserNode {
 public:
 	// Ctors
 	ParserColumn (std::string name) : name_ (name) {};
-
+	ParserColumn(std::string name, DataType type, std::string table_name) : 
+		name_(name), data_type_(type), table_name_(table_name) {};
+	
 	std::string ToString ();
 
 	// Accessors
@@ -30,7 +32,7 @@ protected:
 	ErrorCode TypeCheckPost (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
 
 	ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
-	ErrorCode NameResolvePost (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
+	ErrorCode NameResolvePost(NameResolveArg* arg, bool* stop_walk) override;
 
 	ErrorCode ConstantFoldPost (void) override { return NO_ERROR; }
 

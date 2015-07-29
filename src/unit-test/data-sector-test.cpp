@@ -14,17 +14,13 @@ void DataSectorTest::check() {
 	Table *t = new Table();
 	BYTE row_data_buffer[SECTOR_MAX_SIZE + INT32_ALIGNMENT];
 
-	t->AddAttribute("COD", DB_INTEGER, 1);
-	t->AddAttribute("NUME", DB_STRING, 2);
-	t->AddAttribute("PRENUME", DB_STRING, 3);
-	t->AddAttribute("VARSTA", DB_INTEGER, 4);
-	t->AddAttribute("ALTA_VARSTA", DB_INTEGER, 5);
-	t->AddAttribute("SCOR", DB_FLOAT, 6); 
-	t->AddAttribute("SCOR_NOU", DB_FLOAT, 7);
-
-	t->set_nr_float(2);
-	t->set_nr_int(3);
-	t->set_nr_string(2);
+	t->AddAttribute("COD", DB_INTEGER);
+	t->AddAttribute("NUME", DB_STRING);
+	t->AddAttribute("PRENUME", DB_STRING);
+	t->AddAttribute("VARSTA", DB_INTEGER);
+	t->AddAttribute("ALTA_VARSTA", DB_INTEGER);
+	t->AddAttribute("SCOR", DB_FLOAT); 
+	t->AddAttribute("SCOR_NOU", DB_FLOAT);
 
 	Boot::StartServer();
 

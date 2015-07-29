@@ -1,25 +1,31 @@
 #include "parser\parser-insert.hpp"
 #include "base\generic-operations.hpp"
+#include "boot\boot.hpp"
 
 //
 // PTInsertNode
 //
 
-ParserInsert::~ParserInsert () {
+ParserInsert::~ParserInsert() {
 	// delete table node
-	delete table_;
-	
+	if (table_ != NULL)
+		delete table_;
+
 	// delete column nodes
-	vector_clear_and_delete (*columns_);
-	delete columns_;
+	if (columns_ != NULL) {
+		vector_clear_and_delete(*columns_);
+		delete columns_;
+	}
 
 	// delete values lists
-	for (auto value_list = values_->begin (); value_list != values_->end ();
-		 ++value_list) {
-		vector_clear_and_delete (**value_list);
+	if (values_ != NULL) {
+		for (auto value_list = values_->begin(); value_list != values_->end();
+			++value_list) {
+			vector_clear_and_delete(**value_list);
+		}
+		vector_clear_and_delete(*values_);
+		delete values_;
 	}
-	vector_clear_and_delete (*values_);
-	delete values_;
 }
 
 std::string ParserInsert::ToString () {
@@ -52,7 +58,8 @@ std::string ParserInsert::ToString () {
 
 void ParserInsert::GetChildren (std::vector<ParserNode *>* children) {
 	// Add table
-	children->push_back (table_);
+	if (table_ != NULL)
+		children->push_back (table_);
 
 	// Add columns
 	if (columns_ != NULL) {
@@ -91,8 +98,84 @@ ParserInsertStatement::ParserInsertStatement (ParserTable* table,
 	setLocation (loc);
 }
 
-ErrorCode ParserInsertStatement::Compile () {
+ErrorCode ParserInsert::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
+	// Create new node
+	std::vector <ParserTable *> new_node;
+
+	// Add Parser table to the node
+	(*arg).tables_stack_.push(new_node);
+
 	return NO_ERROR;
+}
+
+ErrorCode ParserInsert::CheckValues(std::vector<std::vector<ParserNode *> *> *values) {
+	if (values == NULL) return NO_ERROR;
+	
+	// Make an insert instance, but without a table
+	ParserInsert dummy_insert;
+	//NameResolveArg dummy_arg;
+
+	dummy_insert.values_ = values;
+	
+	//Should not return error if all values are propperly set
+	ErrorCode er = dummy_insert.NameResolve();
+
+	dummy_insert.values_ = NULL;
+
+	return er;
+
+}
+
+ErrorCode ParserInsertStatement::Compile () {
+	// Check if table name exists
+	Table *tableSchema = NULL;
+	std::string table_name;
+
+	// We need lowercase table name
+	table_name = table_->name();
+	STRING_TO_LOWER(table_name);
+	table_->set_name(table_name);
+
+	// Find table by name
+	tableSchema = GET_SCHEMA_MANAGER()->FindTable(table_->name());
+	if (tableSchema == NULL) {
+		// Not found
+		return ErrorManager::error(__HERE__, ER_TABLE_DOES_NOT_EXIST,
+			table_->name().c_str());
+	}
+
+	// All good
+	if (columns_ == NULL) {
+		columns_ = new std::vector < ParserColumn * >();
+		std::vector<Attribute> attributes = tableSchema->get_table_attributes();
+		// Set all the columns 
+		std::vector<ParserColumn*> c;
+		for (auto attr = attributes.begin(); attr != attributes.end(); ++attr) {
+			(*columns_).push_back(new ParserColumn(attr->get_name(),
+				attr->get_type(), table_name));
+		}
+	}
+	
+	bool stop_walk = false;
+	NameResolveArg* arg = new NameResolveArg();
+	ErrorCode er = NameResolvePre(arg,&stop_walk);
+	delete arg;
+
+	if (er != NO_ERROR)
+		return er;
+	
+	// Check no names in values
+	er = CheckValues(values_);
+
+	// Check the number of args in each tuple is corectly defined
+	for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
+		if ((*(*val)).size() != (*columns_).size())
+			return ErrorManager::error(__HERE__, ER_INCONSISTENT_TUPLE,
+			table_->name().c_str());
+	}
+
+
+	return er;
 }
 
 ErrorCode ParserInsertStatement::Prepare () {

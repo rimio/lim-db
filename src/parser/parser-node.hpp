@@ -4,11 +4,16 @@
 #include "parser/location.hh"
 #include "base/data-type.hpp"
 #include "base/error-codes.hpp"
+
 #include <vector>
+#include <stack>
 
 //
 // Base class for all parser nodes
 //
+
+class ParserTable;
+
 class ParserNode
 {
 public:
@@ -44,12 +49,16 @@ protected:
 	virtual ErrorCode TypeCheckPost (TypeCheckArg* arg, bool* stop_walk) = 0;
 	
 	class NameResolveArg {
-		// TODO
+	public:
+		std::stack<std::vector <ParserTable*>, std::vector < std::vector< ParserTable* > > > tables_stack_;
 	};
+
 	virtual ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) = 0;
 	virtual ErrorCode NameResolvePost (NameResolveArg* arg, bool* stop_walk) = 0;
 
 	virtual ErrorCode ConstantFoldPost (void) = 0;
+
+	ErrorCode NameResolve();
 
 private:
 	template <class ArgPre, class ArgPost>
