@@ -28,7 +28,8 @@ typedef enum
 	ER_ALLOCATION_DATASECTOR_FULL,
 	ER_INVALID_VALUE,
 	ER_INEXISTENT_COLUMN,
-	ER_INCONSISTENT_TUPLE,
+	ER_ATTR_AND_VALUES_DIFF_NUMBERS,
+	ER_COLUMN_AND_VALUE_TYPE_MISMATCH,
 	ER_LAST_ERROR
 } ErrorCode;
 
@@ -55,7 +56,8 @@ static const std::string kErrorMessages[] = {
 	"Can not serialize the row. Datasector is full.",
 	"Value %s is not a propper one.",
 	"There is no column %s in table %s",
-	"The number of values in the tuple is inconsistent with the number of columns",
+	"The number of values does not match the number of columns",
+	"The type of the value can not be resolved to the type of the column",
 };
 
 #endif

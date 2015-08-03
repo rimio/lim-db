@@ -162,6 +162,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <parser_node>				operand
 %type <parser_node>				expression
 %type <parser_node_list>		expression_list
+%type <parser_node_list>		insert_values
 
 // Identifiers
 %type <table_node_val>	        table_identifier
@@ -169,6 +170,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <column_node_val>	        column_identifier
 %type <column_node_val>         column_simple_identifier
 %type <column_node_list_val>    column_simple_identifier_list
+%type <column_node_list_val>	insert_column_list
 %type <index_node_val>	        index_identifier
 %type <insert_values_list_val>  insert_values_list
 
@@ -250,13 +252,9 @@ select_statement
 	;
 
 insert_statement
-	: INSERT INTO table_identifier VALUES insert_values_list
+	: 	INSERT INTO table_identifier insert_column_list VALUES insert_values_list
 		{
-			$$ = new ParserInsertStatement ($3, NULL, $5, @1);
-		}
-	| 	INSERT INTO table_identifier PAR_OPEN column_simple_identifier_list PAR_CLOSE VALUES insert_values_list
-		{
-			$$ = new ParserInsertStatement ($3, $5, $8, @1);
+			$$ = new ParserInsertStatement ($3, $4, $6, @1);
 		}
 	; 
 
@@ -281,6 +279,17 @@ create_table_statement
 			$$ = new ParserCreateTableStatement ($3, $5, @1);
 		}
 	;
+
+insert_column_list
+	:
+	{
+		$$ = NULL;
+	}
+	| PAR_OPEN column_simple_identifier_list PAR_CLOSE
+	{
+		$$ = $2;
+	}
+
 
 column_definition_list
 	: column_definition_list COMMA column_definition 
@@ -350,17 +359,22 @@ column_simple_identifier_list
 	;
 
 insert_values_list
-	:
-	insert_values_list COMMA PAR_OPEN expression_list PAR_CLOSE
+	: insert_values_list COMMA insert_values
 		{
 			$$ = $1;
-			$$->push_back($4);
+			$$->push_back($3);
 		}
-	|
-	PAR_OPEN expression_list PAR_CLOSE
+	| insert_values
 		{
 			$$ =new std::vector<std::vector<ParserNode *> *>;
-			$$ ->push_back ($2);
+			$$ ->push_back ($1);
+		}
+	;
+
+insert_values
+	: PAR_OPEN expression_list PAR_CLOSE 
+		{
+			$$ = $2;
 		}
 	;
 

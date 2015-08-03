@@ -26,11 +26,6 @@ public:
 
 	virtual std::string ToString () { return std::string(""); };
 
-	template <class ArgPre, class ArgPost>
-	ErrorCode ParserWalk (ErrorCode (ParserNode::*pre_func) (ArgPre *, bool*), ArgPre* arg_pre,
-								  ErrorCode (ParserNode::*post_func) (ArgPost *, bool*), ArgPost* arg_post);
-	ErrorCode ParserWalk (ErrorCode (ParserNode::*pre_func) (void), ErrorCode (ParserNode::*post_func) (void));
-
 protected:
 	// Position in input buffer
 	yy::location location_;
@@ -43,7 +38,11 @@ protected:
 	
 
 	class TypeCheckArg {
-		// TODO
+	public:
+	// A stack of nodes. Each node represents one ore more table. 
+	// Each table has some columns. Each column could be resolved to a list of possible datatypes
+	std::stack<std::vector<std::vector<std::vector <DataType>>>, 
+		std::vector < std::vector < std::vector < std::vector< DataType > > > > > tables_and_columns_stack_;
 	};
 	virtual ErrorCode TypeCheckPre (TypeCheckArg* arg, bool* stop_walk) = 0;
 	virtual ErrorCode TypeCheckPost (TypeCheckArg* arg, bool* stop_walk) = 0;
@@ -59,6 +58,7 @@ protected:
 	virtual ErrorCode ConstantFoldPost (void) = 0;
 
 	ErrorCode NameResolve();
+	ErrorCode TypeCheck();
 
 private:
 	template <class ArgPre, class ArgPost>
@@ -66,6 +66,11 @@ private:
 								  ErrorCode (ParserNode::*post_func) (ArgPost *, bool*), ArgPost* arg_post,
 								  bool* stop_walking);
 	ErrorCode ParserWalkInternal (ErrorCode (ParserNode::*pre_func) (void), ErrorCode (ParserNode::*post_func) (void));
+
+	template <class ArgPre, class ArgPost>
+	ErrorCode ParserWalk(ErrorCode(ParserNode::*pre_func) (ArgPre *, bool*), ArgPre* arg_pre,
+		ErrorCode(ParserNode::*post_func) (ArgPost *, bool*), ArgPost* arg_post);
+	ErrorCode ParserWalk(ErrorCode(ParserNode::*pre_func) (void), ErrorCode(ParserNode::*post_func) (void));
 };
 
 #endif

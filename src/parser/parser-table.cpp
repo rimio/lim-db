@@ -7,7 +7,7 @@ ParserTable::ParserTable () {
 
 ParserTable::ParserTable (std::string name) {
 	ParserTable ();
-
+	STRING_TO_LOWER(name);
 	name_ = name;
 }
 
@@ -16,15 +16,15 @@ std::string ParserTable::ToString () {
 }
 
 ErrorCode ParserTable::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
-	// Get the node on top
-	std::vector <ParserTable *> last_node =  (*arg).tables_stack_.top();
+	// Get the node on top and add Parser table to the node
+	(*arg).tables_stack_.top().push_back(this);
+	return NO_ERROR;
+}
 
-	// Create a new Parser Table
-	ParserTable *pt = new ParserTable(table_->get_table_name());
-	pt->table_ = GET_SCHEMA_MANAGER()->FindTable(table_->get_table_name());
+ErrorCode ParserTable::TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) {
+	std::vector <std::vector <DataType>> new_table;
 
-	// Add Parser table to the node
-	last_node.push_back(pt);
-	
+	(*arg).tables_and_columns_stack_.top().push_back(new_table);
+
 	return NO_ERROR;
 }
