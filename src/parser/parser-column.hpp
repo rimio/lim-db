@@ -8,7 +8,7 @@ class ParserColumn : public virtual ParserNode {
 
 public:
 	// Ctors
-	ParserColumn (std::string name) : name_ (name) {};
+	ParserColumn (std::string name) : name_ (name), resolved_to_(NULL) {};
 	ParserColumn(std::string name, DataType type, std::string table_name, ParserTable* table) : 
 		name_(name), data_type_(type), table_name_(table_name), resolved_to_(table) {};
 	
@@ -25,7 +25,7 @@ public:
 	void set_data_type (DataType data_type) { data_type_ = data_type; };
 
 protected:
-	ParserColumn () {};
+	ParserColumn () : resolved_to_(NULL) {};
 
 	// Override virtual functions from ParserNode
 	ErrorCode TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
