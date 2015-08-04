@@ -109,36 +109,6 @@ ErrorCode ParserInsert::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
 	return NO_ERROR;
 }
 
-ErrorCode ParserInsert::TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) {
-	std::vector < std::vector <std::vector <DataType>>> new_node;
-
-	(*arg).tables_and_columns_stack_.push(new_node);
-
-	return NO_ERROR;
-}
-
-ErrorCode ParserInsert::TypeCheckPost(TypeCheckArg* arg, bool* stop_walk) {
-	std::vector<std::vector<DataType>> columns_types;
-	
-	columns_types = (*arg).tables_and_columns_stack_.top().back();
-
-	for (auto val = (*values_).begin(); val != (*values_).end(); val++)
-		for (int i = 0; i < (*(*val)).size(); i++) {
-			std::vector<DataType> ctype = columns_types.at(i);
-			
-			if (ctype.at(0) == DB_ANY) continue;
-
-			bool match = false;
-			for (auto j :ctype) {
-				if (j == static_cast <ParserValue*>((*(*val)).at(i))->value()->get_type())
-					match = true;
-			}
-			if (!match)
-				return ErrorManager::error(__HERE__, ER_COLUMN_AND_VALUE_TYPE_MISMATCH);
-		}
-
-	return NO_ERROR;
-}
 
 ErrorCode ParserInsert::CheckValues() {
 	if (this->values_ == NULL) return NO_ERROR;
@@ -199,8 +169,6 @@ ErrorCode ParserInsertStatement::Compile () {
 				table_->name().c_str());
 		}
 	}
-
-	this->TypeCheck();
 
 	return er;
 }

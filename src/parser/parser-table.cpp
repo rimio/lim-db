@@ -21,10 +21,3 @@ ErrorCode ParserTable::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
 	return NO_ERROR;
 }
 
-ErrorCode ParserTable::TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) {
-	std::vector <std::vector <DataType>> new_table;
-
-	(*arg).tables_and_columns_stack_.top().push_back(new_table);
-
-	return NO_ERROR;
-}

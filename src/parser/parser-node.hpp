@@ -38,11 +38,6 @@ protected:
 	
 
 	class TypeCheckArg {
-	public:
-	// A stack of nodes. Each node represents one ore more table. 
-	// Each table has some columns. Each column could be resolved to a list of possible datatypes
-	std::stack<std::vector<std::vector<std::vector <DataType>>>, 
-		std::vector < std::vector < std::vector < std::vector< DataType > > > > > tables_and_columns_stack_;
 	};
 	virtual ErrorCode TypeCheckPre (TypeCheckArg* arg, bool* stop_walk) = 0;
 	virtual ErrorCode TypeCheckPost (TypeCheckArg* arg, bool* stop_walk) = 0;

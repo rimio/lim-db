@@ -50,32 +50,3 @@ ErrorCode ParserColumn::NameResolvePost(NameResolveArg* arg, bool* stop_walk) {
 
 	return ErrorManager::error(__HERE__, ER_INEXISTENT_COLUMN, name_.c_str(),table_name_.c_str());
 }
-
-ErrorCode ParserColumn::TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) {
-	std::vector<DataType> column;
-
-	switch (this->data_type()) {
-	case DB_INTEGER :
-		column.push_back(DB_ANY);
-		break;
-	case DB_FLOAT :
-		column.push_back(DB_INTEGER);
-		column.push_back(DB_FLOAT);
-		column.push_back(DB_STRING);
-		break;
-	case DB_STRING : 
-		column.push_back(DB_INTEGER);
-		//column.push_back(DB_FLOAT);
-		column.push_back(DB_STRING);
-		break;
-	case DB_BOOLEAN:
-		column.push_back(DB_ANY);
-		break;
-	default :
-		break;
-	}
-
-	(*arg).tables_and_columns_stack_.top().back().push_back(column);
-	
-	return NO_ERROR;
-}
