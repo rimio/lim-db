@@ -62,35 +62,14 @@ ErrorCode ParserCreateTableStatement::Execute () {
 	// Create schema for table
 	Table *t = new Table ();
 
-	INT32 position = 1;
-	//Number of attributes with type DB_STRING
-	int str = 0;
-	//Number of attributes with type DB_FLOAT
-	int fl = 0;
-	//Number of attributes with type DB_INTEGER
-	int i = 0;
-
 	// Set table name
 	t->set_table_name (table_->name ());
 
 	// Add columns
 	for (auto attr = columns_->begin (); attr != columns_->end (); ++attr) {
-		t->AddAttribute((*attr)->name (), ((*attr)->data_type ()), position++);
-		
-		switch ((*attr)->data_type ()) {
-		case DB_INTEGER:
-			++i;
-			break;
-		case DB_FLOAT:
-			++fl;
-			break;
-		case DB_STRING:
-			++str;
-			break;
-		default:
-			assert (false);
-			return ER_FAILED;
-		}
+		ErrorCode er =t->AddAttribute((*attr)->name (), ((*attr)->data_type ()));
+		if (er != NO_ERROR) 
+			return er;
 	}
 
 	// Add table schema

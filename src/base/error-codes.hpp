@@ -26,6 +26,10 @@ typedef enum
 	ER_SAME_ATTRIBUTE,
 	ER_TABLE_DOES_NOT_EXIST,
 	ER_ALLOCATION_DATASECTOR_FULL,
+	ER_INVALID_VALUE,
+	ER_INEXISTENT_COLUMN,
+	ER_ATTR_AND_VALUES_DIFF_NUMBERS,
+	ER_COLUMN_AND_VALUE_TYPE_MISMATCH,
 	ER_LAST_ERROR
 } ErrorCode;
 
@@ -48,8 +52,12 @@ static const std::string kErrorMessages[] = {
 	"can't deallocate sector with %d sectorID: currently not used",
 	"a table with the name %s already exists",
 	"attribute with the name %s is duplicated",
-	"Can not delete table with the name %s. There is no such table",
+	"Can not find table with the name %s. There is no such table",
 	"Can not serialize the row. Datasector is full.",
+	"Value %s is not a propper one.",
+	"There is no column %s in table %s",
+	"The number of values does not match the number of columns",
+	"The type of the value can not be resolved to the type of the column",
 };
 
 #endif

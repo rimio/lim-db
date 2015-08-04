@@ -1,6 +1,7 @@
 #ifndef PARSER_TABLE_HPP_
 #define PARSER_TABLE_HPP_
 
+#include "base\generic-operations.hpp"
 #include "parser\parser-node.hpp"
 #include "schema\table.hpp"
 
@@ -14,7 +15,9 @@ public:
 	// Accessors
 	// TODO: Is it better to use pointers/references?
 	std::string name () { return name_; };
-	void set_name (std::string name) { name_ = name; };
+	Table* table() { return table_; }
+	void set_name(std::string name) { STRING_TO_LOWER(name); name_ = name; };
+	void set_table(Table *t) { table_ = t; };
 
 protected:
 
@@ -22,7 +25,7 @@ protected:
 	ErrorCode TypeCheckPre (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
 	ErrorCode TypeCheckPost (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
 
-	ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
+	ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) override;
 	ErrorCode NameResolvePost (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
 
 	ErrorCode ConstantFoldPost (void) override { return NO_ERROR; }

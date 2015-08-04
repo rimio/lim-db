@@ -9,6 +9,11 @@
 %code requires
 {
 	/* Node includes */
+	#include "metadata/database-value.hpp"
+	#include "metadata/int-database-value.hpp"
+	#include "metadata/float-database-value.hpp"
+	#include "metadata/string-database-value.hpp"
+
 	#include "parser/parser-root.hpp"
 	#include "parser/parser-node.hpp"
 	#include "parser/parser-command.hpp"
@@ -72,6 +77,8 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 	std::vector<ParserNode *>* parser_node_list;
 	std::vector<ParserTable *>* table_node_list_val;
 	std::vector<ParserColumn *>* column_node_list_val;
+
+	std::vector<std::vector<ParserNode *> *>* insert_values_list_val;
 }
 
 %token AND
@@ -150,12 +157,17 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <parser_node>				operand
 %type <parser_node>				expression
 %type <parser_node_list>		expression_list
+%type <parser_node_list>		insert_values
 
 // Identifiers
-%type <table_node_val>	table_identifier
-%type <table_node_list_val>	table_identifier_list
-%type <column_node_val>	column_identifier
-%type <index_node_val>	index_identifier
+%type <table_node_val>	        table_identifier
+%type <table_node_list_val>	    table_identifier_list
+%type <column_node_val>	        column_identifier
+%type <column_node_val>         column_simple_identifier
+%type <column_node_list_val>    column_simple_identifier_list
+%type <column_node_list_val>	insert_column_list
+%type <index_node_val>	        index_identifier
+%type <insert_values_list_val>  insert_values_list
 
 // Data definition language
 %type <column_node_val>	column_definition
@@ -235,15 +247,11 @@ select_statement
 	;
 
 insert_statement
-	: INSERT INTO table_identifier VALUES PAR_OPEN expression_list PAR_CLOSE
+	: INSERT INTO table_identifier insert_column_list VALUES insert_values_list
 		{
-			std::vector<std::vector<ParserNode *> *> *values_list =
-				new std::vector<std::vector<ParserNode *> *>;
-			values_list->push_back ($6);
-
-			$$ = new ParserInsertStatement ($3, NULL, values_list, @1);
+			$$ = new ParserInsertStatement ($3, $4, $6, @1);
 		}
-	;
+	; 
 
 delete_statement
 	: DELETE
@@ -265,6 +273,16 @@ create_table_statement
 			$$ = new ParserCreateTableStatement ($3, $5, @1);
 		}
 	;
+
+insert_column_list
+	:
+	{
+		$$ = NULL;
+	}
+	| PAR_OPEN column_simple_identifier_list PAR_CLOSE
+	{
+		$$ = $2;
+	}
 
 column_definition_list
 	: column_definition_list COMMA column_definition 
@@ -315,6 +333,39 @@ drop_index_statement
 	: DROP INDEX index_identifier
 		{
 			$$ = new ParserAlterTableStatement (@1);
+		}
+	;
+
+column_simple_identifier_list
+	: column_simple_identifier_list COMMA column_simple_identifier
+		{
+			$$ = $1;
+			$$->push_back ($3);
+		}
+	| column_simple_identifier
+		{
+			$$ = new std::vector<ParserColumn *>;
+			$$->push_back ($1);
+		}
+	;
+
+insert_values_list
+	: insert_values_list COMMA insert_values
+		{
+			$$ = $1;
+			$$->push_back($3);
+		}
+	| insert_values
+		{
+			$$ =new std::vector<std::vector<ParserNode *> *>;
+			$$ ->push_back ($1);
+		}
+	;
+
+insert_values
+	: PAR_OPEN expression_list PAR_CLOSE 
+		{
+			$$ = $2;
 		}
 	;
 
@@ -460,17 +511,20 @@ literal
 	: ILITERAL
 		{
 			// TODO
-			$$ = NULL;
+			$$ = new ParserValue( new IntDatabaseValue ( $1 ) );
+			$$->setLocation ( @1 );
 		}
 	| FLITERAL
 		{
 			// TODO
-			$$ = NULL;
+			$$ = new ParserValue( new FloatDatabaseValue( $1 ) );
+			$$->setLocation ( @1 );
 		}
 	| SLITERAL
 		{
 			// TODO
-			$$ = NULL;
+			$$ = new ParserValue( new StringDatabaseValue( *$1 ) );
+			$$->setLocation ( @1 );
 		}
 	;
 
@@ -512,6 +566,14 @@ column_identifier
 			$$->setLocation (@1);
 		}
 	;
+
+column_simple_identifier
+	: IDENTIFIER
+		{
+			$$ = new ParserColumn (*($1));
+			delete ($1);
+			$$->setLocation (@1);
+		}
 
 index_identifier
 	: IDENTIFIER
