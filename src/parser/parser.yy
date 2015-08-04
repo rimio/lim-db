@@ -36,11 +36,6 @@
 	#include "parser/expression/parser-expression-compare.hpp"
 	#include "parser/expression/parser-expression-logical.hpp"
 
-	#include "metadata/database-value.hpp"
-	#include "metadata/int-database-value.hpp"
-	#include "metadata/float-database-value.hpp"
-	#include "metadata/string-database-value.hpp"
-
 	#include <iostream>
 	#include <vector>
 
@@ -175,7 +170,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <insert_values_list_val>  insert_values_list
 
 // Data definition language
-%type <column_node_val>	        column_definition
+%type <column_node_val>	column_definition
 %type <column_node_list_val>	column_definition_list
 
 %%
@@ -252,12 +247,11 @@ select_statement
 	;
 
 insert_statement
-	: 	INSERT INTO table_identifier insert_column_list VALUES insert_values_list
+	: INSERT INTO table_identifier insert_column_list VALUES insert_values_list
 		{
 			$$ = new ParserInsertStatement ($3, $4, $6, @1);
 		}
 	; 
-
 
 delete_statement
 	: DELETE
@@ -289,7 +283,6 @@ insert_column_list
 	{
 		$$ = $2;
 	}
-
 
 column_definition_list
 	: column_definition_list COMMA column_definition 
@@ -342,8 +335,6 @@ drop_index_statement
 			$$ = new ParserAlterTableStatement (@1);
 		}
 	;
-
-
 
 column_simple_identifier_list
 	: column_simple_identifier_list COMMA column_simple_identifier
