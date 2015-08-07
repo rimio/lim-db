@@ -12,6 +12,8 @@ public:
 	ParserAlterTableStatement (yy::location loc) { setLocation (loc); };
 	~ParserAlterTableStatement ();
 
+	ErrorCode Compute (DataType expected_type_, ParserNode* *value) override { return NO_ERROR; };
+
 protected:
 	ParserAlterTableStatement () {};
 

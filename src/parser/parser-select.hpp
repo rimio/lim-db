@@ -39,6 +39,8 @@ public:
 	ParserSelectStatement (std::vector<ParserNode *>* list, ParserTable* from,
 						   yy::location loc);
 
+	ErrorCode Compute(DataType expected_type_, ParserNode* *value) override { return NO_ERROR; };
+
 protected:
 	ErrorCode Compile () override;
 	ErrorCode Prepare () override;

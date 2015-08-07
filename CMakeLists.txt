@@ -177,6 +177,9 @@ set (SRC_METADATA_FILES
 	${SOURCE_DIR}/metadata/database-value.hpp
 	${SOURCE_DIR}/metadata/database-value.cpp
 
+	${SOURCE_DIR}/metadata/bool-database-value.hpp
+	${SOURCE_DIR}/metadata/bool-database-value.cpp
+
 	${SOURCE_DIR}/metadata/int-database-value.hpp
 	${SOURCE_DIR}/metadata/int-database-value.cpp
 

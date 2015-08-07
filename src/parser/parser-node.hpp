@@ -4,6 +4,7 @@
 #include "parser/location.hh"
 #include "base/data-type.hpp"
 #include "base/error-codes.hpp"
+#include "metadata/database-value.hpp"
 
 #include <vector>
 #include <stack>
@@ -25,7 +26,10 @@ public:
 	void setLocation (yy::location loc) { location_ = loc; }
 
 	virtual std::string ToString () { return std::string(""); };
-
+	
+	DataType ExpectedType() { return expected_type_; };
+	ErrorCode Convert(DataType from, DataType to, DatabaseValue* *value);
+	virtual ErrorCode Compute (DataType expected_type_, ParserNode* *value) = 0;
 protected:
 	// Position in input buffer
 	yy::location location_;
@@ -52,9 +56,10 @@ protected:
 
 	virtual ErrorCode ConstantFoldPost (void) = 0;
 
-	ErrorCode NameResolve();
-	ErrorCode TypeCheck();
-
+	ErrorCode NameResolve ();
+	ErrorCode TypeCheck ();
+	
+	void set_expected_type(DataType type) { expected_type_ = type; };
 private:
 	template <class ArgPre, class ArgPost>
 	ErrorCode ParserWalkInternal (ErrorCode (ParserNode::*pre_func) (ArgPre *, bool*), ArgPre* arg_pre,
@@ -66,6 +71,8 @@ private:
 	ErrorCode ParserWalk(ErrorCode(ParserNode::*pre_func) (ArgPre *, bool*), ArgPre* arg_pre,
 		ErrorCode(ParserNode::*post_func) (ArgPost *, bool*), ArgPost* arg_post);
 	ErrorCode ParserWalk(ErrorCode(ParserNode::*pre_func) (void), ErrorCode(ParserNode::*post_func) (void));
+
+	DataType expected_type_;
 };
 
 #endif
