@@ -17,6 +17,8 @@ public:
 		};
 	~ParserDropTableStatement ();
 
+	ErrorCode Compute(DataType expected_type_, ParserNode* *value) override { return NO_ERROR; };
+
 protected:
 
 	// Override virtual functions from ParserRoot

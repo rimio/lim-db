@@ -2,23 +2,27 @@
 #include "base\generic-operations.hpp"
 #include "boot\boot.hpp"
 #include "parser\parser-value.hpp"
-
+#include "metadata\database-value.hpp"
+#include "metadata\int-database-value.hpp"
+#include "metadata\float-database-value.hpp"
+#include "metadata\string-database-value.hpp"
+#include "metadata\bool-database-value.hpp"
 //
 // PTInsertNode
 //
 
 ParserInsert::~ParserInsert() {
-	// delete table node
+	// Delete table node
 	if (table_ != NULL)
 		delete table_;
 
-	// delete column nodes
+	// Delete column nodes
 	if (columns_ != NULL) {
 		vector_clear_and_delete(*columns_);
 		delete columns_;
 	}
 
-	// delete values lists
+	// Delete values lists
 	if (values_ != NULL) {
 		for (auto value_list = values_->begin(); value_list != values_->end();
 			++value_list) {
@@ -170,6 +174,24 @@ ErrorCode ParserInsertStatement::Compile () {
 			return ErrorManager::error(__HERE__, ER_ATTR_AND_VALUES_DIFF_NUMBERS,
 				table_->name().c_str());
 		}
+	}
+
+	TypeCheck();
+	
+	std::vector <std::vector<DatabaseValue*>> rows;
+	
+	for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
+		std::vector <DatabaseValue*> row;
+		
+		for (int i = 0; i < (*columns_).size(); i++) {
+			er = (*(*val)).at(i)->Compute((*columns_).at(i)->ExpectedType(), &(*(*val)).at(i));
+			if (er == NO_ERROR)
+				row.push_back(((ParserValue*)((*(*val)).at(i)))->value());
+			else
+				return er;
+		}
+		printf("%f\n", ((FloatDatabaseValue*)(row.at(0)))->get_value());
+		rows.push_back(row);
 	}
 
 	return er;

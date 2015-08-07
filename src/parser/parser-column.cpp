@@ -9,6 +9,7 @@ std::string ParserColumn::ToString () {
 ErrorCode ParserColumn::NameResolvePost(NameResolveArg* arg, bool* stop_walk) {	
 	if (resolved_to_ != NULL) return NO_ERROR;
 
+	NameResolveArg a;
 	// Check if column is bounded to a specific table
 	if (table_name() != "") {
 		auto pt = arg->tables_stack_.top();
@@ -50,4 +51,10 @@ ErrorCode ParserColumn::NameResolvePost(NameResolveArg* arg, bool* stop_walk) {
 	}
 
 	return ErrorManager::error(__HERE__, ER_INEXISTENT_COLUMN, name_.c_str(),table_name_.c_str());
+}
+
+ErrorCode ParserColumn::TypeCheckPre(TypeCheckArg *arg, bool* stop_walk) {
+	set_expected_type(data_type_);
+
+	return NO_ERROR;
 }

@@ -23,16 +23,18 @@ public:
 
 	DataType data_type () { return data_type_; };
 	void set_data_type (DataType data_type) { data_type_ = data_type; };
+	
+	ErrorCode Compute(DataType expected_type_, ParserNode* *value) override { return NO_ERROR; };
 
 protected:
 	ParserColumn () : resolved_to_(NULL) {};
 
 	// Override virtual functions from ParserNode
-	ErrorCode TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
+	ErrorCode TypeCheckPre (TypeCheckArg* arg, bool* stop_walk);
 	ErrorCode TypeCheckPost (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
 
 	ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
-	ErrorCode NameResolvePost(NameResolveArg* arg, bool* stop_walk) override;
+	ErrorCode NameResolvePost (NameResolveArg* arg, bool* stop_walk) override;
 
 	ErrorCode ConstantFoldPost (void) override { return NO_ERROR; }
 

@@ -29,6 +29,8 @@ protected:
 	ErrorCode CheckValues();
 
 	void GetChildren (std::vector<ParserNode *>* children);
+
+	ErrorCode Compute(DataType expected_type_, ParserNode* *value) override { return NO_ERROR; };
 	
 	// Variable members
 	ParserTable* table_;
