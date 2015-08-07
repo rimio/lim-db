@@ -176,10 +176,12 @@ ErrorCode ParserInsertStatement::Compile () {
 		}
 	}
 
+	// Create the expected types
 	TypeCheck();
 	
 	std::vector <std::vector<DatabaseValue*>> rows;
 	
+	// Resolve constant folding
 	for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
 		std::vector <DatabaseValue*> row;
 		
@@ -190,7 +192,6 @@ ErrorCode ParserInsertStatement::Compile () {
 			else
 				return er;
 		}
-		printf("%f\n", ((FloatDatabaseValue*)(row.at(0)))->get_value());
 		rows.push_back(row);
 	}
 

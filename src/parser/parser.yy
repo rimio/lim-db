@@ -13,6 +13,7 @@
 	#include "metadata/int-database-value.hpp"
 	#include "metadata/float-database-value.hpp"
 	#include "metadata/string-database-value.hpp"
+	#include "metadata/bool-database-value.hpp"
 
 	#include "parser/parser-root.hpp"
 	#include "parser/parser-node.hpp"
