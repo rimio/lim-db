@@ -3,10 +3,7 @@
 #include "boot\boot.hpp"
 #include "parser\parser-value.hpp"
 #include "metadata\database-value.hpp"
-#include "metadata\int-database-value.hpp"
-#include "metadata\float-database-value.hpp"
-#include "metadata\string-database-value.hpp"
-#include "metadata\bool-database-value.hpp"
+
 //
 // PTInsertNode
 //
@@ -192,6 +189,7 @@ ErrorCode ParserInsertStatement::Compile () {
 			else
 				return er;
 		}
+		printf("%d\n", row.at(0)->int_value());
 		rows.push_back(row);
 	}
 

@@ -1,12 +1,6 @@
 #include "parser\expression\parser-expression-arithmetic.hpp"
 #include "parser\parser-value.hpp"
-
 #include "metadata\database-value.hpp"
-#include "metadata\int-database-value.hpp"
-#include "metadata\float-database-value.hpp"
-#include "metadata\bool-database-value.hpp"
-#include "metadata\string-database-value.hpp"
-
 #include "base\error-manager.hpp"
 #include "base\error-codes.hpp"
 
@@ -73,66 +67,67 @@ ErrorCode ParserExpressionArithmetic::Compute (DataType expected_type, ParserNod
 	// Whatever the operator between numbers, we can consider a plus sign in front of the first one
 	INT32 iresult;
 	float fresult;
-	FloatDatabaseValue* fl_db_val;
-	IntDatabaseValue* int_db_val;
+	DatabaseValue* db_val;
+	//FloatDatabaseValue* fl_db_val;
+	//IntDatabaseValue* int_db_val;
 
 	switch (dominant_type) {
 	case DB_INTEGER:
-		iresult = ((IntDatabaseValue*)(((ParserValue*)(children.at(0)))->value()))->get_value();
+		iresult = ((((ParserValue*)(children.at(0)))->value()))->int_value();
 		switch (exp->op()) {
 		case PLUS:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				iresult += ((IntDatabaseValue*)(((ParserValue*)(*child))->value()))->get_value();
+				iresult += ((((ParserValue*)(*child))->value()))->int_value();
 			}
 			break;
 		case MINUS:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				iresult -= ((IntDatabaseValue*)(((ParserValue*)(*child))->value()))->get_value();
+				iresult -= ((((ParserValue*)(*child))->value()))->int_value();
 			}
 			break;
 		case MULTIPLY:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				iresult *= ((IntDatabaseValue*)(((ParserValue*)(*child))->value()))->get_value();
+				iresult *= ((((ParserValue*)(*child))->value()))->int_value();
 			}
 			break;
 		case DIVIDE:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				iresult /= ((IntDatabaseValue*)(((ParserValue*)(*child))->value()))->get_value();
+				iresult /= ((((ParserValue*)(*child))->value()))->int_value();
 			}
 			break;
 		case MODULO:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				iresult %= ((IntDatabaseValue*)(((ParserValue*)(*child))->value()))->get_value();
+				iresult %= ((((ParserValue*)(*child))->value()))->int_value();
 			}
 			break;
 		default:
 			break;
 		}
 
-		int_db_val = new IntDatabaseValue(iresult);
-		(*value) = new ParserValue(int_db_val);
+		db_val = new DatabaseValue(iresult);
+		(*value) = new ParserValue(db_val);
 		break;
 	case DB_FLOAT:
-		fresult = ((FloatDatabaseValue*)(((ParserValue*)(children.at(0)))->value()))->get_value();
+		fresult = ((((ParserValue*)(children.at(0)))->value()))->float_value();
 		switch (exp->op()) {
 		case PLUS:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				fresult += ((FloatDatabaseValue*)(((ParserValue*)(*child))->value()))->get_value();
+				fresult += ((((ParserValue*)(*child))->value()))->float_value();
 			}
 			break;
 		case MINUS:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				fresult -= ((FloatDatabaseValue*)(((ParserValue*)(*child))->value()))->get_value();
+				fresult -= ((((ParserValue*)(*child))->value()))->float_value();
 			}
 			break;
 		case MULTIPLY:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				fresult *= ((FloatDatabaseValue*)(((ParserValue*)(*child))->value()))->get_value();
+				fresult *= ((((ParserValue*)(*child))->value()))->float_value();
 			}
 			break;
 		case DIVIDE:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				fresult /= ((FloatDatabaseValue*)(((ParserValue*)(*child))->value()))->get_value();
+				fresult /= ((((ParserValue*)(*child))->value()))->float_value();
 			}
 			break;
 		case MODULO:
@@ -142,8 +137,8 @@ ErrorCode ParserExpressionArithmetic::Compute (DataType expected_type, ParserNod
 			break;
 		}
 
-		fl_db_val = new FloatDatabaseValue(fresult);
-		(*value) = new ParserValue(fl_db_val);
+		db_val = new DatabaseValue(fresult);
+		(*value) = new ParserValue(db_val);
 		break;
 	default:
 		break;

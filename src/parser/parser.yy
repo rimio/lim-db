@@ -10,10 +10,6 @@
 {
 	/* Node includes */
 	#include "metadata/database-value.hpp"
-	#include "metadata/int-database-value.hpp"
-	#include "metadata/float-database-value.hpp"
-	#include "metadata/string-database-value.hpp"
-	#include "metadata/bool-database-value.hpp"
 
 	#include "parser/parser-root.hpp"
 	#include "parser/parser-node.hpp"
@@ -514,24 +510,23 @@ literal
 	: ILITERAL
 		{
 			// TODO
-			$$ = new ParserValue( new IntDatabaseValue ( $1 ) );
+			$$ = new ParserValue( new DatabaseValue ( $1 ) );
 			$$->setLocation ( @1 );
 		}
 	| BLITERAL 
 		{
-			$$ = new ParserValue( new BoolDatabaseValue ( $1 ) );
+			$$ = new ParserValue( new DatabaseValue ( $1 ) );
 			$$->setLocation ( @1 );
 		}
 	| FLITERAL
 		{
 			// TODO
-			$$ = new ParserValue( new FloatDatabaseValue( $1 ) );
+			$$ = new ParserValue( new DatabaseValue( $1 ) );
 			$$->setLocation ( @1 );
 		}
 	| SLITERAL
 		{
-			// TODO
-			$$ = new ParserValue( new StringDatabaseValue( *$1 ) );
+			$$ = new ParserValue( new DatabaseValue( $1 ) );
 			$$->setLocation ( @1 );
 		}
 	;

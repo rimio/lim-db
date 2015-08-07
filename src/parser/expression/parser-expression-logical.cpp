@@ -3,7 +3,6 @@
 #include <cassert>
 
 #include "metadata\database-value.hpp"
-#include "metadata\bool-database-value.hpp"
 #include "parser\parser-value.hpp"
 
 ParserExpressionLogical::ParserExpressionLogical (
@@ -45,32 +44,32 @@ ErrorCode ParserExpressionLogical::Compute(DataType expected_type, ParserNode* *
 	bool rhs;
 
 	auto left_child = children.at(0);
-	bool lhs = ((BoolDatabaseValue*)(((ParserValue*)(left_child))->value()))->get_value();
+	bool lhs = ((((ParserValue*)(left_child))->value()))->bool_value();
 
 	// NOT is an unary expression
 	if (exp->op() != NOT) {
 		auto right_child = children.at(1);
-		rhs = ((BoolDatabaseValue*)(((ParserValue*)(right_child))->value()))->get_value();
+		rhs = ((((ParserValue*)(right_child))->value()))->bool_value();
 	}
 
 	switch (exp->op()) {
 	case AND:
 		if (rhs && lhs)
-			(*value) = new ParserValue(new BoolDatabaseValue(true));
+			(*value) = new ParserValue(new DatabaseValue(true));
 		else
-			(*value) = new ParserValue(new BoolDatabaseValue(false));
+			(*value) = new ParserValue(new DatabaseValue(false));
 		break;
 	case OR:
 		if (rhs || lhs)
-			(*value) = new ParserValue(new BoolDatabaseValue(true));
+			(*value) = new ParserValue(new DatabaseValue(true));
 		else
-			(*value) = new ParserValue(new BoolDatabaseValue(false));
+			(*value) = new ParserValue(new DatabaseValue(false));
 		break;
 	case NOT:
 		if (lhs)
-			(*value) = new ParserValue(new BoolDatabaseValue(false));
+			(*value) = new ParserValue(new DatabaseValue(false));
 		else
-			(*value) = new ParserValue(new BoolDatabaseValue(true));
+			(*value) = new ParserValue(new DatabaseValue(true));
 		break;
 	default:
 		break;

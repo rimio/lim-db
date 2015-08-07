@@ -1,8 +1,5 @@
 #include "parser/parser-node.hpp"
-#include "metadata/int-database-value.hpp"
-#include "metadata/bool-database-value.hpp"
-#include "metadata/float-database-value.hpp"
-#include "metadata/string-database-value.hpp"
+#include "metadata/database-value.hpp"
 #include "base/error-manager.hpp"
 #include "base/generic-operations.hpp"
 #include <stdexcept>
@@ -92,13 +89,10 @@ ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {
 	float fl_val;
 	std::string str_val;
 	bool b_val;
-	
-	// Needs to be freed if val gets a new instance
-	auto holder = (*val);
 
 	switch(from) {
 	case DB_INTEGER:
-		int_val = (*(IntDatabaseValue*)(*val)).get_value();
+		int_val = (*val)->int_value();
 	
 		switch (to) {
 		case DB_INTEGER:
@@ -106,20 +100,17 @@ ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {
 			break;
 		case DB_FLOAT:
 			fl_val = (float)int_val;
-			(*val) = new FloatDatabaseValue(fl_val);
-			delete holder;
+			(*val)->set_float_value(fl_val);
 			return NO_ERROR;
 			break;
 		case DB_STRING:
 			str_val = std::to_string(int_val);
-			(*val) = new StringDatabaseValue(str_val);
-			delete holder;
+			(*val)->set_string_value(str_val);
 			return NO_ERROR;
 			break;
 		case DB_BOOLEAN:
 			b_val = (int_val == 0) ? false : true;
-			(*val) = new BoolDatabaseValue(b_val);
-			delete holder;
+			(*val)->set_bool_value(b_val);
 			return NO_ERROR;
 			break;
 		default:
@@ -130,15 +121,14 @@ ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {
 		break;
 
 	case DB_FLOAT:
-		fl_val = (*(FloatDatabaseValue*)(*val)).get_value();
+		fl_val = (*val)->float_value();
 
 		switch (to) {
 		case DB_INTEGER:
 			int_val = (INT32)fl_val;
 			if (fabs(fl_val - int_val) > MACHINE_ERROR)
 				return ErrorManager::error(__HERE__, ER_COLUMN_AND_VALUE_TYPE_MISMATCH);
-			(*val) = new IntDatabaseValue(int_val);
-			delete holder;
+			(*val)->set_int_value(int_val);
 			return NO_ERROR;
 			break;
 		case DB_FLOAT:
@@ -146,14 +136,12 @@ ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {
 			break;
 		case DB_STRING:
 			str_val = std::to_string(fl_val);
-			(*val) = new StringDatabaseValue(str_val);
-			delete holder;
+			(*val)->set_string_value(str_val);
 			return NO_ERROR;
 			break;
 		case DB_BOOLEAN:
 			b_val = (abs(fl_val) < MACHINE_ERROR) ? false : true;
-			(*val) = new BoolDatabaseValue(b_val);
-			delete holder;
+			(*val)->set_bool_value(b_val);
 			return NO_ERROR;
 			break;
 		default:
@@ -164,7 +152,7 @@ ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {
 		break;
 	
 	case DB_STRING:
-		str_val = (*(StringDatabaseValue*)(*val)).get_value();
+		str_val = (*val)->string_value();
 		std::string::size_type after; 
 		bool conv_ok;
 
@@ -181,8 +169,7 @@ ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {
 			if (str_val.substr(after) != "")
 				return ErrorManager::error(__HERE__, ER_COLUMN_AND_VALUE_TYPE_MISMATCH);
 			
-			(*val) = new IntDatabaseValue(int_val);
-			delete holder;
+			(*val)->set_int_value(int_val);
 			return NO_ERROR;
 			break;
 		case DB_FLOAT:
@@ -197,8 +184,7 @@ ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {
 			if (str_val.substr(after) != "")
 				return ErrorManager::error(__HERE__, ER_COLUMN_AND_VALUE_TYPE_MISMATCH);
 
-			(*val) = new FloatDatabaseValue(fl_val);
-			delete holder;
+			(*val)->set_float_value(fl_val);
 			return NO_ERROR;
 			break;
 		case DB_STRING:
@@ -207,14 +193,12 @@ ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {
 		case DB_BOOLEAN:
 			STRING_TO_LOWER(str_val);
 			if (str_val == "true") {
-				(*val) = new BoolDatabaseValue(true);
-				delete holder;
+				(*val)->set_bool_value(true);
 				return NO_ERROR;
 			}
 			
 			if (str_val == "false") {
-				(*val) = new BoolDatabaseValue(false);
-				delete holder;
+				(*val)->set_bool_value(false);
 				return NO_ERROR;
 			}
 			
@@ -229,8 +213,7 @@ ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {
 			// Check if the string was containg nothing else after the converted int
 			if (str_val.substr(after) == "" && conv_ok) {
 				b_val = (int_val == 0) ? false : true;
-				(*val) = new BoolDatabaseValue(b_val);
-				delete holder;
+				(*val)->set_bool_value(b_val);
 				return NO_ERROR;
 			}
 			
@@ -245,8 +228,7 @@ ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {
 			// Check is the string was containg nothing else after the converted float
 			if (str_val.substr(after) == "" && conv_ok) {
 				b_val = (abs(fl_val) < MACHINE_ERROR) ? false : true;
-				(*val) = new BoolDatabaseValue(b_val);
-				delete holder;
+				(*val)->set_bool_value(b_val);
 				return NO_ERROR;
 			}
 
@@ -262,31 +244,28 @@ ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {
 		break;
 
 	case DB_BOOLEAN:
-		b_val = (*(BoolDatabaseValue*)(*val)).get_value();
+		b_val = (*val)->bool_value();
 
 		switch (to) {
 		case DB_INTEGER:
 			if (b_val)
-				(*val) = new IntDatabaseValue(1);
+				(*val)->set_int_value(1);
 			else
-				(*val) = new IntDatabaseValue(0);
-			delete holder;
+				(*val)->set_int_value(0);
 			return NO_ERROR;
 			break;
 		case DB_FLOAT:
 			if (b_val)
-				(*val) = new FloatDatabaseValue(1.0);
+				(*val)->set_float_value(1.0);
 			else
-				(*val) = new FloatDatabaseValue(0.0);
-			delete holder;
+				(*val)->set_float_value(0.0);
 			return NO_ERROR;
 			break;
 		case DB_STRING:
 			if (b_val)
-				(*val) = new StringDatabaseValue("true");
+				(*val)->set_string_value("true");
 			else
-				(*val) = new StringDatabaseValue("false");
-			delete holder;
+				(*val)->set_string_value("false");
 			return NO_ERROR;
 			break;
 		case DB_BOOLEAN:

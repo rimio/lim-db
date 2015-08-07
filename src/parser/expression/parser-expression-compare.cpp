@@ -3,10 +3,6 @@
 #include <cassert>
 
 #include "metadata\database-value.hpp"
-#include "metadata\int-database-value.hpp"
-#include "metadata\float-database-value.hpp"
-#include "metadata\string-database-value.hpp"
-#include "metadata\bool-database-value.hpp"
 #include "parser\parser-value.hpp"
 
 #define MACHINE_ERROR 0.0000001
@@ -111,27 +107,27 @@ ErrorCode ParserExpressionCompare::Compute(DataType expected_type, ParserNode* *
 
 	switch (comparison) {
 	case DB_INTEGER:
-		if (((IntDatabaseValue*)(((ParserValue*)(left_child))->value()))->get_value() > ((IntDatabaseValue*)(((ParserValue*)(right_child))->value()))->get_value())
+		if (((((ParserValue*)(left_child))->value()))->int_value() > ((((ParserValue*)(right_child))->value()))->int_value())
 			result = 1;
 		else 
-			if (((IntDatabaseValue*)(((ParserValue*)(left_child))->value()))->get_value() == ((IntDatabaseValue*)(((ParserValue*)(right_child))->value()))->get_value())
+			if (((((ParserValue*)(left_child))->value()))->int_value() == ((((ParserValue*)(right_child))->value()))->int_value())
 				result = 0;
 			else result = -1;
 		break;
 	case DB_FLOAT:
-		if (fabs(((FloatDatabaseValue*)(((ParserValue*)(left_child))->value()))->get_value() - ((FloatDatabaseValue*)(((ParserValue*)(right_child))->value()))->get_value()) < MACHINE_ERROR)
+		if (fabs(((((ParserValue*)(left_child))->value()))->float_value() - ((((ParserValue*)(right_child))->value()))->float_value()) < MACHINE_ERROR)
 			result = 0;
 		else 
-			if (((FloatDatabaseValue*)(((ParserValue*)(left_child))->value()))->get_value() > ((FloatDatabaseValue*)(((ParserValue*)(right_child))->value()))->get_value())
+			if (((((ParserValue*)(left_child))->value()))->float_value() > ((((ParserValue*)(right_child))->value()))->float_value())
 				result = 1;
 			else
 				result = -1;
 		break;
 	case DB_STRING:
-		if (((StringDatabaseValue*)(((ParserValue*)(left_child))->value()))->get_value() > ((StringDatabaseValue*)(((ParserValue*)(right_child))->value()))->get_value())
+		if (((((ParserValue*)(left_child))->value()))->string_value() > ((((ParserValue*)(right_child))->value()))->string_value())
 			result = 1;
 		else
-			if (((StringDatabaseValue*)(((ParserValue*)(left_child))->value()))->get_value() == ((StringDatabaseValue*)(((ParserValue*)(right_child))->value()))->get_value())
+			if (((((ParserValue*)(left_child))->value()))->string_value() == ((((ParserValue*)(right_child))->value()))->string_value())
 				result = 0;
 			else result = -1;
 		break;
@@ -142,39 +138,39 @@ ErrorCode ParserExpressionCompare::Compute(DataType expected_type, ParserNode* *
 	switch (exp->op()) {
 	case EQ:
 		if (result == 0) 
-			(*value) = new ParserValue(new BoolDatabaseValue(true));
+			(*value) = new ParserValue(new DatabaseValue(true));
 		else
-			(*value) = new ParserValue(new BoolDatabaseValue(false));
+			(*value) = new ParserValue(new DatabaseValue(false));
 		break;
 	case NOT_EQ:
 		if (result == 0)
-			(*value) = new ParserValue(new BoolDatabaseValue(false));
+			(*value) = new ParserValue(new DatabaseValue(false));
 		else
-			(*value) = new ParserValue(new BoolDatabaseValue(true));
+			(*value) = new ParserValue(new DatabaseValue(true));
 		break;
 	case LT:
 		if (result == -1)
-			(*value) = new ParserValue(new BoolDatabaseValue(true));
+			(*value) = new ParserValue(new DatabaseValue(true));
 		else
-			(*value) = new ParserValue(new BoolDatabaseValue(false));
+			(*value) = new ParserValue(new DatabaseValue(false));
 		break;
 	case LT_EQ:
 		if (result == 1)
-			(*value) = new ParserValue(new BoolDatabaseValue(false));
+			(*value) = new ParserValue(new DatabaseValue(false));
 		else
-			(*value) = new ParserValue(new BoolDatabaseValue(true));
+			(*value) = new ParserValue(new DatabaseValue(true));
 		break;
 	case GT:
 		if (result == 1)
-			(*value) = new ParserValue(new BoolDatabaseValue(true));
+			(*value) = new ParserValue(new DatabaseValue(true));
 		else
-			(*value) = new ParserValue(new BoolDatabaseValue(false));
+			(*value) = new ParserValue(new DatabaseValue(false));
 		break;
 	case GT_EQ:
 		if (result == -1)
-			(*value) = new ParserValue(new BoolDatabaseValue(false));
+			(*value) = new ParserValue(new DatabaseValue(false));
 		else
-			(*value) = new ParserValue(new BoolDatabaseValue(true));
+			(*value) = new ParserValue(new DatabaseValue(true));
 		break;
 	default:
 		break;

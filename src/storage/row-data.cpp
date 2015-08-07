@@ -1,21 +1,17 @@
 #include "storage\row-data.hpp"
-#include "metadata\int-database-value.hpp"
-#include "metadata\float-database-value.hpp"
-#include "metadata\string-database-value.hpp"
-
 RowData::RowData(Table *t) {
 	std::vector<Attribute> attributes = t->get_table_attributes();
 
 	for (std::vector<Attribute>::iterator atr = attributes.begin(); atr != attributes.end(); ++atr) 
 		switch (atr->get_type()) {
 			case DB_INTEGER:
-				values_.push_back(new IntDatabaseValue());
+				values_.push_back(new DatabaseValue(NULL));
 				break;
 			case DB_FLOAT:
-				values_.push_back(new FloatDatabaseValue());
+				values_.push_back(new DatabaseValue(NULL));
 				break;
 			case DB_STRING:
-				values_.push_back(new StringDatabaseValue());
+				values_.push_back(new DatabaseValue(NULL));
 				break;
 		}
 }
@@ -33,19 +29,19 @@ BYTE* RowData::SerializeRow(Table * t, BYTE* start) {
 	BYTE *s_pos = f_pos + 8 * (t->get_nr_float());
 
 	for (int i = 0; i < values_.size(); i++) {
-		switch ((*values_.at(i)).get_type()) {
+		switch (attributes.at(i).get_type()) {
 			case DB_INTEGER:
-				i_pos = (*values_.at(i)).Serialize(i_pos);
+				i_pos = (*values_.at(i)).IntSerialize(i_pos);
 				break;
 			case DB_FLOAT:
-				f_pos = (*values_.at(i)).Serialize(f_pos);
+				f_pos = (*values_.at(i)).FloatSerialize(f_pos);
 				break;
 			case DB_STRING:
 				//Tracks where the string starts
 				INT32 arg = s_pos - start;
 				memcpy(o_pos, &arg, sizeof(arg));
 				o_pos += 4;
-				s_pos = (*values_.at(i)).Serialize(s_pos);
+				s_pos = (*values_.at(i)).StringSerialize(s_pos);
 			break;
 		}
 	}
@@ -68,13 +64,13 @@ BYTE* RowData::DeserializeRow(Table *t, BYTE *start) {
 		switch (attributes.at(i).get_type())
 		{
 		case DB_INTEGER:
-			i_pos = (*values_.at(i)).Deserialize(i_pos);
+			i_pos = (*values_.at(i)).IntDeserialize(i_pos);
 			break;
 		case DB_FLOAT:
-			f_pos = (*values_.at(i)).Deserialize(f_pos);
+			f_pos = (*values_.at(i)).FloatDeserialize(f_pos);
 			break;
 		case DB_STRING:
-			s_pos = (*values_.at(i)).Deserialize(s_pos);
+			s_pos = (*values_.at(i)).StringDeserialize(s_pos);
 			break;
 		default:
 			break;
