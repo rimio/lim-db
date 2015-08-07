@@ -189,7 +189,6 @@ ErrorCode ParserInsertStatement::Compile () {
 			else
 				return er;
 		}
-		printf("%d\n", row.at(0)->int_value());
 		rows.push_back(row);
 	}
 
