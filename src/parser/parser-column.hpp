@@ -24,7 +24,7 @@ public:
 	DataType data_type () { return data_type_; };
 	void set_data_type (DataType data_type) { data_type_ = data_type; };
 	
-	ErrorCode Compute(DataType expected_type_, ParserNode* *value) override { return NO_ERROR; };
+	ErrorCode Compute(DataType expected_type, ParserNode* *value) override { return NO_ERROR; };
 
 protected:
 	ParserColumn () : resolved_to_(NULL) {};

@@ -75,13 +75,13 @@ ErrorCode ParserNode::ParserWalkInternal (ErrorCode (ParserNode::*pre_func) (),
 ErrorCode ParserNode::NameResolve() {
 	NameResolveArg arg;
 
-	return ParserWalk(&ParserNode::NameResolvePre, &arg, &ParserNode::NameResolvePost, &arg);
+	return ParserWalk (&ParserNode::NameResolvePre, &arg, &ParserNode::NameResolvePost, &arg);
 }
 
 ErrorCode ParserNode::TypeCheck() {
 	TypeCheckArg arg;
 
-	return ParserWalk(&ParserNode::TypeCheckPre, &arg, &ParserNode::TypeCheckPost, &arg);
+	return ParserWalk (&ParserNode::TypeCheckPre,&arg, &ParserNode::TypeCheckPost, &arg);
 }
 
 ErrorCode ParserNode::Convert(DataType from, DataType to, DatabaseValue* *val) {

@@ -32,7 +32,7 @@ class ParserDeleteStatement :
 public:
 	ParserDeleteStatement (yy::location loc);
 
-	ErrorCode Compute(DataType expected_type_, ParserNode* *value) override { return NO_ERROR; };
+	ErrorCode Compute(DataType expected_type, ParserNode* *value) override { return NO_ERROR; };
 
 protected:
 	ErrorCode Compile () override;

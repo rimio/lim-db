@@ -29,7 +29,7 @@ public:
 	
 	DataType ExpectedType() { return expected_type_; };
 	ErrorCode Convert(DataType from, DataType to, DatabaseValue* *value);
-	virtual ErrorCode Compute (DataType expected_type_, ParserNode* *value) = 0;
+	virtual ErrorCode Compute (DataType expected_type, ParserNode* *value) = 0;
 protected:
 	// Position in input buffer
 	yy::location location_;

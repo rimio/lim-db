@@ -174,14 +174,15 @@ ErrorCode ParserInsertStatement::Compile () {
 	}
 
 	// Create the expected types
-	TypeCheck();
-	
+	er = TypeCheck();
+	if (er != NO_ERROR)
+		return er;
+
 	std::vector <std::vector<DatabaseValue*>> rows;
 	
 	// Resolve constant folding
 	for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
 		std::vector <DatabaseValue*> row;
-		
 		for (int i = 0; i < (*columns_).size(); i++) {
 			er = (*(*val)).at(i)->Compute((*columns_).at(i)->ExpectedType(), &(*(*val)).at(i));
 			if (er == NO_ERROR)

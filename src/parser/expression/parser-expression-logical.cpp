@@ -44,12 +44,12 @@ ErrorCode ParserExpressionLogical::Compute(DataType expected_type, ParserNode* *
 	bool rhs;
 
 	auto left_child = children.at(0);
-	bool lhs = ((((ParserValue*)(left_child))->value()))->bool_value();
+	bool lhs = (((ParserValue*)(left_child))->value())->bool_value();
 
 	// NOT is an unary expression
 	if (exp->op() != NOT) {
 		auto right_child = children.at(1);
-		rhs = ((((ParserValue*)(right_child))->value()))->bool_value();
+		rhs = (((ParserValue*)(right_child))->value())->bool_value();
 	}
 
 	switch (exp->op()) {

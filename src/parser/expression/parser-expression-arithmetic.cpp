@@ -68,8 +68,6 @@ ErrorCode ParserExpressionArithmetic::Compute (DataType expected_type, ParserNod
 	INT32 iresult;
 	float fresult;
 	DatabaseValue* db_val;
-	//FloatDatabaseValue* fl_db_val;
-	//IntDatabaseValue* int_db_val;
 
 	switch (dominant_type) {
 	case DB_INTEGER:
@@ -77,27 +75,27 @@ ErrorCode ParserExpressionArithmetic::Compute (DataType expected_type, ParserNod
 		switch (exp->op()) {
 		case PLUS:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				iresult += ((((ParserValue*)(*child))->value()))->int_value();
+				iresult += (((ParserValue*)(*child))->value())->int_value();
 			}
 			break;
 		case MINUS:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				iresult -= ((((ParserValue*)(*child))->value()))->int_value();
+				iresult -= (((ParserValue*)(*child))->value())->int_value();
 			}
 			break;
 		case MULTIPLY:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				iresult *= ((((ParserValue*)(*child))->value()))->int_value();
+				iresult *= (((ParserValue*)(*child))->value())->int_value();
 			}
 			break;
 		case DIVIDE:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				iresult /= ((((ParserValue*)(*child))->value()))->int_value();
+				iresult /= (((ParserValue*)(*child))->value())->int_value();
 			}
 			break;
 		case MODULO:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				iresult %= ((((ParserValue*)(*child))->value()))->int_value();
+				iresult %= (((ParserValue*)(*child))->value())->int_value();
 			}
 			break;
 		default:
@@ -108,26 +106,26 @@ ErrorCode ParserExpressionArithmetic::Compute (DataType expected_type, ParserNod
 		(*value) = new ParserValue(db_val);
 		break;
 	case DB_FLOAT:
-		fresult = ((((ParserValue*)(children.at(0)))->value()))->float_value();
+		fresult = (((ParserValue*)(children.at(0)))->value())->float_value();
 		switch (exp->op()) {
 		case PLUS:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				fresult += ((((ParserValue*)(*child))->value()))->float_value();
+				fresult += (((ParserValue*)(*child))->value())->float_value();
 			}
 			break;
 		case MINUS:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				fresult -= ((((ParserValue*)(*child))->value()))->float_value();
+				fresult -= (((ParserValue*)(*child))->value())->float_value();
 			}
 			break;
 		case MULTIPLY:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				fresult *= ((((ParserValue*)(*child))->value()))->float_value();
+				fresult *= (((ParserValue*)(*child))->value())->float_value();
 			}
 			break;
 		case DIVIDE:
 			for (auto child = children.begin() + 1; child != children.end(); child++) {
-				fresult /= ((((ParserValue*)(*child))->value()))->float_value();
+				fresult /= (((ParserValue*)(*child))->value())->float_value();
 			}
 			break;
 		case MODULO:
