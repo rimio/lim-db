@@ -509,7 +509,6 @@ operand
 literal
 	: ILITERAL
 		{
-			// TODO
 			$$ = new ParserValue( new DatabaseValue ( $1 ) );
 			$$->setLocation ( @1 );
 		}
@@ -520,7 +519,6 @@ literal
 		}
 	| FLITERAL
 		{
-			// TODO
 			$$ = new ParserValue( new DatabaseValue( $1 ) );
 			$$->setLocation ( @1 );
 		}

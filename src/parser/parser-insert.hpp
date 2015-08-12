@@ -18,7 +18,7 @@ protected:
 	ParserInsert () : table_ (NULL), columns_ (NULL), values_ (NULL) {};
 
 	// Override virtual functions from ParserNode
-	ErrorCode TypeCheckPre (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
+	ErrorCode TypeCheckPre (TypeCheckArg* arg, bool* stop_walk) override;
 	ErrorCode TypeCheckPost (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
 
 	ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) override;
@@ -30,8 +30,6 @@ protected:
 
 	void GetChildren (std::vector<ParserNode *>* children);
 
-	ErrorCode Compute(DataType expected_type, ParserNode* *value) override { return NO_ERROR; };
-	
 	// Variable members
 	ParserTable* table_;
 	std::vector<ParserColumn *>* columns_;

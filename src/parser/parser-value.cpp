@@ -2,18 +2,16 @@
 #include "base\error-manager.hpp"
 
 ErrorCode ParserValue::TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) {
-	set_expected_type(value_->get_type());
-	
 	return NO_ERROR;
 }
 
-ErrorCode ParserValue::Compute(DataType expected_type, ParserNode* *value) {
+ErrorCode ParserValue::ConstantFoldPost() {
 	ErrorCode er = NO_ERROR;
-	if (expected_type != DB_ANY) {
-		DatabaseValue* val = ((ParserValue*)(*value))->value();
-		er = Convert(((ParserValue*)(*value))->value()->get_type(), expected_type, &val);
-		if (er == NO_ERROR)
-			((ParserValue*)(*value))->set_value(val);
-	}
+	DatabaseValue value;
+	auto aux = this->value();
+	er = aux->Cast(this->ExpectedType(), (&value));
+	if (er == NO_ERROR)
+		this->set_computed_value(value);
 	return er;
 }
+

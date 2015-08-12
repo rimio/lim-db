@@ -32,8 +32,6 @@ class ParserDeleteStatement :
 public:
 	ParserDeleteStatement (yy::location loc);
 
-	ErrorCode Compute(DataType expected_type, ParserNode* *value) override { return NO_ERROR; };
-
 protected:
 	ErrorCode Compile () override;
 	ErrorCode Prepare () override;

@@ -18,72 +18,61 @@ ParserExpressionLogical::ParserExpressionLogical (
 }
 
 ErrorCode ParserExpressionLogical::TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) {
-	set_expected_type(DB_BOOLEAN);
-	
+	for (auto arg : *(this->arguments())) {
+		arg->set_expected_type(DB_BOOLEAN);
+	}
 	return NO_ERROR;
 }
 
-ErrorCode ParserExpressionLogical::Compute(DataType expected_type, ParserNode* *value) {
+ErrorCode ParserExpressionLogical::ConstantFoldPost() {
 	ErrorCode er = NO_ERROR;
-
-	// Cast to a compare expression
-	ParserExpressionLogical* exp = (ParserExpressionLogical*)(*value);
 
 	// Get arguments
 	std::vector<ParserNode*> children;
-	((ParserExpression*)(exp))->GetChildren(&children);
-	
-	// Solve all arguments
-	for (auto child = children.begin(); child != children.end(); child++) {
-		er = (*child)->Compute(DB_BOOLEAN, &(*child));
-		if (er != NO_ERROR)
-			return er;
-	}
+	this->GetChildren(&children);
 
 	// Extract the child(ren)
 	bool rhs;
-
 	auto left_child = children.at(0);
-	bool lhs = (((ParserValue*)(left_child))->value())->bool_value();
+	bool lhs = left_child->computed_value().bool_value();
 
 	// NOT is an unary expression
-	if (exp->op() != NOT) {
+	if (this->op() != NOT) {
 		auto right_child = children.at(1);
-		rhs = (((ParserValue*)(right_child))->value())->bool_value();
+		rhs = right_child->computed_value().bool_value();
 	}
 
-	switch (exp->op()) {
+	switch (this->op()) {
 	case AND:
 		if (rhs && lhs)
-			(*value) = new ParserValue(new DatabaseValue(true));
+			this->set_computed_value((*(new DatabaseValue(true))));
 		else
-			(*value) = new ParserValue(new DatabaseValue(false));
+			this->set_computed_value((*(new DatabaseValue(false))));
 		break;
 	case OR:
 		if (rhs || lhs)
-			(*value) = new ParserValue(new DatabaseValue(true));
+			this->set_computed_value((*(new DatabaseValue(true))));
 		else
-			(*value) = new ParserValue(new DatabaseValue(false));
+			this->set_computed_value((*(new DatabaseValue(false))));
 		break;
 	case NOT:
 		if (lhs)
-			(*value) = new ParserValue(new DatabaseValue(false));
+			this->set_computed_value((*(new DatabaseValue(false))));
 		else
-			(*value) = new ParserValue(new DatabaseValue(true));
+			this->set_computed_value((*(new DatabaseValue(true))));
 		break;
 	default:
 		break;
 	}
 
 	// Convert to the expected type
-	if (expected_type != DB_ANY) {
-		DatabaseValue* val = ((ParserValue*)(*value))->value();
-		er = exp->Convert(((ParserValue*)(*value))->value()->get_type(), expected_type, &val);
-		if (er == NO_ERROR)
-			((ParserValue*)(*value))->set_value(val);
+	if (this->computed_value().get_type() != this->ExpectedType()){
+		auto aux = this->computed_value();
+		er = aux.Cast(this->ExpectedType());
+		if (er != NO_ERROR)
+			return er;
+		this->set_computed_value(aux);
 	}
-
-	delete exp;
 
 	return er;
 }

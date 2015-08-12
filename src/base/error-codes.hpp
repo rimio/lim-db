@@ -30,6 +30,8 @@ typedef enum
 	ER_INEXISTENT_COLUMN,
 	ER_ATTR_AND_VALUES_DIFF_NUMBERS,
 	ER_COLUMN_AND_VALUE_TYPE_MISMATCH,
+	ER_VALUE_CAST_IMPOSSIBLE,
+	ER_CAST_UNEXPECTED,
 	ER_LAST_ERROR
 } ErrorCode;
 
@@ -58,6 +60,8 @@ static const std::string kErrorMessages[] = {
 	"There is no column %s in table %s",
 	"The number of values does not match the number of columns",
 	"The type of the value can not be resolved to the type of the column",
+	"Cannot cast value to data_type_",
+	"This is an unexpected DatabaseValue::Cast",
 };
 
 #endif

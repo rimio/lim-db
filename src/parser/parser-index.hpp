@@ -16,7 +16,6 @@ public:
 	std::string name () { return name_; };
 	void set_name (std::string name) { name_ = name; };
 
-	ErrorCode Compute(DataType expected_type_, ParserNode* *value) override { return NO_ERROR; };
 protected:
 	// Override virtual functions from ParserNode
 	ErrorCode TypeCheckPre (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }

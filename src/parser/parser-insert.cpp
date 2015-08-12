@@ -129,6 +129,15 @@ ErrorCode ParserInsert::CheckValues() {
 
 }
 
+ErrorCode ParserInsert::TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) {
+	for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
+		for (int i = 0; i < (*columns_).size(); i++) {
+			(*(*val)).at(i)->set_expected_type((*columns_).at(i)->data_type());
+		}
+	}
+	return NO_ERROR;
+}
+
 ErrorCode ParserInsertStatement::Compile () {
 	// Check if table name exists
 	Table *tableSchema = NULL;
@@ -177,21 +186,20 @@ ErrorCode ParserInsertStatement::Compile () {
 	er = TypeCheck();
 	if (er != NO_ERROR)
 		return er;
-
-	std::vector <std::vector<DatabaseValue*>> rows;
 	
 	// Resolve constant folding
-	for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
-		std::vector <DatabaseValue*> row;
-		for (int i = 0; i < (*columns_).size(); i++) {
-			er = (*(*val)).at(i)->Compute((*columns_).at(i)->ExpectedType(), &(*(*val)).at(i));
-			if (er == NO_ERROR)
-				row.push_back(((ParserValue*)((*(*val)).at(i)))->value());
-			else
-				return er;
+	er = ConstantFold();
+	if (er != NO_ERROR)
+		return er;
+	if (er == NO_ERROR) {
+		for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
+			for (int i = 0; i < (*columns_).size(); i++) {
+				printf ("%d ",(*(*val)).at(i)->computed_value().int_value());
+			}
+			printf("\n");
 		}
-		rows.push_back(row);
 	}
+
 
 	return er;
 }

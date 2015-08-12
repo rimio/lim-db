@@ -19,7 +19,6 @@ public:
 	void set_name(std::string name) { STRING_TO_LOWER(name); name_ = name; };
 	void set_table(Table *t) { table_ = t; };
 
-	ErrorCode Compute(DataType expected_type, ParserNode* *value) override { return NO_ERROR; };
 protected:
 
 	// Override virtual functions from ParserNode

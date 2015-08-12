@@ -14,8 +14,6 @@ public:
 	ParserExpressionArithmetic(std::vector<ParserNode*>* arguments,
 		ArithmeticOperators arithmetic_op);
 
-	ErrorCode Compute (DataType expected_type, ParserNode* *value) override;
-	
 	ArithmeticOperators op() { return op_; }
 protected:
 	// Override virtual functions from ParserNode
@@ -25,7 +23,7 @@ protected:
 	ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) { return NO_ERROR; }
 	ErrorCode NameResolvePost (NameResolveArg* arg, bool* stop_walk) { return NO_ERROR; }
 
-	ErrorCode ConstantFoldPost (void) { return NO_ERROR; }
+	ErrorCode ConstantFoldPost();
 
 private:
 	ArithmeticOperators op_;

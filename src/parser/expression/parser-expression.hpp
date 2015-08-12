@@ -10,11 +10,13 @@ class ParserExpression : public ParserNode {
 	
 public:
 	// Override virtual functions from ParserNode
-	void GetChildren(std::vector<ParserNode*>* children);
-
+	
+	std::vector<ParserNode *>* arguments(){ return arguments_; }
 protected:
 	ParserExpression (std::vector<ParserNode*>* arguments);
 	virtual ~ParserExpression ();
+
+	void GetChildren(std::vector<ParserNode*>* children);
 
 	// Inaccessible default constructor
 	ParserExpression () { };

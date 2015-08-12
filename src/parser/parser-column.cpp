@@ -9,7 +9,6 @@ std::string ParserColumn::ToString () {
 ErrorCode ParserColumn::NameResolvePost(NameResolveArg* arg, bool* stop_walk) {	
 	if (resolved_to_ != NULL) return NO_ERROR;
 
-	NameResolveArg a;
 	// Check if column is bounded to a specific table
 	if (table_name() != "") {
 		auto pt = arg->tables_stack_.top();

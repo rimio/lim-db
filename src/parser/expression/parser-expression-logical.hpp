@@ -13,8 +13,6 @@ public:
 	ParserExpressionLogical (std::vector<ParserNode*>* arguments,
 							 LogicalOperators logical_op);
 
-	ErrorCode Compute (DataType expected_type, ParserNode* *value) override ;
-
 	LogicalOperators op() { return op_; }
 protected:
 	// Override virtual functions from ParserNode
@@ -24,7 +22,7 @@ protected:
 	ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) { return NO_ERROR; }
 	ErrorCode NameResolvePost (NameResolveArg* arg, bool* stop_walk) { return NO_ERROR; }
 
-	ErrorCode ConstantFoldPost (void) { return NO_ERROR; }
+	ErrorCode ConstantFoldPost ();
 
 private:
 	

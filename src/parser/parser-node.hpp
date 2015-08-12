@@ -28,8 +28,10 @@ public:
 	virtual std::string ToString () { return std::string(""); };
 	
 	DataType ExpectedType() { return expected_type_; };
-	ErrorCode Convert(DataType from, DataType to, DatabaseValue* *value);
-	virtual ErrorCode Compute (DataType expected_type, ParserNode* *value) = 0;
+
+	DatabaseValue computed_value() { return computed_value_; }
+	void set_computed_value(DatabaseValue value) { computed_value_ = value; }
+	void set_expected_type(DataType type) { expected_type_ = type; };
 protected:
 	// Position in input buffer
 	yy::location location_;
@@ -39,7 +41,6 @@ protected:
 
 	// Parse walk functions
 	virtual void GetChildren (std::vector<ParserNode *>* children) = 0;
-	
 
 	class TypeCheckArg {
 	};
@@ -58,8 +59,7 @@ protected:
 
 	ErrorCode NameResolve ();
 	ErrorCode TypeCheck ();
-	
-	void set_expected_type(DataType type) { expected_type_ = type; };
+	ErrorCode ConstantFold();
 private:
 	template <class ArgPre, class ArgPost>
 	ErrorCode ParserWalkInternal (ErrorCode (ParserNode::*pre_func) (ArgPre *, bool*), ArgPre* arg_pre,
@@ -73,6 +73,7 @@ private:
 	ErrorCode ParserWalk(ErrorCode(ParserNode::*pre_func) (void), ErrorCode(ParserNode::*post_func) (void));
 
 	DataType expected_type_;
+	DatabaseValue computed_value_;
 };
 
 #endif
