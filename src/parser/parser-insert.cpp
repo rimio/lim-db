@@ -191,15 +191,6 @@ ErrorCode ParserInsertStatement::Compile () {
 	er = ConstantFold();
 	if (er != NO_ERROR)
 		return er;
-	if (er == NO_ERROR) {
-		for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
-			for (int i = 0; i < (*columns_).size(); i++) {
-				printf ("%d ",(*(*val)).at(i)->computed_value().int_value());
-			}
-			printf("\n");
-		}
-	}
-
 
 	return er;
 }
