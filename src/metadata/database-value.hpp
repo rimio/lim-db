@@ -25,7 +25,7 @@ public:
 	bool operator <=(const DatabaseValue& value);
 	bool operator ==(const DatabaseValue& value);
 
-	DatabaseValue operator=(const DatabaseValue& value);
+	DatabaseValue& operator=(const DatabaseValue& value);
 	DatabaseValue operator+(const DatabaseValue& value);
 	DatabaseValue operator-(const DatabaseValue& value);
 	DatabaseValue operator*(const DatabaseValue& value);
@@ -57,7 +57,6 @@ public:
 	void unset_need_clear() { need_clear_ = false; }
 private:
 	int Compare(DatabaseValue arg);
-	ErrorCode Compute(DatabaseValue left, DatabaseValue right, ArithmeticOperators op, DatabaseValue* result);
 	void ClearValue();
 	bool need_clear_;
 	DataType data_type_;

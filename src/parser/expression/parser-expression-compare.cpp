@@ -56,7 +56,6 @@ ErrorCode ParserExpressionCompare::ConstantFoldPost() {
 	default:
 		assert(false);
 		return ER_FAILED;
-		break;
 	}
 
 	this->set_computed_value( DatabaseValue(result));

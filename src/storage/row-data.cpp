@@ -43,7 +43,7 @@ BYTE* RowData::SerializeRow(Table * t, BYTE* start) {
 				memcpy(o_pos, &arg, sizeof(arg));
 				o_pos += 4;
 				s_pos = (*values_.at(i)).Serialize(s_pos);
-			break;
+				break;
 		}
 	}
 	return s_pos;
