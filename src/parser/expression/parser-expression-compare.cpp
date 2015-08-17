@@ -5,8 +5,6 @@
 #include "metadata\database-value.hpp"
 #include "parser\parser-value.hpp"
 
-#define MACHINE_ERROR 0.0000001
-
 ParserExpressionCompare::ParserExpressionCompare (
 		std::vector<ParserNode*>* arguments,
 		CompareOperators compare_op) {
@@ -38,28 +36,30 @@ ErrorCode ParserExpressionCompare::ConstantFoldPost() {
 
 	switch (this->op()) {
 	case EQ:
-		result = (left_child->computed_value() == right_child->computed_value()) ? true : false;
+		result = (left_child->computed_value() == right_child->computed_value());
 		break;
 	case NOT_EQ:
-		result = (left_child->computed_value() == right_child->computed_value()) ? false : true;
+		result = (left_child->computed_value() == right_child->computed_value());
 		break;
 	case LT:
-		result = (left_child->computed_value() < right_child->computed_value()) ? true : false;
+		result = (left_child->computed_value() < right_child->computed_value());
 		break;
 	case LT_EQ:
-		result = (left_child->computed_value() <= right_child->computed_value()) ? true : false;
+		result = (left_child->computed_value() <= right_child->computed_value());
 		break;
 	case GT:
-		result = (left_child->computed_value() > right_child->computed_value()) ? true : false;
+		result = (left_child->computed_value() > right_child->computed_value());
 		break;
 	case GT_EQ:
-		result = (left_child->computed_value() >= right_child->computed_value()) ? true : false;
+		result = (left_child->computed_value() >= right_child->computed_value());
 		break;
 	default:
+		assert(false);
+		return ER_FAILED;
 		break;
 	}
 
-	this->set_computed_value((*(new DatabaseValue(result))));
+	this->set_computed_value( DatabaseValue(result));
 
 	if (this->computed_value().get_type() != this->ExpectedType()){
 		auto aux = this->computed_value();

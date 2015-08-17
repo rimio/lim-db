@@ -117,6 +117,7 @@ set (SRC_BASE_FILES
 	${SOURCE_DIR}/base/bitmap.cpp
 
 	${SOURCE_DIR}/base/data-type.hpp
+	${SOURCE_DIR}/base/data-type.cpp
 
 	${SOURCE_DIR}/base/error-codes.hpp
 

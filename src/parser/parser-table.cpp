@@ -17,7 +17,7 @@ std::string ParserTable::ToString () {
 
 ErrorCode ParserTable::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
 	// Get the node on top and add Parser table to the node
-	(*arg).tables_stack_.top().push_back(this);
+	arg->tables_stack_.top().push_back(this);
 	return NO_ERROR;
 }
 

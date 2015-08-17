@@ -105,7 +105,7 @@ ErrorCode ParserInsert::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
 	std::vector <ParserTable *> new_node;
 
 	// Add Parser table to the node
-	(*arg).tables_stack_.push(new_node);
+	arg->tables_stack_.push(new_node);
 
 	return NO_ERROR;
 }
@@ -130,9 +130,9 @@ ErrorCode ParserInsert::CheckValues() {
 }
 
 ErrorCode ParserInsert::TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) {
-	for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
-		for (int i = 0; i < (*columns_).size(); i++) {
-			(*(*val)).at(i)->set_expected_type((*columns_).at(i)->data_type());
+	for (auto val = values_->begin(); val != values_->end(); val++) {
+		for (int i = 0; i < columns_->size(); i++) {
+			(*val)->at(i)->set_expected_type(columns_->at(i)->data_type());
 		}
 	}
 	return NO_ERROR;
@@ -163,7 +163,7 @@ ErrorCode ParserInsertStatement::Compile () {
 		std::vector<Attribute> attributes = tableSchema->get_table_attributes();
 		// Set all the columns 
 		for (auto attr = attributes.begin(); attr != attributes.end(); ++attr) {
-			(*columns_).push_back(new ParserColumn(attr->get_name(),
+			columns_->push_back(new ParserColumn(attr->get_name(),
 				attr->get_type(), table_->name(),table_));
 		}
 	}
@@ -175,8 +175,8 @@ ErrorCode ParserInsertStatement::Compile () {
 	values_ = v;
 
 	// Check the number of args in each tuple is corectly defined
-	for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
-		if ((*(*val)).size() != (*columns_).size()) {
+	for (auto val = values_->begin(); val != values_->end(); val++) {
+		if ((*val)->size() != columns_->size()) {
 			return ErrorManager::error(__HERE__, ER_ATTR_AND_VALUES_DIFF_NUMBERS,
 				table_->name().c_str());
 		}

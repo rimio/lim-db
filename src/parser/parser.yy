@@ -58,7 +58,6 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 }
 
 %union {
-	bool bval;
 	int ival;
 	float fval;
 	std::string *sval;
@@ -127,7 +126,6 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %left STAR SLASH MODULO
 %precedence NEGATION
 
-%token <bval> BLITERAL			"boolean literal"
 %token <ival> ILITERAL			"integer literal"
 %token <fval> FLITERAL			"float literal"
 %token <sval> SLITERAL			"string literal"
@@ -508,11 +506,6 @@ operand
 
 literal
 	: ILITERAL
-		{
-			$$ = new ParserValue( new DatabaseValue ( $1 ) );
-			$$->setLocation ( @1 );
-		}
-	| BLITERAL 
 		{
 			$$ = new ParserValue( new DatabaseValue ( $1 ) );
 			$$->setLocation ( @1 );

@@ -15,8 +15,11 @@ typedef enum
 	DB_MAX,
 
 	DB_NUMERIC,		// integer, float
-	DB_ANY			// all types
+	DB_ANY,			// all types
+
+	DB_ERROR        // uncomputable value       
 
 } DataType;
 
+DataType CommonType(DataType t1, DataType t2);
 #endif // DB_TYPE_HPP_

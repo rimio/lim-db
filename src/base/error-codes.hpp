@@ -32,6 +32,8 @@ typedef enum
 	ER_COLUMN_AND_VALUE_TYPE_MISMATCH,
 	ER_VALUE_CAST_IMPOSSIBLE,
 	ER_CAST_UNEXPECTED,
+	ER_CAST_ERROR,
+	ER_ARITHMETIC_COMPUTATION_MOD,
 	ER_LAST_ERROR
 } ErrorCode;
 
@@ -62,6 +64,8 @@ static const std::string kErrorMessages[] = {
 	"The type of the value can not be resolved to the type of the column",
 	"Cannot cast value to data_type_",
 	"This is an unexpected DatabaseValue::Cast",
+	"The cast is not possible",
+	"The arguments can not be resolved to INT in order to perform MOD operation"
 };
 
 #endif

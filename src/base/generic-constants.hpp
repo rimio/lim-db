@@ -31,6 +31,9 @@
 #define MAX_UINT16 ((UINT16) 0xFFFF)
 #endif
 
+#ifndef MACHINE_ERROR
+#define MACHINE_ERROR 0.0000001
+#endif
 enum ArithmeticOperators {
 	PLUS,
 	MINUS,

@@ -45,23 +45,25 @@ ErrorCode ParserExpressionLogical::ConstantFoldPost() {
 	switch (this->op()) {
 	case AND:
 		if (rhs && lhs)
-			this->set_computed_value((*(new DatabaseValue(true))));
+			this->set_computed_value(DatabaseValue(true));
 		else
-			this->set_computed_value((*(new DatabaseValue(false))));
+			this->set_computed_value(DatabaseValue(false));
 		break;
 	case OR:
 		if (rhs || lhs)
-			this->set_computed_value((*(new DatabaseValue(true))));
+			this->set_computed_value(DatabaseValue(true));
 		else
-			this->set_computed_value((*(new DatabaseValue(false))));
+			this->set_computed_value(DatabaseValue(false));
 		break;
 	case NOT:
 		if (lhs)
-			this->set_computed_value((*(new DatabaseValue(false))));
+			this->set_computed_value(DatabaseValue(false));
 		else
-			this->set_computed_value((*(new DatabaseValue(true))));
+			this->set_computed_value(DatabaseValue(true));
 		break;
 	default:
+		assert(false);
+		return ER_FAILED;
 		break;
 	}
 
