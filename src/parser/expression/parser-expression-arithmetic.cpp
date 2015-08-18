@@ -49,6 +49,8 @@ ErrorCode ParserExpressionArithmetic::ConstantFoldPost() {
 		result = left_child->computed_value() / right_child->computed_value();
 		break;
 	case MODULO:
+		if (left_child->computed_value().get_type()!= DB_INTEGER || right_child->computed_value().get_type() != DB_INTEGER)
+			return ErrorManager::error(__HERE__, ER_ARITHMETIC_COMPUTATION, "MOD", "NON_INT", "NON_INT");
 		result = left_child->computed_value() % right_child->computed_value();
 		break;
 	default:

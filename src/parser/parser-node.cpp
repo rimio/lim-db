@@ -4,8 +4,6 @@
 #include "base/generic-operations.hpp"
 #include <stdexcept>
 
-#define MACHINE_ERROR 0.0000001
-
 ParserNode::ParserNode ()
 {
 	location_.begin.initialize(nullptr, 0, 0);

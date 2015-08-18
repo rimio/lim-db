@@ -13,38 +13,42 @@ void DatabaseValue::ClearValue(){
 	need_clear_ = false;
 }
 
+DatabaseValue::DatabaseValue(const DatabaseValue& value) {
+	ClearValue();
+	this->data_type_ = value.data_type_;
+	this->value_ = value.value_;
+}
+
 DatabaseValue::~DatabaseValue() {
 	ClearValue();
 }
 
 int DatabaseValue::Compare(DatabaseValue arg) {
-	DataType common_type = CommonType(arg.get_type(), this->get_type());
-
-	if (arg.get_type() != common_type)
-		arg.Cast(common_type);
-	if (this->get_type() != common_type)
-		this->Cast(common_type);
+	DatabaseValue a = arg;
+	DatabaseValue b = *this;
 	
-	// result = 1 if this > arg
-	// result = 0 if this = arg
-	// result = -1 if this < arg
+	DataType common_type = CommonType(a.get_type(), b.get_type());
+
+	if (a.get_type() != common_type)
+		a.Cast(common_type);
+	if (b.get_type() != common_type)
+		b.Cast(common_type);
+	
 	switch (common_type)
 	{
 	case DB_INTEGER:
-		return this->int_value() - arg.int_value();
-		break;
+		return b.int_value() - a.int_value();
 	case DB_FLOAT:
-		if (fabs(this->float_value() - arg.float_value()) < MACHINE_ERROR) 
+		float diff;
+		diff = b.float_value() - a.float_value();
+		if (fabs(diff) < MACHINE_ERROR) 
 			return 0;
-		return this->float_value() - arg.float_value();
-		break;
+		return diff > 0 ? 1 : -1;
 	case DB_STRING:
-		return this->string_value().compare(arg.string_value());
-		break;
+		return b.string_value().compare(a.string_value());
 	default:
 		assert(false);
 		return ER_FAILED;
-		break;
 	}
 }
 
@@ -78,135 +82,223 @@ bool DatabaseValue::operator==(const DatabaseValue& value) {
 	return false;
 }
 
-ErrorCode DatabaseValue::Compute(DatabaseValue left, DatabaseValue right, ArithmeticOperators op, DatabaseValue* result) {
-	ErrorCode er = NO_ERROR;
-	// Holds which is the broadest type of the result
-	DataType dominant_type = (left.get_type() == DB_INTEGER
-		&& right.get_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
-
-	if (left.get_type() != dominant_type) {
-		er = left.Cast(dominant_type);
-		if (er != NO_ERROR)
-			return er;
-	}
-
-	if (right.get_type() != dominant_type) {
-		er = right.Cast(dominant_type);
-		if (er != NO_ERROR)
-			return er;
-	}
-
-	// Compute the result
-	// Whatever the operator between numbers, we can consider a plus sign in front of the first one
-	INT32 iresult;
-	float fresult;
-
-	switch (dominant_type) {
-	case DB_INTEGER:
-		iresult = left.int_value();
-		switch (op) {
-		case PLUS:
-			iresult += right.int_value();
-			break;
-		case MINUS:
-			iresult -= right.int_value();
-			break;
-		case MULTIPLY:
-			iresult *= right.int_value();
-			break;
-		case DIVIDE:
-			iresult /= right.int_value();
-			break;
-		case MODULO:
-			iresult %= right.int_value();
-			break;
-		default:
-			assert(false);
-			return ER_FAILED;
-			break;
-		}
-		*result = DatabaseValue(iresult);
-		break;
-	case DB_FLOAT:
-		fresult = left.float_value();
-		switch (op) {
-		case PLUS:
-			fresult += right.float_value();
-			break;
-		case MINUS:
-			fresult -= right.float_value();
-			break;
-		case MULTIPLY:
-			fresult *= right.float_value();
-			break;
-		case DIVIDE:
-			fresult /= right.float_value();
-			break;
-		case MODULO:
-			return ErrorManager::error(__HERE__, ER_ARITHMETIC_COMPUTATION_MOD);
-			break;
-		default:
-			assert(false);
-			return ER_FAILED;
-			break;
-		}
-		*result = DatabaseValue(fresult);
-		break;
-	default:
-		assert(false);
-		return ER_FAILED;
-		break;
-	}
-	
-	return er;
-}
-
-DatabaseValue DatabaseValue::operator=(const DatabaseValue& value) {
+DatabaseValue& DatabaseValue::operator=(const DatabaseValue& value) {
 	if (this != &value) {
+		ClearValue();
 		this->data_type_ = value.data_type_;
 		this->value_ = value.value_;
-		this->need_clear_ = false;
 	}
 	return *this;
 }
 
 DatabaseValue DatabaseValue::operator+(const DatabaseValue& value) {
+	ErrorCode er = NO_ERROR;
 	DatabaseValue result;
-	ErrorCode er = Compute(*this, value, PLUS, &result);
-	if (er != NO_ERROR)
+	DatabaseValue left = *this;
+	DatabaseValue right = value;
+
+	if (left.get_type() != DB_INTEGER && left.get_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
+		return result;
+	}
+
+	if (right.get_type() != DB_INTEGER && right.get_type() != DB_FLOAT) {
+		result.set_type(DB_ERROR);
+		return result;
+	}
+
+	DataType dominant_type = (left.get_type() == DB_INTEGER
+		&& right.get_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
+
+	if (left.get_type() != dominant_type) {
+		er = left.Cast(dominant_type);
+		if (er != NO_ERROR) {
+			result.set_type(DB_ERROR);
+			return result;
+		}
+	}
+
+	if (right.get_type() != dominant_type) {
+		er = right.Cast(dominant_type);
+		if (er != NO_ERROR) {
+			result.set_type(DB_ERROR);
+			return result;
+		}
+	}
+
+	switch (left.get_type()){
+	case DB_INTEGER:
+		result.set_int_value(left.int_value() + right.int_value());
+		break;
+	case DB_FLOAT:
+		result.set_float_value(left.float_value() + right.float_value());
+		break;
+	default:
+		result.set_type(DB_ERROR);
+		break;
+	}
+
 	return result;
 }
 
 DatabaseValue DatabaseValue::operator-(const DatabaseValue& value) {
+	ErrorCode er = NO_ERROR;
 	DatabaseValue result;
-	ErrorCode er = Compute(*this, value, MINUS, &result);
-	if (er != NO_ERROR)
+	DatabaseValue left = *this;
+	DatabaseValue right = value;
+
+	if (left.get_type() != DB_INTEGER && left.get_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
+		return result;
+	}
+
+	if (right.get_type() != DB_INTEGER && right.get_type() != DB_FLOAT) {
+		result.set_type(DB_ERROR);
+		return result;
+	}
+
+	DataType dominant_type = (left.get_type() == DB_INTEGER
+		&& right.get_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
+
+	if (left.get_type() != dominant_type) {
+		er = left.Cast(dominant_type);
+		if (er != NO_ERROR) {
+			result.set_type(DB_ERROR);
+			return result;
+		}
+	}
+
+	if (right.get_type() != dominant_type) {
+		er = right.Cast(dominant_type);
+		if (er != NO_ERROR) {
+			result.set_type(DB_ERROR);
+			return result;
+		}
+	}
+
+	switch (left.get_type()){
+	case DB_INTEGER:
+		result.set_int_value(left.int_value() - right.int_value());
+		break;
+	case DB_FLOAT:
+		result.set_float_value(left.float_value() - right.float_value());
+		break;
+	default:
+		result.set_type(DB_ERROR);
+		break;
+	}
+
 	return result;
 }
 
 DatabaseValue DatabaseValue::operator*(const DatabaseValue& value) {
+	ErrorCode er = NO_ERROR;
 	DatabaseValue result;
-	ErrorCode er = Compute(*this, value, MULTIPLY, &result);
-	if (er != NO_ERROR)
+	DatabaseValue left = *this;
+	DatabaseValue right = value;
+
+	if (left.get_type() != DB_INTEGER && left.get_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
+		return result;
+	}
+
+	if (right.get_type() != DB_INTEGER && right.get_type() != DB_FLOAT) {
+		result.set_type(DB_ERROR);
+		return result;
+	}
+
+	DataType dominant_type = (left.get_type() == DB_INTEGER
+		&& right.get_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
+
+	if (left.get_type() != dominant_type) {
+		er = left.Cast(dominant_type);
+		if (er != NO_ERROR) {
+			result.set_type(DB_ERROR);
+			return result;
+		}
+	}
+
+	if (right.get_type() != dominant_type) {
+		er = right.Cast(dominant_type);
+		if (er != NO_ERROR) {
+			result.set_type(DB_ERROR);
+			return result;
+		}
+	}
+
+	switch (left.get_type()){
+	case DB_INTEGER:
+		result.set_int_value(left.int_value() * right.int_value());
+		break;
+	case DB_FLOAT:
+		result.set_float_value(left.float_value() * right.float_value());
+		break;
+	default:
+		result.set_type(DB_ERROR);
+		break;
+	}
+
 	return result;
 }
 
 DatabaseValue DatabaseValue::operator/(const DatabaseValue& value) {
+	ErrorCode er = NO_ERROR;
 	DatabaseValue result;
-	ErrorCode er = Compute(*this, value, DIVIDE, &result);
-	if (er != NO_ERROR)
+	DatabaseValue left = *this;
+	DatabaseValue right = value;
+
+	if (left.get_type() != DB_INTEGER && left.get_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
+		return result;
+	}
+
+	if (right.get_type() != DB_INTEGER && right.get_type() != DB_FLOAT) {
+		result.set_type(DB_ERROR);
+		return result;
+	}
+
+	DataType dominant_type = (left.get_type() == DB_INTEGER
+		&& right.get_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
+
+	if (left.get_type() != dominant_type) {
+		er = left.Cast(dominant_type);
+		if (er != NO_ERROR) {
+			result.set_type(DB_ERROR);
+			return result;
+		}
+	}
+
+	if (right.get_type() != dominant_type) {
+		er = right.Cast(dominant_type);
+		if (er != NO_ERROR) {
+			result.set_type(DB_ERROR);
+			return result;
+		}
+	}
+
+	switch (left.get_type()){
+	case DB_INTEGER:
+		result.set_int_value(left.int_value() / right.int_value());
+		break;
+	case DB_FLOAT:
+		result.set_float_value(left.float_value() / right.float_value());
+		break;
+	default:
+		result.set_type(DB_ERROR);
+		break;
+	}
+
 	return result;
 }
 
 DatabaseValue DatabaseValue::operator%(const DatabaseValue& value) {
+	ErrorCode er = NO_ERROR;
 	DatabaseValue result;
-	ErrorCode er = Compute(*this, value, MODULO, &result);
-	if (er != NO_ERROR)
-		result.set_type(DB_ERROR);
+	DatabaseValue left = *this;
+	DatabaseValue right = value;
+
+    result.set_int_value(left.int_value() % right.int_value());
+	
 	return result;
 }
 
@@ -215,18 +307,14 @@ BYTE* DatabaseValue::Serialize(BYTE* ptr) {
 	switch (data_type_) {
 	case DB_INTEGER:
 		return Serializable::SerializeInt(value_.i, ptr);
-		break;
 	case DB_FLOAT:
 		return Serializable::SerializeFloat(value_.f, ptr);
-		break;
 	case DB_STRING:
 		return Serializable::SerializeString((*value_.s), ptr);
-		break;
 	case DB_BOOLEAN:
 		if (value_.b)
 			return Serializable::SerializeInt(1, ptr);
 		return Serializable::SerializeInt(0, ptr);
-		break;
 	default:
 		break;
 	}
@@ -236,13 +324,10 @@ BYTE* DatabaseValue::Deserialize(BYTE* ptr) {
 	switch (data_type_) {
 	case DB_INTEGER:
 		return Serializable::DeserializeInt(ptr, &value_.i);
-		break;
 	case DB_FLOAT:
 		return Serializable::DeserializeFloat(ptr, &value_.f);
-		break;
 	case DB_STRING:
 		return Serializable::DeserializeString(ptr, value_.s);
-		break;
 	case DB_BOOLEAN:
 		INT32 val;
 		BYTE* new_ptr;
@@ -307,37 +392,28 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 		case DB_INTEGER:
 			output->set_int_value(int_val);
 			return NO_ERROR;
-			break;
 		case DB_FLOAT:
 			fl_val = (float)int_val;
 			output->set_float_value(fl_val);
 			return NO_ERROR;
-			break;
 		case DB_STRING:
 			str_val = std::to_string(int_val);
 			output->set_string_value(&str_val,true);
 			return NO_ERROR;
-			break;
 		case DB_BOOLEAN:
 			b_val = (int_val == 0) ? false : true;
 			output->set_bool_value(b_val);
 			return NO_ERROR;
-			break;
 		case DB_NUMERIC:
 			output->set_int_value(int_val);
 			return NO_ERROR;
-			break;
 		case DB_ANY:
 			output->set_int_value(int_val);
 			return NO_ERROR;
-			break;
 		default:
 			assert(false);
 			return ER_FAILED;
-			break;
 		}
-
-		break;
 
 	case DB_FLOAT:
 		fl_val = this->float_value();
@@ -347,36 +423,27 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 			int_val = (INT32)fl_val;
 			output->set_int_value(int_val);
 			return NO_ERROR;
-			break;
 		case DB_FLOAT:
 			output->set_float_value(fl_val);
 			return NO_ERROR;
-			break;
 		case DB_STRING:
 			str_val = std::to_string(fl_val);
 			output->set_string_value(&str_val,true);
 			return NO_ERROR;
-			break;
 		case DB_BOOLEAN:
 			b_val = (abs(fl_val) < MACHINE_ERROR) ? false : true;
 			output->set_bool_value(b_val);
 			return NO_ERROR;
-			break;
 		case DB_NUMERIC:
 			output->set_float_value(fl_val);
 			return NO_ERROR;
-			break;
 		case DB_ANY:
 			output->set_float_value(fl_val);
 			return NO_ERROR;
-			break;
 		default:
 			assert(false);
 			return ER_FAILED;
-			break;
 		}
-
-		break;
 
 	case DB_STRING:
 		str_val = this->string_value();
@@ -398,7 +465,6 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 
 			output->set_int_value(int_val);
 			return NO_ERROR;
-			break;
 		case DB_FLOAT:
 			// Try to convert from string to float
 			try {
@@ -413,14 +479,11 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 
 			output->set_float_value(fl_val);
 			return NO_ERROR;
-			break;
 		case DB_STRING:
 			output->set_string_value(&str_val,true);
 			return NO_ERROR;
-			break;
 		case DB_BOOLEAN:
 			return ErrorManager::error(__HERE__, ER_CAST_ERROR);
-			break;
 		case DB_NUMERIC:
 			bool int_ok;
 			int_ok = true;
@@ -453,18 +516,13 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 
 			output->set_float_value(fl_val);
 			return NO_ERROR;
-			break;
 		case DB_ANY:
 			output->set_string_value(&str_val,true);
 			return NO_ERROR;
-			break;
 		default:
 			assert(false);
 			return ErrorManager::error(__HERE__, ER_FAILED);
-			break;
 		}
-
-		break;
 
 	case DB_BOOLEAN:
 		b_val = this->bool_value();
@@ -476,14 +534,12 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 			else
 				output->set_int_value(0);
 			return NO_ERROR;
-			break;
 		case DB_FLOAT:
 			if (b_val)
 				output->set_float_value(1.0);
 			else
 				output->set_float_value(0.0);
 			return NO_ERROR;
-			break;
 		case DB_STRING:
 			if (b_val) {
 				str_val = "true";
@@ -494,59 +550,27 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 				output->set_string_value(&str_val, true);
 			}
 			return NO_ERROR;
-			break;
 		case DB_BOOLEAN:
 			output->set_bool_value(b_val);
 			return NO_ERROR;
 		case DB_NUMERIC:
 			return ErrorManager::error(__HERE__, ER_CAST_ERROR);
-			break;
 		case DB_ANY:
 			output->set_bool_value(b_val);
 			return NO_ERROR;
-			break;
 		default:
 			assert(false);
 			return ErrorManager::error(__HERE__, ER_FAILED);;
-			break;
 		}
-
-		break;
 
 	default:
 		assert(false);
 		return ErrorManager::error(__HERE__, ER_FAILED);
-		break;
 	}
 
 	return NO_ERROR;
 }
 
-DatabaseValue::DatabaseValue(const DatabaseValue& value) {
-	switch (value.data_type_) {
-	case DB_INTEGER:
-		this->set_int_value(value.value_.i);
-		break;
-	case DB_FLOAT:
-		this->set_float_value(value.value_.f);
-		break;
-	case DB_STRING:
-		this->set_string_value(value.value_.s,true);
-		break;
-	case DB_BOOLEAN:
-		this->set_bool_value(value.value_.b);
-		break;
-	case DB_UNKNOWN:
-		data_type_ = DB_UNKNOWN; 
-		need_clear_ = false; 
-		is_null_ = true; 
-		value_.s = nullptr;
-		break;
-	default:
-		assert(false);
-		break;
-	}
-}
 
 void DatabaseValue::Clone(const DatabaseValue& value) {
 	switch (value.data_type_) {

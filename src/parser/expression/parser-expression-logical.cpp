@@ -64,7 +64,6 @@ ErrorCode ParserExpressionLogical::ConstantFoldPost() {
 	default:
 		assert(false);
 		return ER_FAILED;
-		break;
 	}
 
 	// Convert to the expected type
