@@ -40,7 +40,7 @@ int DatabaseValue::Compare(DatabaseValue arg) {
 		return b.int_value() - a.int_value();
 	case DB_FLOAT:
 		float diff;
-		diff = float_value() - arg.float_value();
+		diff = b.float_value() - a.float_value();
 		if (fabs(diff) < MACHINE_ERROR) 
 			return 0;
 		return diff > 0 ? 1 : -1;

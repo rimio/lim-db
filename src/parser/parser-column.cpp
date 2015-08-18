@@ -53,7 +53,5 @@ ErrorCode ParserColumn::NameResolvePost(NameResolveArg* arg, bool* stop_walk) {
 }
 
 ErrorCode ParserColumn::TypeCheckPre(TypeCheckArg *arg, bool* stop_walk) {
-	set_expected_type(data_type_);
-
 	return NO_ERROR;
 }
