@@ -259,12 +259,14 @@ void DatabaseValue::set_int_value(INT32 value) {
 	ClearValue();
 	data_type_ = DB_INTEGER;
 	value_.i = value;
+	is_null_ = false;
 }
 
 void DatabaseValue::set_float_value(float value) {
 	ClearValue();
 	data_type_ = DB_FLOAT;
 	value_.f = value;
+	is_null_ = false;
 }
 
 void DatabaseValue::set_string_value(std::string* value, bool copy) {
@@ -277,12 +279,14 @@ void DatabaseValue::set_string_value(std::string* value, bool copy) {
 		value_.s = value;
 	}
 	need_clear_ = copy;
+	is_null_ = false;
 }
 
 void DatabaseValue::set_bool_value(bool value) {
 	ClearValue();
 	data_type_ = DB_BOOLEAN;
 	value_.b = value;
+	is_null_ = false;
 }
 
 ErrorCode DatabaseValue::Cast(DataType type) {
@@ -532,6 +536,12 @@ DatabaseValue::DatabaseValue(const DatabaseValue& value) {
 	case DB_BOOLEAN:
 		this->set_bool_value(value.value_.b);
 		break;
+	case DB_UNKNOWN:
+		data_type_ = DB_UNKNOWN; 
+		need_clear_ = false; 
+		is_null_ = true; 
+		value_.s = nullptr;
+		break;
 	default:
 		assert(false);
 		break;
@@ -551,6 +561,12 @@ void DatabaseValue::Clone(const DatabaseValue& value) {
 		break;
 	case DB_BOOLEAN:
 		this->set_bool_value(value.value_.b);
+		break;
+	case DB_UNKNOWN:
+		data_type_ = DB_UNKNOWN;
+		need_clear_ = false;
+		is_null_ = true;
+		value_.s = nullptr;
 		break;
 	default:
 		assert(false);

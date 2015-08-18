@@ -31,7 +31,8 @@ void DataSectorTest::check() {
 	BYTE *ptr;
 	std::string name;
 	std::vector<DatabaseValue> v1;
-	v1.push_back(DatabaseValue(17));
+	DatabaseValue dbv = DatabaseValue(17);
+	v1.push_back(dbv);
 	name = "POPOESCU";
 	v1.push_back(DatabaseValue(&name));
 	name = "ANDREI";
@@ -55,9 +56,9 @@ void DataSectorTest::check() {
 	std::vector<DatabaseValue> v2;
 	v2.push_back(DatabaseValue(117));
 	name = "1POPOESCU";
-	v2.push_back(DatabaseValue(&name));
-	name = "1ANDREI";
 	v2.push_back(DatabaseValue());
+	name = "AAAANDREI";
+	v2.push_back(DatabaseValue(&name));
 	v2.push_back(DatabaseValue(125));
 	v2.push_back(DatabaseValue());
 	v2.push_back(DatabaseValue((float)12.7));
@@ -68,13 +69,13 @@ void DataSectorTest::check() {
 	ptr = rd->SerializeRow(t, start);
 	//insert second serialized row
 	ds->Insert(start, ptr - start);
-	rdd = new RowData(t);
+	
 	where = ds->Select(1);
 	ptr = rdd->DeserializeRow(t, where);
-	rdd = new RowData(t);
+	
 	where = ds->Select(1);
 	ptr = rdd->DeserializeRow(t, where);
-	rdd = new RowData(t);
+
 	where = ds->Select(0);
 	ptr = rdd->DeserializeRow(t, where);
 	
@@ -82,7 +83,6 @@ void DataSectorTest::check() {
 	res = ds->Select();
 
 	for (int i = 0; i < res.size(); i++) {
-		rdd = new RowData(t);
 		ptr = rdd->DeserializeRow(t, res.at(i));
 	}
 

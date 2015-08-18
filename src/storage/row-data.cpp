@@ -1,8 +1,7 @@
 #include "storage\row-data.hpp"
 RowData::RowData(Table *t) {
 	values_.clear();
-	for (int i = 0; i < t->get_number_of_attributes(); i++)
-	values_.push_back(DatabaseValue());
+	values_.resize(t->get_number_of_attributes(),DatabaseValue());
 }
 
 BYTE* RowData::SerializeRow(Table * t, BYTE* start) {
@@ -42,11 +41,11 @@ BYTE* RowData::SerializeRow(Table * t, BYTE* start) {
 			case DB_STRING:
 				//Tracks where the string starts
 				INT32 arg = s_pos - start;
-				o_pos += 4;
 				if (!empty) {
 					memcpy(o_pos, &arg, sizeof(arg));
 					s_pos = values_.at(i).Serialize(s_pos);
 				}
+				o_pos += 4;
 			break;
 		}
 	}
@@ -73,7 +72,9 @@ BYTE* RowData::DeserializeRow(Table *t, BYTE *start) {
 		INT32 empty;
 		n_pos = Serializable::DeserializeInt(n_pos, &empty);
 		if (empty)
-			values_.at(i).set_null();
+			values_.at(i).set_is_null(true);
+		else
+			values_.at(i).set_is_null(false);
 		switch (attributes.at(i).get_type())
 		{
 		case DB_INTEGER:
@@ -101,5 +102,5 @@ BYTE* RowData::DeserializeRow(Table *t, BYTE *start) {
 }
 
 void RowData::set_data_values(std::vector<DatabaseValue> values) {
-	values_ = values;
+	values_.assign(values.begin(),values.end());
 }

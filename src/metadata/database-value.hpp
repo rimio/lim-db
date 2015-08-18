@@ -57,7 +57,7 @@ public:
 	void set_need_clear(bool value) { need_clear_ = value; }
 
 	bool is_null() { return is_null_; }
-	void set_null() { is_null_ = true; }
+	void set_is_null(bool value) { is_null_ = value; }
 private:
 	int Compare(DatabaseValue arg);
 	ErrorCode Compute(DatabaseValue left, DatabaseValue right, ArithmeticOperators op, DatabaseValue* result);
