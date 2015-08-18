@@ -18,9 +18,9 @@ public:
 	// Deserializes a row starting at the location of *start
 	// Retreives a pointer to the end of deserialization
 	BYTE* DeserializeRow(Table *t, BYTE* start);
-	void set_data_values(std::vector<DatabaseValue*> values);
+	void set_data_values(std::vector<DatabaseValue> values);
 private:
-	std::vector<DatabaseValue*> values_;
+	std::vector<DatabaseValue> values_;
 };
 
 #endif

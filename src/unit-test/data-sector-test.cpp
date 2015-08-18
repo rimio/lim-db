@@ -27,18 +27,19 @@ void DataSectorTest::check() {
 	ds->UseDataSector(ds);
 
 	RowData *rd = new RowData(t);
-
 	BYTE *start = PTR_ALIGN_UPPER(row_data_buffer, INT32_ALIGNMENT);
 	BYTE *ptr;
-	
-	std::vector<DatabaseValue*> v1;
-	v1.push_back(new DatabaseValue(17));
-	v1.push_back(new DatabaseValue("POPESCU"));
-	v1.push_back(new DatabaseValue("ANDREI"));
-	v1.push_back(new DatabaseValue(25));
-	v1.push_back(new DatabaseValue(34));
-	v1.push_back(new DatabaseValue((float)2.7));
-	v1.push_back(new DatabaseValue((float)3.9));
+	std::string name;
+	std::vector<DatabaseValue> v1;
+	v1.push_back(DatabaseValue(17));
+	name = "POPOESCU";
+	v1.push_back(DatabaseValue(&name));
+	name = "ANDREI";
+	v1.push_back(DatabaseValue(&name));
+	v1.push_back(DatabaseValue(25));
+	v1.push_back(DatabaseValue(34));
+	v1.push_back(DatabaseValue((float)2.7));
+	v1.push_back(DatabaseValue((float)3.9));
 
 	rd->set_data_values(v1);
 
@@ -47,38 +48,42 @@ void DataSectorTest::check() {
 	//insert first serialized row
 	ds->Insert(start, ptr - start);
 	
+	RowData *rdd = new RowData(t);
 	BYTE* where = ds->Select(0);
-	ptr = rd->DeserializeRow(t, where);
+	ptr = rdd->DeserializeRow(t, where);
 
-	std::vector<DatabaseValue*> v2;
-	v2.push_back(new DatabaseValue(117));
-	v2.push_back(new DatabaseValue("1POPESCU"));
-	v2.push_back(new DatabaseValue("1ANDREI"));
-	v2.push_back(new DatabaseValue(125));
-	v2.push_back(new DatabaseValue(134));
-	v2.push_back(new DatabaseValue((float)12.7));
-	v2.push_back(new DatabaseValue((float)13.9));
+	std::vector<DatabaseValue> v2;
+	v2.push_back(DatabaseValue(117));
+	name = "1POPOESCU";
+	v2.push_back(DatabaseValue(&name));
+	name = "1ANDREI";
+	v2.push_back(DatabaseValue());
+	v2.push_back(DatabaseValue(125));
+	v2.push_back(DatabaseValue());
+	v2.push_back(DatabaseValue((float)12.7));
+	v2.push_back(DatabaseValue((float)13.9));
 
 	rd->set_data_values(v2);
 	
 	ptr = rd->SerializeRow(t, start);
 	//insert second serialized row
 	ds->Insert(start, ptr - start);
-	
+	rdd = new RowData(t);
 	where = ds->Select(1);
-	ptr = rd->DeserializeRow(t, where);
-
+	ptr = rdd->DeserializeRow(t, where);
+	rdd = new RowData(t);
 	where = ds->Select(1);
-	ptr = rd->DeserializeRow(t, where);
-
+	ptr = rdd->DeserializeRow(t, where);
+	rdd = new RowData(t);
 	where = ds->Select(0);
-	ptr = rd->DeserializeRow(t, where);
+	ptr = rdd->DeserializeRow(t, where);
 	
 	std::vector<BYTE*> res;
 	res = ds->Select();
 
 	for (int i = 0; i < res.size(); i++) {
-		ptr = rd->DeserializeRow(t, res.at(i));
+		rdd = new RowData(t);
+		ptr = rdd->DeserializeRow(t, res.at(i));
 	}
 
 }

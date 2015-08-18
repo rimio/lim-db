@@ -10,12 +10,13 @@
 class DatabaseValue: public Serializable {
 public:
 	// Constructors
-	DatabaseValue(int value) { value_.i = value; data_type_ = DB_INTEGER; need_clear_ = false; };
-	DatabaseValue(float value) { value_.f = value; data_type_ = DB_FLOAT; need_clear_ = false; };
-	DatabaseValue(std::string* value) { set_string_value(value, true); };
-	DatabaseValue(bool value) { value_.b = value; data_type_ = DB_BOOLEAN; need_clear_ = false; };
+	DatabaseValue(int value) { value_.i = value; data_type_ = DB_INTEGER; need_clear_ = false; is_null_ = false; };
+	DatabaseValue(float value) { value_.f = value; data_type_ = DB_FLOAT; need_clear_ = false; is_null_ = false; };
+	DatabaseValue(std::string* value) { set_string_value(value, true); is_null_ = false; };
+	DatabaseValue(bool value) { value_.b = value; data_type_ = DB_BOOLEAN; need_clear_ = false; is_null_ = false; };
 	DatabaseValue(const DatabaseValue& value);
-	DatabaseValue() { data_type_ = DB_UNKNOWN; need_clear_ = false; };
+	// Constructor for NULL value
+	DatabaseValue() { data_type_ = DB_UNKNOWN; need_clear_ = false; is_null_ = true; value_.s = nullptr; };
 
 	~DatabaseValue();
 
@@ -53,14 +54,17 @@ public:
 
 	void Clone(const DatabaseValue& value);
 	
-	void set_need_clear() { need_clear_ = true; }
-	void unset_need_clear() { need_clear_ = false; }
+	void set_need_clear(bool value) { need_clear_ = value; }
+
+	bool is_null() { return is_null_; }
+	void set_null() { is_null_ = true; }
 private:
 	int Compare(DatabaseValue arg);
 	ErrorCode Compute(DatabaseValue left, DatabaseValue right, ArithmeticOperators op, DatabaseValue* result);
 	void ClearValue();
 	bool need_clear_;
 	DataType data_type_;
+	bool is_null_;
 	union
 	{
 		INT32 i;

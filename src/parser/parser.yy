@@ -101,6 +101,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %token MODULO					"MOD"
 %token NOT
 %token NOT_EQUAL				"!="
+%token NULLVAL					"NULL"
 %token OR
 %token PAR_CLOSE				")"
 %token PAR_OPEN					"("
@@ -518,6 +519,11 @@ literal
 	| SLITERAL
 		{
 			$$ = new ParserValue( new DatabaseValue( $1 ) );
+			$$->setLocation ( @1 );
+		}
+	| NULLVAL
+		{
+			$$ = new ParserValue( new DatabaseValue () );
 			$$->setLocation ( @1 );
 		}
 	;
