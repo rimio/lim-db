@@ -4,6 +4,7 @@
 
 #include "metadata\database-value.hpp"
 #include "parser\parser-value.hpp"
+#include "base\error-manager.hpp"
 
 ParserExpressionCompare::ParserExpressionCompare (
 		std::vector<ParserNode*>* arguments,
@@ -33,6 +34,11 @@ ErrorCode ParserExpressionCompare::ConstantFoldPost() {
 	auto *right_child = children.at(1);
 
 	bool result;
+
+	// Check for illegal bool comparisons
+	if (left_child->computed_value().get_type() == DB_BOOLEAN && right_child->computed_value().get_type() == DB_BOOLEAN)
+		if (op() != EQ && op() != NOT_EQ) 
+			return ErrorManager::error(__HERE__, ER_FAILED);
 
 	switch (this->op()) {
 	case EQ:

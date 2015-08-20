@@ -2,6 +2,7 @@
 #include "base\error-manager.hpp"
 #include "base\generic-operations.hpp"
 
+#include <cassert>
 #include <stdexcept>
 
 void DatabaseValue::ClearValue(){
@@ -29,13 +30,15 @@ int DatabaseValue::Compare(DatabaseValue arg) {
 	
 	DataType common_type = CommonType(a.get_type(), b.get_type());
 
+	if (common_type == DB_ERROR)
+		return ErrorManager::error(__HERE__, ER_FAILED);
+
 	if (a.get_type() != common_type)
 		a.Cast(common_type);
 	if (b.get_type() != common_type)
 		b.Cast(common_type);
 	
-	switch (common_type)
-	{
+	switch (common_type) {
 	case DB_INTEGER:
 		return b.int_value() - a.int_value();
 	case DB_FLOAT:
@@ -46,6 +49,9 @@ int DatabaseValue::Compare(DatabaseValue arg) {
 		return diff > 0 ? 1 : -1;
 	case DB_STRING:
 		return b.string_value().compare(a.string_value());
+	case DB_BOOLEAN:
+		if (a.bool_value() == b.bool_value()) return 0;
+		return 1;
 	default:
 		assert(false);
 		return ER_FAILED;
@@ -53,24 +59,32 @@ int DatabaseValue::Compare(DatabaseValue arg) {
 }
 
 bool DatabaseValue::operator<(const DatabaseValue& value) {
+	DatabaseValue a = value;
+	assert(this->get_type() != DB_BOOLEAN && a.get_type() != DB_BOOLEAN);
 	int result = Compare(value);
 	if (result < 0) return true;
 	return false;
 }
 
 bool DatabaseValue::operator>(const DatabaseValue& value) {
+	DatabaseValue a = value;
+	assert(this->get_type() != DB_BOOLEAN && a.get_type() != DB_BOOLEAN);
 	int result = Compare(value);
 	if (result > 0) return true;
 	return false;
 }
 
 bool DatabaseValue::operator>=(const DatabaseValue& value) {
+	DatabaseValue a = value;
+	assert(this->get_type() != DB_BOOLEAN && a.get_type() != DB_BOOLEAN);
 	int result = Compare(value);
 	if (result < 0) return false;
 	return true;
 }
 
 bool DatabaseValue::operator<=(const DatabaseValue& value) {
+	DatabaseValue a = value;
+	assert(this->get_type() != DB_BOOLEAN && a.get_type() != DB_BOOLEAN);
 	int result = Compare(value);
 	if (result > 0) return false;
 	return true;
@@ -80,6 +94,12 @@ bool DatabaseValue::operator==(const DatabaseValue& value) {
 	int result = Compare(value);
 	if (result == 0) return true;
 	return false;
+}
+
+bool DatabaseValue::operator!=(const DatabaseValue& value) {
+	int result = Compare(value);
+	if (result == 0) return false;
+	return true;
 }
 
 DatabaseValue& DatabaseValue::operator=(const DatabaseValue& value) {
@@ -296,6 +316,11 @@ DatabaseValue DatabaseValue::operator%(const DatabaseValue& value) {
 	DatabaseValue result;
 	DatabaseValue left = *this;
 	DatabaseValue right = value;
+
+	if (left.get_type() != DB_INTEGER || right.get_type() != DB_INTEGER) {
+		result.set_type(DB_ERROR);
+		return result;
+	}
 
     result.set_int_value(left.int_value() % right.int_value());
 	

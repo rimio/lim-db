@@ -24,6 +24,7 @@ public:
 	bool operator >=(const DatabaseValue& value);
 	bool operator <=(const DatabaseValue& value);
 	bool operator ==(const DatabaseValue& value);
+	bool operator !=(const DatabaseValue& value);
 
 	DatabaseValue& operator=(const DatabaseValue& value);
 	DatabaseValue operator+(const DatabaseValue& value);
