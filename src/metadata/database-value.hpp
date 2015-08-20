@@ -12,7 +12,7 @@ public:
 	// Constructors
 	DatabaseValue(int value) { value_.i = value; data_type_ = DB_INTEGER; need_clear_ = false; is_null_ = false; };
 	DatabaseValue(float value) { value_.f = value; data_type_ = DB_FLOAT; need_clear_ = false; is_null_ = false; };
-	DatabaseValue(std::string* value) { set_string_value(value, true); is_null_ = false; };
+	DatabaseValue(std::string* value) { set_string_value(value, true);  data_type_ = DB_STRING; is_null_ = false; };
 	DatabaseValue(bool value) { value_.b = value; data_type_ = DB_BOOLEAN; need_clear_ = false; is_null_ = false; };
 	DatabaseValue(const DatabaseValue& value);
 	// Constructor for NULL value
@@ -57,7 +57,7 @@ public:
 	void set_need_clear(bool value) { need_clear_ = value; }
 
 	bool is_null() { return is_null_; }
-	void set_is_null(bool value) { is_null_ = value; }
+	void set_is_null(bool value);
 private:
 	int Compare(DatabaseValue arg);
 	void ClearValue();

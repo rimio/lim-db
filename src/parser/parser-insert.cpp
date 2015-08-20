@@ -192,6 +192,33 @@ ErrorCode ParserInsertStatement::Compile () {
 	if (er != NO_ERROR)
 		return er;
 
+	if (er == NO_ERROR) {
+		for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
+			for (int i = 0; i < (*columns_).size(); i++) {
+				if ((*(*val)).at(i)->computed_value().is_null())
+				{
+					printf("is null ");
+				}
+				else switch ((*val)->at(i)->computed_value().get_type())
+				{
+					case DB_INTEGER:
+						printf("%d ", (*val)->at(i)->computed_value().int_value());
+						break;
+					case DB_FLOAT:
+						printf("%f ", (*val)->at(i)->computed_value().float_value());
+						break;
+					case DB_STRING:
+						printf("%s ", (*val)->at(i)->computed_value().string_value().c_str());
+						break;
+					
+				} 
+				
+			}
+			printf("\n");
+		}
+	}
+
+
 	return er;
 }
 

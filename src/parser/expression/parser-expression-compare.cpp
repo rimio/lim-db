@@ -34,6 +34,12 @@ ErrorCode ParserExpressionCompare::ConstantFoldPost() {
 
 	bool result;
 
+	// If at least one of the children is NULL, then the result is a NULL value
+	if (left_child->computed_value().is_null() || right_child->computed_value().is_null() == true) {
+		this->set_computed_value(DatabaseValue());
+		return er;
+	}
+
 	switch (this->op()) {
 	case EQ:
 		result = (left_child->computed_value() == right_child->computed_value());

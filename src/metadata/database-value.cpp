@@ -17,6 +17,7 @@ DatabaseValue::DatabaseValue(const DatabaseValue& value) {
 	ClearValue();
 	this->data_type_ = value.data_type_;
 	this->value_ = value.value_;
+	this->is_null_ = value.is_null_;
 }
 
 DatabaseValue::~DatabaseValue() {
@@ -87,6 +88,7 @@ DatabaseValue& DatabaseValue::operator=(const DatabaseValue& value) {
 		ClearValue();
 		this->data_type_ = value.data_type_;
 		this->value_ = value.value_;
+		this->is_null_ = value.is_null_;
 	}
 	return *this;
 }
@@ -595,5 +597,13 @@ void DatabaseValue::Clone(const DatabaseValue& value) {
 	default:
 		assert(false);
 		break;
+	}
+}
+
+void DatabaseValue::set_is_null(bool value) {
+	is_null_ = value;
+	if (value) {
+		ClearValue();
+		data_type_ = DB_UNKNOWN;
 	}
 }

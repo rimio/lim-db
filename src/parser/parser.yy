@@ -101,7 +101,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %token MODULO					"MOD"
 %token NOT
 %token NOT_EQUAL				"!="
-%token NULLVAL					"NULL"
+%token NULLVAL					"NULLVAL"
 %token OR
 %token PAR_CLOSE				")"
 %token PAR_OPEN					"("
