@@ -28,13 +28,11 @@ BYTE* Serializable::DeserializeInt(BYTE *ptr, int *arg) {
 	INT32 from_int32;
 	memcpy(&from_int32, ptr, sizeof(from_int32));
 	*arg = (int)(from_int32);
-	printf("%d\n", *arg);
 	return ptr+4;
 }
 
 BYTE* Serializable::DeserializeFloat(BYTE *ptr, float *arg) {
 	memcpy(arg, ptr, sizeof(float));
-	printf("%f\n", *arg);
 	return ptr+8;
 }
 
@@ -59,8 +57,6 @@ BYTE* Serializable::DeserializeString(BYTE *ptr, std::string *arg){
 	else {
 		arg = new std::string(buffer);
 	}
-
-	printf("%s\n", arg->c_str());
 
 	delete buffer;
 

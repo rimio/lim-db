@@ -335,7 +335,7 @@ BYTE* DatabaseValue::Deserialize(BYTE* ptr) {
 		BYTE* new_ptr;
 		new_ptr = Serializable::DeserializeInt(ptr, &val);
 		assert(val == 1 || val == 0);
-		value_.b = (val == 1) ? true : false;
+		value_.b = (val == 1);
 		return new_ptr;
 	default:
 		break;
@@ -433,7 +433,7 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 			output->set_string_value(&str_val,true);
 			return NO_ERROR;
 		case DB_BOOLEAN:
-			b_val = (abs(fl_val) < MACHINE_ERROR) ? false : true;
+			b_val = !(abs(fl_val) < MACHINE_ERROR);
 			output->set_bool_value(b_val);
 			return NO_ERROR;
 		case DB_NUMERIC:
