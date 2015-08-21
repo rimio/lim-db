@@ -117,6 +117,7 @@ set (SRC_BASE_FILES
 	${SOURCE_DIR}/base/bitmap.cpp
 
 	${SOURCE_DIR}/base/data-type.hpp
+	${SOURCE_DIR}/base/data-type.cpp
 
 	${SOURCE_DIR}/base/error-codes.hpp
 
@@ -176,15 +177,6 @@ set (SRC_METADATA_FILES
 
 	${SOURCE_DIR}/metadata/database-value.hpp
 	${SOURCE_DIR}/metadata/database-value.cpp
-
-	${SOURCE_DIR}/metadata/int-database-value.hpp
-	${SOURCE_DIR}/metadata/int-database-value.cpp
-
-	${SOURCE_DIR}/metadata/float-database-value.hpp
-	${SOURCE_DIR}/metadata/float-database-value.cpp
-
-	${SOURCE_DIR}/metadata/string-database-value.hpp
-	${SOURCE_DIR}/metadata/string-database-value.cpp
 	)
 source_group("src\\metadata" FILES ${SRC_METADATA_FILES})
 

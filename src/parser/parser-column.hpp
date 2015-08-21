@@ -28,11 +28,11 @@ protected:
 	ParserColumn () : resolved_to_(NULL) {};
 
 	// Override virtual functions from ParserNode
-	ErrorCode TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
+	ErrorCode TypeCheckPre (TypeCheckArg* arg, bool* stop_walk);
 	ErrorCode TypeCheckPost (TypeCheckArg* arg, bool* stop_walk) override { return NO_ERROR; }
 
 	ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) override { return NO_ERROR; }
-	ErrorCode NameResolvePost(NameResolveArg* arg, bool* stop_walk) override;
+	ErrorCode NameResolvePost (NameResolveArg* arg, bool* stop_walk) override;
 
 	ErrorCode ConstantFoldPost (void) override { return NO_ERROR; }
 

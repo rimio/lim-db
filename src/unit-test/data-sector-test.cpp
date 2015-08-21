@@ -4,9 +4,7 @@
 #include "storage\data-sector.hpp"
 #include "boot\boot.hpp"
 #include "base\generic-operations.hpp"
-#include "metadata\int-database-value.hpp"
-#include "metadata\float-database-value.hpp"
-#include "metadata\string-database-value.hpp"
+#include "metadata\database-value.hpp"
 
 #define INT32_ALIGNMENT 4
 
@@ -34,13 +32,13 @@ void DataSectorTest::check() {
 	BYTE *ptr;
 	
 	std::vector<DatabaseValue*> v1;
-	v1.push_back(new IntDatabaseValue(17));
-	v1.push_back(new StringDatabaseValue("POPESCU"));
-	v1.push_back(new StringDatabaseValue("ANDREI"));
-	v1.push_back(new IntDatabaseValue(25));
-	v1.push_back(new IntDatabaseValue(34));
-	v1.push_back(new FloatDatabaseValue(2.7));
-	v1.push_back(new FloatDatabaseValue(3.9));
+	v1.push_back(new DatabaseValue(17));
+	v1.push_back(new DatabaseValue("POPESCU"));
+	v1.push_back(new DatabaseValue("ANDREI"));
+	v1.push_back(new DatabaseValue(25));
+	v1.push_back(new DatabaseValue(34));
+	v1.push_back(new DatabaseValue((float)2.7));
+	v1.push_back(new DatabaseValue((float)3.9));
 
 	rd->set_data_values(v1);
 
@@ -53,13 +51,13 @@ void DataSectorTest::check() {
 	ptr = rd->DeserializeRow(t, where);
 
 	std::vector<DatabaseValue*> v2;
-	v2.push_back(new IntDatabaseValue(117));
-	v2.push_back(new StringDatabaseValue("1POPESCU"));
-	v2.push_back(new StringDatabaseValue("1ANDREI"));
-	v2.push_back(new IntDatabaseValue(125));
-	v2.push_back(new IntDatabaseValue(134));
-	v2.push_back(new FloatDatabaseValue(12.7));
-	v2.push_back(new FloatDatabaseValue(13.9));
+	v2.push_back(new DatabaseValue(117));
+	v2.push_back(new DatabaseValue("1POPESCU"));
+	v2.push_back(new DatabaseValue("1ANDREI"));
+	v2.push_back(new DatabaseValue(125));
+	v2.push_back(new DatabaseValue(134));
+	v2.push_back(new DatabaseValue((float)12.7));
+	v2.push_back(new DatabaseValue((float)13.9));
 
 	rd->set_data_values(v2);
 	

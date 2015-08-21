@@ -4,6 +4,7 @@
 #include "parser/location.hh"
 #include "base/data-type.hpp"
 #include "base/error-codes.hpp"
+#include "metadata/database-value.hpp"
 
 #include <vector>
 #include <stack>
@@ -25,7 +26,12 @@ public:
 	void setLocation (yy::location loc) { location_ = loc; }
 
 	virtual std::string ToString () { return std::string(""); };
+	
+	DataType ExpectedType() { return expected_type_; };
 
+	DatabaseValue computed_value() { return computed_value_; }
+	void set_computed_value(const DatabaseValue& value) { computed_value_.Clone(value); }
+	void set_expected_type(DataType type) { expected_type_ = type; };
 protected:
 	// Position in input buffer
 	yy::location location_;
@@ -35,7 +41,6 @@ protected:
 
 	// Parse walk functions
 	virtual void GetChildren (std::vector<ParserNode *>* children) = 0;
-	
 
 	class TypeCheckArg {
 	};
@@ -52,9 +57,9 @@ protected:
 
 	virtual ErrorCode ConstantFoldPost (void) = 0;
 
-	ErrorCode NameResolve();
-	ErrorCode TypeCheck();
-
+	ErrorCode NameResolve ();
+	ErrorCode TypeCheck ();
+	ErrorCode ConstantFold();
 private:
 	template <class ArgPre, class ArgPost>
 	ErrorCode ParserWalkInternal (ErrorCode (ParserNode::*pre_func) (ArgPre *, bool*), ArgPre* arg_pre,
@@ -66,6 +71,9 @@ private:
 	ErrorCode ParserWalk(ErrorCode(ParserNode::*pre_func) (ArgPre *, bool*), ArgPre* arg_pre,
 		ErrorCode(ParserNode::*post_func) (ArgPost *, bool*), ArgPost* arg_post);
 	ErrorCode ParserWalk(ErrorCode(ParserNode::*pre_func) (void), ErrorCode(ParserNode::*post_func) (void));
+
+	DataType expected_type_;
+	DatabaseValue computed_value_;
 };
 
 #endif

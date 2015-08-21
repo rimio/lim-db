@@ -51,3 +51,7 @@ ErrorCode ParserColumn::NameResolvePost(NameResolveArg* arg, bool* stop_walk) {
 
 	return ErrorManager::error(__HERE__, ER_INEXISTENT_COLUMN, name_.c_str(),table_name_.c_str());
 }
+
+ErrorCode ParserColumn::TypeCheckPre(TypeCheckArg *arg, bool* stop_walk) {
+	return NO_ERROR;
+}

@@ -1,4 +1,8 @@
 #include "parser/parser-node.hpp"
+#include "metadata/database-value.hpp"
+#include "base/error-manager.hpp"
+#include "base/generic-operations.hpp"
+#include <stdexcept>
 
 ParserNode::ParserNode ()
 {
@@ -52,9 +56,11 @@ ErrorCode ParserNode::ParserWalkInternal (ErrorCode (ParserNode::*pre_func) (),
 	ErrorCode error_code = NO_ERROR;
 	std::vector<ParserNode *> children;
 
-	error_code = (this->*pre_func) ();
-	if (error_code != NO_ERROR)
-		return error_code;
+	if (pre_func != nullptr) {
+		error_code = (this->*pre_func) ();
+		if (error_code != NO_ERROR)
+			return error_code;
+	}
 
 	GetChildren (&children);
 	for (auto child = children.begin (); child != children.end (); ++child) {
@@ -63,12 +69,27 @@ ErrorCode ParserNode::ParserWalkInternal (ErrorCode (ParserNode::*pre_func) (),
 			return error_code;
 	}
 
-	return (this->*post_func) ();
+	if (post_func != nullptr) {
+		error_code = (this->*post_func) ();
+		if (error_code != NO_ERROR)
+			return error_code;
+	}
+
+	return NO_ERROR;
 }
 
 ErrorCode ParserNode::NameResolve() {
 	NameResolveArg arg;
 
-	return ParserWalk(&ParserNode::NameResolvePre, &arg, &ParserNode::NameResolvePost, &arg);
+	return ParserWalk (&ParserNode::NameResolvePre, &arg, &ParserNode::NameResolvePost, &arg);
 }
 
+ErrorCode ParserNode::TypeCheck() {
+	TypeCheckArg arg;
+
+	return ParserWalk (&ParserNode::TypeCheckPre,&arg, &ParserNode::TypeCheckPost, &arg);
+}
+
+ErrorCode ParserNode::ConstantFold() {
+	return ParserWalk(nullptr, &ParserNode::ConstantFoldPost);
+}

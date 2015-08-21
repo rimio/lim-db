@@ -2,23 +2,24 @@
 #include "base\generic-operations.hpp"
 #include "boot\boot.hpp"
 #include "parser\parser-value.hpp"
+#include "metadata\database-value.hpp"
 
 //
 // PTInsertNode
 //
 
 ParserInsert::~ParserInsert() {
-	// delete table node
+	// Delete table node
 	if (table_ != NULL)
 		delete table_;
 
-	// delete column nodes
+	// Delete column nodes
 	if (columns_ != NULL) {
 		vector_clear_and_delete(*columns_);
 		delete columns_;
 	}
 
-	// delete values lists
+	// Delete values lists
 	if (values_ != NULL) {
 		for (auto value_list = values_->begin(); value_list != values_->end();
 			++value_list) {
@@ -104,7 +105,7 @@ ErrorCode ParserInsert::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
 	std::vector <ParserTable *> new_node;
 
 	// Add Parser table to the node
-	(*arg).tables_stack_.push(new_node);
+	arg->tables_stack_.push(new_node);
 
 	return NO_ERROR;
 }
@@ -126,6 +127,15 @@ ErrorCode ParserInsert::CheckValues() {
 
 	return er;
 
+}
+
+ErrorCode ParserInsert::TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) {
+	for (auto val = values_->begin(); val != values_->end(); val++) {
+		for (int i = 0; i < columns_->size(); i++) {
+			(*val)->at(i)->set_expected_type(columns_->at(i)->data_type());
+		}
+	}
+	return NO_ERROR;
 }
 
 ErrorCode ParserInsertStatement::Compile () {
@@ -153,7 +163,7 @@ ErrorCode ParserInsertStatement::Compile () {
 		std::vector<Attribute> attributes = tableSchema->get_table_attributes();
 		// Set all the columns 
 		for (auto attr = attributes.begin(); attr != attributes.end(); ++attr) {
-			(*columns_).push_back(new ParserColumn(attr->get_name(),
+			columns_->push_back(new ParserColumn(attr->get_name(),
 				attr->get_type(), table_->name(),table_));
 		}
 	}
@@ -165,12 +175,22 @@ ErrorCode ParserInsertStatement::Compile () {
 	values_ = v;
 
 	// Check the number of args in each tuple is corectly defined
-	for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
-		if ((*(*val)).size() != (*columns_).size()) {
+	for (auto val = values_->begin(); val != values_->end(); val++) {
+		if ((*val)->size() != columns_->size()) {
 			return ErrorManager::error(__HERE__, ER_ATTR_AND_VALUES_DIFF_NUMBERS,
 				table_->name().c_str());
 		}
 	}
+
+	// Create the expected types
+	er = TypeCheck();
+	if (er != NO_ERROR)
+		return er;
+	
+	// Resolve constant folding
+	er = ConstantFold();
+	if (er != NO_ERROR)
+		return er;
 
 	return er;
 }
