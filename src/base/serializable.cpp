@@ -50,7 +50,12 @@ BYTE* Serializable::DeserializeString(BYTE *ptr, std::string *arg){
 	buffer[length] = '\0';
 
 	// Put the string into the std::string argument
-	(*arg) += buffer;
+	if (arg != nullptr) {
+		(*arg) = buffer;
+	}
+	else {
+		arg = new std::string(buffer);
+	}
 
 	delete buffer;
 

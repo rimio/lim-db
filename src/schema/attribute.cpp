@@ -7,6 +7,7 @@ Attribute::Attribute(DataType type, std::string name, INT32 position) {
 	type_ = type;
 	name_ = name;
 	position_ = position;
+	is_null_ = false;
 }
 
 DataType Attribute::get_type() {

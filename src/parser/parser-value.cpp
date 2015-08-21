@@ -6,6 +6,11 @@ ErrorCode ParserValue::TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) {
 }
 
 ErrorCode ParserValue::ConstantFoldPost() {
+	if (this->value()->is_null()) {
+		this->set_computed_value(DatabaseValue());
+		return NO_ERROR; 
+	}
+
 	ErrorCode er = NO_ERROR;
 	DatabaseValue value;
 	er = this->value()->Cast(this->ExpectedType(), (&value));

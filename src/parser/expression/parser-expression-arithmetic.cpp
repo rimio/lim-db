@@ -33,7 +33,13 @@ ErrorCode ParserExpressionArithmetic::ConstantFoldPost() {
 	auto *left_child = children.at(0);
 	auto *right_child = children.at(1);
 
-	DatabaseValue result;
+	DatabaseValue result = DatabaseValue();
+	
+	// If at least one of the children is NULL, then the result is a NULL value
+	if (left_child->computed_value().is_null() || right_child->computed_value().is_null()) {
+		this->set_computed_value(result);
+		return er;
+	}
 
 	switch (this->op()) {
 	case PLUS:

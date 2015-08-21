@@ -18,9 +18,13 @@ class Attribute
 		void set_position(INT32 pos);
 		bool isFixed();
 
+		bool is_null() { return is_null_; }
+		void set_is_null(bool value) { is_null_ = value; }
+
 	private:
 		DataType type_;
 		std::string name_;
 		INT32 position_;
+		bool is_null_;
 };
 #endif // ATTRIBUTE_HPP_

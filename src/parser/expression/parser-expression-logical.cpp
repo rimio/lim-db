@@ -26,36 +26,87 @@ ErrorCode ParserExpressionLogical::TypeCheckPre(TypeCheckArg* arg, bool* stop_wa
 
 ErrorCode ParserExpressionLogical::ConstantFoldPost() {
 	ErrorCode er = NO_ERROR;
-
+	bool left_is_null = false;
+	bool right_is_null = false;
+	DatabaseValue null_result = DatabaseValue();
 	// Get arguments
 	std::vector<ParserNode*> children;
 	this->GetChildren(&children);
 
 	// Extract the child(ren)
 	bool rhs;
+	bool lhs;
 	auto left_child = children.at(0);
-	bool lhs = left_child->computed_value().bool_value();
+	if (left_child->computed_value().is_null())
+		left_is_null = true;
+	else
+		lhs = left_child->computed_value().bool_value();
 
 	// NOT is an unary expression
 	if (this->op() != NOT) {
 		auto right_child = children.at(1);
-		rhs = right_child->computed_value().bool_value();
+		if (right_child->computed_value().is_null())
+			right_is_null = true;
+		else
+			rhs = right_child->computed_value().bool_value();
 	}
 
 	switch (this->op()) {
 	case AND:
-		if (rhs && lhs)
-			this->set_computed_value(DatabaseValue(true));
-		else
-			this->set_computed_value(DatabaseValue(false));
+		if (right_is_null && left_is_null) {
+			this->set_computed_value(null_result);
+			return NO_ERROR;
+		} else if (left_is_null) {
+			if (rhs)
+				this->set_computed_value(null_result);
+			else
+				this->set_computed_value(DatabaseValue(false));
+			return NO_ERROR;
+		} else if (right_is_null) {
+			if (lhs)
+				this->set_computed_value(null_result);
+			else
+				this->set_computed_value(DatabaseValue(false));
+			return NO_ERROR;
+		}
+		else {
+			if (rhs && lhs)
+				this->set_computed_value(DatabaseValue(true));
+			else
+				this->set_computed_value(DatabaseValue(false));
+		}
 		break;
 	case OR:
-		if (rhs || lhs)
-			this->set_computed_value(DatabaseValue(true));
-		else
-			this->set_computed_value(DatabaseValue(false));
+		if (right_is_null && left_is_null) {
+			this->set_computed_value(null_result);
+			return NO_ERROR;
+		}
+		else if (left_is_null) {
+			if (rhs)
+				this->set_computed_value(DatabaseValue(true));
+			else
+				this->set_computed_value(null_result);
+			return NO_ERROR;
+		}
+		else if (right_is_null) {
+			if (lhs)
+				this->set_computed_value(DatabaseValue(true));
+			else
+				this->set_computed_value(null_result);
+			return NO_ERROR;
+		}
+		else {
+			if (rhs || lhs)
+				this->set_computed_value(DatabaseValue(true));
+			else
+				this->set_computed_value(DatabaseValue(false));
+		}
 		break;
 	case NOT:
+		if (left_is_null) {
+			this->set_computed_value(null_result);
+			return NO_ERROR;
+		} else
 		if (lhs)
 			this->set_computed_value(DatabaseValue(false));
 		else

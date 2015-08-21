@@ -5,6 +5,7 @@
 #include "boot\boot.hpp"
 #include "base\generic-operations.hpp"
 #include "metadata\database-value.hpp"
+#include "parser\parser-context.hpp"
 
 #define INT32_ALIGNMENT 4
 
@@ -27,18 +28,23 @@ void DataSectorTest::check() {
 	ds->UseDataSector(ds);
 
 	RowData *rd = new RowData(t);
-
 	BYTE *start = PTR_ALIGN_UPPER(row_data_buffer, INT32_ALIGNMENT);
 	BYTE *ptr;
-	
-	std::vector<DatabaseValue*> v1;
-	v1.push_back(new DatabaseValue(17));
-	v1.push_back(new DatabaseValue("POPESCU"));
-	v1.push_back(new DatabaseValue("ANDREI"));
-	v1.push_back(new DatabaseValue(25));
-	v1.push_back(new DatabaseValue(34));
-	v1.push_back(new DatabaseValue((float)2.7));
-	v1.push_back(new DatabaseValue((float)3.9));
+	std::string name;
+	std::vector<DatabaseValue> v1;
+	DatabaseValue dbv = DatabaseValue(17);
+	v1.push_back(dbv);
+	name = "POPESCU";
+	dbv.set_string_value(&name,true);
+	v1.push_back(dbv);
+	name = "ANDREI";
+	DatabaseValue ddbv;
+	ddbv.set_string_value(&name, true);
+	v1.push_back(ddbv);
+	v1.push_back(DatabaseValue(25));
+	v1.push_back(DatabaseValue(34));
+	v1.push_back(DatabaseValue((float)2.7));
+	v1.push_back(DatabaseValue((float)3.9));
 
 	rd->set_data_values(v1);
 
@@ -47,17 +53,22 @@ void DataSectorTest::check() {
 	//insert first serialized row
 	ds->Insert(start, ptr - start);
 	
+	RowData *rdd = new RowData(t);
 	BYTE* where = ds->Select(0);
-	ptr = rd->DeserializeRow(t, where);
+	ptr = rdd->DeserializeRow(t, where);
 
-	std::vector<DatabaseValue*> v2;
-	v2.push_back(new DatabaseValue(117));
-	v2.push_back(new DatabaseValue("1POPESCU"));
-	v2.push_back(new DatabaseValue("1ANDREI"));
-	v2.push_back(new DatabaseValue(125));
-	v2.push_back(new DatabaseValue(134));
-	v2.push_back(new DatabaseValue((float)12.7));
-	v2.push_back(new DatabaseValue((float)13.9));
+	std::vector<DatabaseValue> v2;
+	v2.push_back(DatabaseValue(117));
+	name = "1POPESCU";
+	dbv.set_string_value(&name, true);
+	v2.push_back(DatabaseValue());
+	name = "AAAANDREI";
+	dbv.set_string_value(&name, true);
+	v2.push_back(dbv);
+	v2.push_back(DatabaseValue(125));
+	v2.push_back(DatabaseValue());
+	v2.push_back(DatabaseValue((float)12.7));
+	v2.push_back(DatabaseValue((float)13.9));
 
 	rd->set_data_values(v2);
 	
@@ -66,19 +77,128 @@ void DataSectorTest::check() {
 	ds->Insert(start, ptr - start);
 	
 	where = ds->Select(1);
-	ptr = rd->DeserializeRow(t, where);
-
+	ptr = rdd->DeserializeRow(t, where);
+	
 	where = ds->Select(1);
-	ptr = rd->DeserializeRow(t, where);
-
+	ptr = rdd->DeserializeRow(t, where);
+	
 	where = ds->Select(0);
-	ptr = rd->DeserializeRow(t, where);
+	ptr = rdd->DeserializeRow(t, where);
 	
 	std::vector<BYTE*> res;
 	res = ds->Select();
 
 	for (int i = 0; i < res.size(); i++) {
-		ptr = rd->DeserializeRow(t, res.at(i));
+		ptr = rdd->DeserializeRow(t, res.at(i));
 	}
+
+	// Check Insert statement
+	std::vector <std::string> scenario;
+	std::string line;
+	line = "Create table t (a int, b float, c string)";
+	scenario.push_back(line);
+
+	// Random checks
+	line = "Insert into t(a) values (2)";
+	scenario.push_back(line);
+	line = "Insert into t values (2, nullval, 3+ nullval)";
+	scenario.push_back(line);
+	line = "Insert into t values (2.3, 4+ 5.9, not(nullval))";
+	scenario.push_back(line);
+	line = "Insert into t(a,c) values (9>5,2 > nullval)";
+	scenario.push_back(line);
+
+	// INT VALUE
+
+	// Compare expressions
+	line = "Insert into t(a) values (2>3)";
+	scenario.push_back(line);
+	line = "Insert into t(a) values (2>=3)";
+	scenario.push_back(line);
+	line = "Insert into t(a) values (2<3)";
+	scenario.push_back(line);
+	line = "Insert into t(a) values (2<=3)";
+	scenario.push_back(line);
+	line = "Insert into t(a) values (2=3)";
+	scenario.push_back(line);
+	line = "Insert into t(a) values (2!=3)";
+	scenario.push_back(line);
+
+	// Arithmetic expressions
+	line = "Insert into t(a) values (2+3)";
+	scenario.push_back(line);
+	line = "Insert into t(a) values (2-3)";
+	scenario.push_back(line);
+	line = "Insert into t(a) values (2*3)";
+	scenario.push_back(line);
+	line = "Insert into t(a) values (8 /3)";
+	scenario.push_back(line);
+	line = "Insert into t(a) values (8 MOD 3)";
+	scenario.push_back(line);
+
+	// FLOAT VALUE
+
+	// Compare expressions
+	line = "Insert into t(b) values (2>3)";
+	scenario.push_back(line);
+	line = "Insert into t(b) values (2>=3)";
+	scenario.push_back(line);
+	line = "Insert into t(b) values (2<3)";
+	scenario.push_back(line);
+	line = "Insert into t(b) values (2<=3)";
+	scenario.push_back(line);
+	line = "Insert into t(b) values (2=3)";
+	scenario.push_back(line);
+	line = "Insert into t(b) values (2!=3)";
+	scenario.push_back(line);
+
+	// Arithmetic expressions
+	line = "Insert into t(b) values (2+3)";
+	scenario.push_back(line);
+	line = "Insert into t(b) values (2-3)";
+	scenario.push_back(line);
+	line = "Insert into t(b) values (2*3)";
+	scenario.push_back(line);
+	line = "Insert into t(b) values (8 /3)";
+	scenario.push_back(line);
+	line = "Insert into t(b) values (8 MOD 3)";
+	scenario.push_back(line);
+
+	// STRING VALUE
+	line = "Insert into t(c) values ('string')";
+	scenario.push_back(line);
+	line = "Insert into t(b) values (12 + '12')";
+	scenario.push_back(line);
+	line = "Insert into t(b) values (12.3 * '14.5')";
+	scenario.push_back(line);
+
+	line = "Insert into t(c) values ('abd'>'cd')";
+	scenario.push_back(line);
+	line = "Insert into t(c) values ('abd'>='cd')";
+	scenario.push_back(line);
+	line = "Insert into t(c) values ('abd'<'cd')";
+	scenario.push_back(line);
+	line = "Insert into t(c) values ('abd'<='cd')";
+	scenario.push_back(line);
+	line = "Insert into t(c) values ('abd'='cd')";
+	scenario.push_back(line);
+	line = "Insert into t(c) values ('abd'!='cd')";
+	scenario.push_back(line);
+
+
+	line = "drop table t";
+	scenario.push_back(line);
+
+	ErrorCode er = NO_ERROR;
+	ParserContext context;
+	ParserRoot *root;
+	for (auto l : scenario)
+	{
+		er = context.parseString(l);
+		root = context.getRootNode();
+		root->Process();
+	}
+
+	delete root;
 
 }

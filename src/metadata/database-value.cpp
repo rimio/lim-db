@@ -18,6 +18,7 @@ DatabaseValue::DatabaseValue(const DatabaseValue& value) {
 	ClearValue();
 	this->data_type_ = value.data_type_;
 	this->value_ = value.value_;
+	this->is_null_ = value.is_null_;
 }
 
 DatabaseValue::~DatabaseValue() {
@@ -107,6 +108,7 @@ DatabaseValue& DatabaseValue::operator=(const DatabaseValue& value) {
 		ClearValue();
 		this->data_type_ = value.data_type_;
 		this->value_ = value.value_;
+		this->is_null_ = value.is_null_;
 	}
 	return *this;
 }
@@ -358,7 +360,7 @@ BYTE* DatabaseValue::Deserialize(BYTE* ptr) {
 		BYTE* new_ptr;
 		new_ptr = Serializable::DeserializeInt(ptr, &val);
 		assert(val == 1 || val == 0);
-		value_.b = (val == 1) ? true : false;
+		value_.b = (val == 1);
 		return new_ptr;
 	default:
 		break;
@@ -369,12 +371,14 @@ void DatabaseValue::set_int_value(INT32 value) {
 	ClearValue();
 	data_type_ = DB_INTEGER;
 	value_.i = value;
+	is_null_ = false;
 }
 
 void DatabaseValue::set_float_value(float value) {
 	ClearValue();
 	data_type_ = DB_FLOAT;
 	value_.f = value;
+	is_null_ = false;
 }
 
 void DatabaseValue::set_string_value(std::string* value, bool copy) {
@@ -387,12 +391,14 @@ void DatabaseValue::set_string_value(std::string* value, bool copy) {
 		value_.s = value;
 	}
 	need_clear_ = copy;
+	is_null_ = false;
 }
 
 void DatabaseValue::set_bool_value(bool value) {
 	ClearValue();
 	data_type_ = DB_BOOLEAN;
 	value_.b = value;
+	is_null_ = false;
 }
 
 ErrorCode DatabaseValue::Cast(DataType type) {
@@ -452,7 +458,7 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 			output->set_string_value(&str_val,true);
 			return NO_ERROR;
 		case DB_BOOLEAN:
-			b_val = (abs(fl_val) < MACHINE_ERROR) ? false : true;
+			b_val = !(abs(fl_val) < MACHINE_ERROR);
 			output->set_bool_value(b_val);
 			return NO_ERROR;
 		case DB_NUMERIC:
@@ -592,6 +598,7 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 	return NO_ERROR;
 }
 
+
 void DatabaseValue::Clone(const DatabaseValue& value) {
 	switch (value.data_type_) {
 	case DB_INTEGER:
@@ -606,8 +613,22 @@ void DatabaseValue::Clone(const DatabaseValue& value) {
 	case DB_BOOLEAN:
 		this->set_bool_value(value.value_.b);
 		break;
+	case DB_UNKNOWN:
+		data_type_ = DB_UNKNOWN;
+		need_clear_ = false;
+		is_null_ = true;
+		value_.s = nullptr;
+		break;
 	default:
 		assert(false);
 		break;
+	}
+}
+
+void DatabaseValue::set_is_null(bool value) {
+	is_null_ = value;
+	if (value) {
+		ClearValue();
+		data_type_ = DB_UNKNOWN;
 	}
 }
