@@ -34,6 +34,7 @@ public:
 	DatabaseValue operator/(const DatabaseValue& value);
 	DatabaseValue operator%(const DatabaseValue& value);
 	// Getters
+
 	INT32 int_value() { assert(data_type_ == DB_INTEGER); return value_.i; };
 	float float_value() { assert(data_type_ == DB_FLOAT); return value_.f; };
 	std::string string_value() { assert(data_type_ == DB_STRING); return (*value_.s); }

@@ -12,24 +12,6 @@ typedef SectorID TableID;
 
 class Table
 {
-private:
-
-	TableID id_;
-
-	std::string name_;
-
-	SectorGroup* allocated_sectors_;
-
-	std::vector<Attribute> attributes_;
-
-	int nr_string_;
-
-	int nr_float_;
-
-	int nr_int_;
-
-	int nr_attr_;
-
 public:
 	// Constructors
 	Table();
@@ -48,6 +30,7 @@ public:
 	int get_nr_string();
 	int get_nr_float();
 	int get_nr_int();
+	SectorGroup* allocated_sectors() { return allocated_sectors_; };
 
 	void set_table_id(TableID id);
 	void set_table_name(std::string table_name);
@@ -55,5 +38,25 @@ public:
 	void set_nr_string(int nr);
 	void set_nr_float(int nr);
 	void set_nr_int(int nr);
+
+	
+
+private:
+
+	TableID id_;
+
+	std::string name_;
+
+	SectorGroup* allocated_sectors_;
+
+	std::vector<Attribute> attributes_;
+
+	int nr_string_;
+
+	int nr_float_;
+
+	int nr_int_;
+
+	int nr_attr_;
 };
 #endif // TABLE_HPP_

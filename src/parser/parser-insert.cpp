@@ -3,7 +3,7 @@
 #include "boot\boot.hpp"
 #include "parser\parser-value.hpp"
 #include "metadata\database-value.hpp"
-
+#include "query-execution\query-execute-insert.hpp"
 //
 // PTInsertNode
 //
@@ -200,6 +200,28 @@ ErrorCode ParserInsertStatement::Prepare () {
 }
 
 ErrorCode ParserInsertStatement::Execute () {
+	
+	std::vector<std::vector<DatabaseValue>> list;
+	std::vector<DatabaseValue> row;
+	for (auto val = (*values_).begin(); val != (*values_).end(); val++) {
+		row.clear();
+		for (auto v = (*val)->begin(); v != (*val)->end(); v++) {
+			row.push_back((*v)->computed_value());
+		}
+		list.push_back(row);
+	}
+
+	QueryExecuteInsert* querry = new QueryExecuteInsert(list, table_->table());
+
+	//querry->set_database_value_list(list);
+
+	ErrorCode er = NO_ERROR;
+
+	er = querry->Execute();
+
+	if (er != NO_ERROR)
+		return er;
+
 	return NO_ERROR;
 }
 
