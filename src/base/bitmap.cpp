@@ -1,15 +1,13 @@
 #include "base\bitmap.hpp"
 
 #include <cstdio>
+#include <cstring>
+#include "base\generic-operations.hpp"
 
 #define BITMAP_UNIT_SIZE 64
 
 #define BITMAP_FULL_UNIT 0xFFFFFFFFFFFFFFFF
 #define BITMAP_EMPTY_UNIT 0ULL
-
-Bitmap::Bitmap(int bits_number) {
-	Bitmap(bits_number, false);
-}
 
 Bitmap::~Bitmap(){
 	delete bit_array_;
@@ -59,6 +57,11 @@ bool Bitmap::SetBit(int index) {
 	return true;
 	
 };
+
+bool Bitmap::SetBits(UINT64* ptr, int number_of_bits) {
+	memcpy(bit_array_, ptr, ((number_of_bits - 1) / BITMAP_UNIT_SIZE + 1) * sizeof(UINT64));
+	return true;
+}
 
 bool Bitmap::ClearBit(int index) {
 	//Check if the desired bit is in range

@@ -1,6 +1,8 @@
 #include "storage\row-data.hpp"
 
 #include "base\generic-constants.hpp"
+#include "base\generic-operations.hpp"
+#include "base\bitmap.hpp"
 
 RowData::RowData(Table *t) {
 	values_.clear();
@@ -13,29 +15,26 @@ BYTE* RowData::SerializeRow(Table * t, BYTE* start) {
 	// Starting position of the is_null_ values
 	BYTE *n_pos = start + 8;
 	// Starting position of the offset values
-	BYTE *o_pos = n_pos + 4 * ((t->get_number_of_attributes() - 1) / (4 * BYTE_UNIT_SIZE) + 1);
+	int n_bytes = (t->get_number_of_attributes() + BYTE_UNIT_SIZE - 1) / BYTE_UNIT_SIZE;
+	BYTE *o_pos = n_pos + ALIGN_SIZE(n_bytes, 8);
 	// Starting position of the integer values
 	BYTE *i_pos = o_pos + 4 * (t->get_nr_string());
 	// Starting position of the float values
 	BYTE *f_pos = i_pos + 4 * (t->get_nr_int());
 	// Starting position of the strings
 	BYTE *s_pos = f_pos + 8 * (t->get_nr_float());
+	
+	Bitmap bmp = Bitmap(t->get_number_of_attributes());
 
 	for (int i = 0; i < values_.size(); i++) {
 		values_.at(i).set_type(attributes.at(i).get_type());
 		
 		// Set is_null value
 		INT32 empty = values_.at(i).is_null();
-		
-		BYTE* pos = n_pos + i / BYTE_UNIT_SIZE;
-		int remainder = i % BYTE_UNIT_SIZE;
-		
-		if (empty) {
-			(*pos) |= 1 << remainder;
-		}
-		else {
-			(*pos) &= ~(1 << remainder);
-		}
+		if (empty)
+			bmp.SetBit(i);
+		else
+			bmp.ClearBit(i);
 
 		// Set value
 		switch (attributes.at(i).get_type()) {
@@ -62,6 +61,10 @@ BYTE* RowData::SerializeRow(Table * t, BYTE* start) {
 			break;
 		}
 	}
+
+	BYTE *is_null_list = (BYTE*)bmp.bit_array();
+	memcpy(n_pos, is_null_list, ALIGN_SIZE(n_bytes, 8) * sizeof(BYTE));
+
 	return s_pos;
 }
 
@@ -72,7 +75,8 @@ BYTE* RowData::DeserializeRow(Table *t, BYTE *start) {
 	// Starting position of the is_null_ values
 	BYTE *n_pos = start + 8;
 	// Starting position of the offset values
-	BYTE *o_pos = n_pos + 4 * ((t->get_number_of_attributes() - 1) / (4 * BYTE_UNIT_SIZE) + 1);
+	int n_bytes = (t->get_number_of_attributes() + BYTE_UNIT_SIZE - 1) / BYTE_UNIT_SIZE;
+	BYTE *o_pos = n_pos + ALIGN_SIZE(n_bytes, 8);
 	// Starting position of the integer values
 	BYTE *i_pos = o_pos + 4 * (t->get_nr_string());
 	// Starting position of the float values
@@ -80,15 +84,17 @@ BYTE* RowData::DeserializeRow(Table *t, BYTE *start) {
 	// Starting position of the strings
 	BYTE *s_pos = f_pos + 8 * (t->get_nr_float());
 
+	Bitmap bmp = Bitmap(t->get_number_of_attributes());
+	
+	bmp.SetBits((UINT64*)n_pos, t->get_number_of_attributes());
+	
 	for (int i = 0; i < attributes.size(); i++) {
 		values_.at(i).set_type(attributes.at(i).get_type());
 
 		// Get is_null value
 		INT32 empty;
-		BYTE* pos = n_pos + i / BYTE_UNIT_SIZE;
-		int remainder = i % BYTE_UNIT_SIZE;
-
-		empty = ((*pos) >> remainder) & 1;
+		
+		empty = bmp.IsBitSet(i);
 
 		if (empty)
 			values_.at(i).set_is_null();
@@ -117,6 +123,7 @@ BYTE* RowData::DeserializeRow(Table *t, BYTE *start) {
 			break;
 		}
 	}
+
 	return s_pos;
 }
 

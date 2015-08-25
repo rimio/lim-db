@@ -348,21 +348,16 @@ BYTE* DatabaseValue::Serialize(BYTE* ptr) {
 }
 
 BYTE* DatabaseValue::Deserialize(BYTE* ptr) {
+	is_null_ = false;
 	switch (data_type_) {
 	case DB_INTEGER:
-		is_null_ = false;
-		ClearValue();
 		return Serializable::DeserializeInt(ptr, &value_.i);
 	case DB_FLOAT:
-		is_null_ = false;
-		ClearValue();
 		return Serializable::DeserializeFloat(ptr, &value_.f);
 	case DB_STRING:
-		is_null_ = false;
 		return Serializable::DeserializeString(ptr, value_.s);
 	case DB_BOOLEAN:
-		is_null_ = false;
-		ClearValue();
+		
 		INT32 val;
 		BYTE* new_ptr;
 		new_ptr = Serializable::DeserializeInt(ptr, &val);
