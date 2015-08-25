@@ -55,6 +55,7 @@ location_.step();
 ">"								{ return Parser::token::GT; }
 ">="							{ return Parser::token::GT_EQ; }
 "<>"							{ return Parser::token::NOT_EQUAL; }
+"!="							{ return Parser::token::NOT_EQUAL; }
 [Mm][Oo][Dd]					{ return Parser::token::MODULO; }
 [Nn][Oo][Tt]					{ return Parser::token::NOT; }
 [Aa][Nn][Dd]					{ return Parser::token::AND; }

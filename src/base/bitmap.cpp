@@ -55,13 +55,7 @@ bool Bitmap::SetBit(int index) {
 	// Set the bit to acknowledge that the bit is used
 	bit_array_[position] |= 1ULL << remainder;
 	return true;
-	
 };
-
-bool Bitmap::SetBits(UINT64* ptr, int number_of_bits) {
-	memcpy(bit_array_, ptr, ((number_of_bits - 1) / BITMAP_UNIT_SIZE + 1) * sizeof(UINT64));
-	return true;
-}
 
 bool Bitmap::ClearBit(int index) {
 	//Check if the desired bit is in range
@@ -162,4 +156,14 @@ int Bitmap::find_unset_bit(UINT64 value) {
 #undef step
 
 	return position;
+}
+
+BYTE* Bitmap::Serialize(BYTE *ptr) {
+	memcpy(ptr, bit_array_, bits_array_size_ * 8 * sizeof(BYTE));
+	return ptr + bits_array_size_ * 8;
+}
+
+BYTE* Bitmap::Deserialize(BYTE *ptr) {
+	memcpy(bit_array_, ptr, bits_array_size_ * 8 * sizeof(BYTE));
+	return ptr + bits_array_size_ * 8;
 }

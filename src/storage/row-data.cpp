@@ -62,8 +62,8 @@ BYTE* RowData::SerializeRow(Table * t, BYTE* start) {
 		}
 	}
 
-	BYTE *is_null_list = (BYTE*)bmp.bit_array();
-	memcpy(n_pos, is_null_list, ALIGN_SIZE(n_bytes, 8) * sizeof(BYTE));
+	// Store the is_null_ values
+	bmp.Serialize(n_pos);
 
 	return s_pos;
 }
@@ -85,16 +85,14 @@ BYTE* RowData::DeserializeRow(Table *t, BYTE *start) {
 	BYTE *s_pos = f_pos + 8 * (t->get_nr_float());
 
 	Bitmap bmp = Bitmap(t->get_number_of_attributes());
-	
-	bmp.SetBits((UINT64*)n_pos, t->get_number_of_attributes());
-	
+	// Load the array of is_null values
+	bmp.Deserialize(n_pos);
+
 	for (int i = 0; i < attributes.size(); i++) {
 		values_.at(i).set_type(attributes.at(i).get_type());
 
 		// Get is_null value
-		INT32 empty;
-		
-		empty = bmp.IsBitSet(i);
+		INT32 empty = bmp.IsBitSet(i);
 
 		if (empty)
 			values_.at(i).set_is_null();

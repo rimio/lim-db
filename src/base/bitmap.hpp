@@ -2,9 +2,9 @@
 #define BITMAP_HPP_
 
 #include "base\generic-type-definitions.hpp"
+#include "base\serializable.hpp"
 
-
-class Bitmap {
+class Bitmap: Serializable {
 	public:
 		// Constructor which leaves all the bits unset
 		Bitmap(int bits_number) : Bitmap(bits_number, false) {};
@@ -15,33 +15,33 @@ class Bitmap {
 		// Destructor
 		~Bitmap();
 
-		// Marks the sector at the specified index as being used
+		// Marks the bit at the specified index as being used
 		bool SetBit(int index);
 
-		// Sets an entire array of bits
-		bool SetBits(UINT64* ptr, int number_of_bits);
-
-		// Marks the sector at the specified index as being unused
+		// Marks the bit at the specified index as being unused
 		bool ClearBit(int index);
 
-		// Checks wether the sector at the specified index is used
+		// Checks wether the bit at the specified index is used
 		bool IsBitSet(int index);
 
-		// Counts the total number of sectors used
+		// Counts the total number of bits used
 		int BitsetCount();
 
 		// Returns the position of a free bit or -1 if there is none left unused
 		int GiveFreeBit(int last_used);
 
-		// Returns the array of bits
-		UINT64 *bit_array() { return bit_array_; }
+		// Serializes the array of bits
+		BYTE* Serialize(BYTE *ptr) override;
+
+		// Deserializez the array of bits
+		BYTE* Deserialize(BYTE *ptr) override;
 
 	private:
-		//Total number of sectors
+		//Total number of bits
 		int bits_number_;
-		//Keeps record of used and unused sectors
+		//Keeps record of used and unused bits
 		UINT64 *bit_array_;
-		//Length of the array that holds the usage of sectors
+		//Length of the array that holds the usage of bits
 		int bits_array_size_;
 		//finds the position of an unset bit
 		int find_unset_bit(UINT64 value);
