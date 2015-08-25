@@ -101,11 +101,11 @@ void DataSectorTest::check() {
 	// Random checks
 	line = "Insert into t(a) values (2)";
 	scenario.push_back(line);
-	line = "Insert into t values (2, nullval, 3+ nullval)";
+	line = "Insert into t values (2, null, 3+ null)";
 	scenario.push_back(line);
-	line = "Insert into t values (2.3, 4+ 5.9, not(nullval))";
+	line = "Insert into t values (2.3, 4+ 5.9, not(null))";
 	scenario.push_back(line);
-	line = "Insert into t(a,c) values (9>5,2 > nullval)";
+	line = "Insert into t(a,c) values (9>5,2 > null)";
 	scenario.push_back(line);
 
 	// INT VALUE

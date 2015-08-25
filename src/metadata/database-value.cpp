@@ -350,12 +350,19 @@ BYTE* DatabaseValue::Serialize(BYTE* ptr) {
 BYTE* DatabaseValue::Deserialize(BYTE* ptr) {
 	switch (data_type_) {
 	case DB_INTEGER:
+		is_null_ = false;
+		ClearValue();
 		return Serializable::DeserializeInt(ptr, &value_.i);
 	case DB_FLOAT:
+		is_null_ = false;
+		ClearValue();
 		return Serializable::DeserializeFloat(ptr, &value_.f);
 	case DB_STRING:
+		is_null_ = false;
 		return Serializable::DeserializeString(ptr, value_.s);
 	case DB_BOOLEAN:
+		is_null_ = false;
+		ClearValue();
 		INT32 val;
 		BYTE* new_ptr;
 		new_ptr = Serializable::DeserializeInt(ptr, &val);
@@ -383,6 +390,10 @@ void DatabaseValue::set_float_value(float value) {
 
 void DatabaseValue::set_string_value(std::string* value, bool copy) {
 	ClearValue();
+	if (value == nullptr) {
+		is_null_ = true;
+		return;
+	}
 	data_type_ = DB_STRING;
 	if (copy) {
 		value_.s = new std::string(*value);
@@ -622,13 +633,5 @@ void DatabaseValue::Clone(const DatabaseValue& value) {
 	default:
 		assert(false);
 		break;
-	}
-}
-
-void DatabaseValue::set_is_null(bool value) {
-	is_null_ = value;
-	if (value) {
-		ClearValue();
-		data_type_ = DB_UNKNOWN;
 	}
 }

@@ -37,7 +37,7 @@ ErrorCode ParserExpressionArithmetic::ConstantFoldPost() {
 	
 	// If at least one of the children is NULL, then the result is a NULL value
 	if (left_child->computed_value().is_null() || right_child->computed_value().is_null()) {
-		this->set_computed_value(result);
+		this->computed_value().set_is_null();
 		return er;
 	}
 

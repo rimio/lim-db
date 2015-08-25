@@ -37,7 +37,7 @@ ErrorCode ParserExpressionCompare::ConstantFoldPost() {
 
 	// If at least one of the children is NULL, then the result is a NULL value
 	if (left_child->computed_value().is_null() || right_child->computed_value().is_null() == true) {
-		this->set_computed_value(DatabaseValue());
+		this->computed_value().set_is_null();
 		return er;
 	}
 
