@@ -37,13 +37,13 @@ class Bitmap: Serializable {
 		BYTE* Deserialize(BYTE *ptr) override;
 
 	private:
-		//Total number of bits
+		// Total number of bits
 		int bits_number_;
-		//Keeps record of used and unused bits
+		// Keeps record of used and unused bits
 		UINT64 *bit_array_;
-		//Length of the array that holds the usage of bits
+		// Length of the array that holds the usage of bits
 		int bits_array_size_;
-		//finds the position of an unset bit
+		// Finds the position of an unset bit
 		int find_unset_bit(UINT64 value);
 
 };
