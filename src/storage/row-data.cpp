@@ -1,6 +1,6 @@
 #include "storage\row-data.hpp"
 
-#define BYTE_UNIT_SIZE 8
+#include "base\generic-constants.hpp"
 
 RowData::RowData(Table *t) {
 	values_.clear();
@@ -13,7 +13,7 @@ BYTE* RowData::SerializeRow(Table * t, BYTE* start) {
 	// Starting position of the is_null_ values
 	BYTE *n_pos = start + 8;
 	// Starting position of the offset values
-	BYTE *o_pos = n_pos + 4 * ((t->get_number_of_attributes() - 1) / 32 + 1);
+	BYTE *o_pos = n_pos + 4 * ((t->get_number_of_attributes() - 1) / (4 * BYTE_UNIT_SIZE) + 1);
 	// Starting position of the integer values
 	BYTE *i_pos = o_pos + 4 * (t->get_nr_string());
 	// Starting position of the float values
@@ -72,7 +72,7 @@ BYTE* RowData::DeserializeRow(Table *t, BYTE *start) {
 	// Starting position of the is_null_ values
 	BYTE *n_pos = start + 8;
 	// Starting position of the offset values
-	BYTE *o_pos = n_pos + 4 * ((t->get_number_of_attributes() - 1) / 4*BYTE_UNIT_SIZE + 1);
+	BYTE *o_pos = n_pos + 4 * ((t->get_number_of_attributes() - 1) / (4 * BYTE_UNIT_SIZE) + 1);
 	// Starting position of the integer values
 	BYTE *i_pos = o_pos + 4 * (t->get_nr_string());
 	// Starting position of the float values

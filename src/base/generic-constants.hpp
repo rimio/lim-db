@@ -34,6 +34,11 @@
 #ifndef MACHINE_ERROR
 #define MACHINE_ERROR 0.0000001
 #endif
+
+#ifndef BYTE_UNIT_SYZE
+#define BYTE_UNIT_SIZE 8
+#endif
+
 enum ArithmeticOperators {
 	PLUS,
 	MINUS,
