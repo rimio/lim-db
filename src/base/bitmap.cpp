@@ -159,11 +159,11 @@ int Bitmap::find_unset_bit(UINT64 value) {
 }
 
 BYTE* Bitmap::Serialize(BYTE *ptr) {
-	memcpy(ptr, bit_array_, bits_array_size_ * 8 * sizeof(BYTE));
-	return ptr + bits_array_size_ * 8;
+	memcpy(ptr, bit_array_, bits_array_size_ * sizeof(UINT64));
+	return ptr + bits_array_size_ * sizeof(UINT64);
 }
 
 BYTE* Bitmap::Deserialize(BYTE *ptr) {
-	memcpy(bit_array_, ptr, bits_array_size_ * 8 * sizeof(BYTE));
-	return ptr + bits_array_size_ * 8;
+	memcpy(bit_array_, ptr, bits_array_size_ * sizeof(UINT64));
+	return ptr + bits_array_size_ * sizeof(UINT64);
 }
