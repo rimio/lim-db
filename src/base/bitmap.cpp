@@ -1,15 +1,13 @@
 #include "base\bitmap.hpp"
 
 #include <cstdio>
+#include <cstring>
+#include "base\generic-operations.hpp"
 
 #define BITMAP_UNIT_SIZE 64
 
 #define BITMAP_FULL_UNIT 0xFFFFFFFFFFFFFFFF
 #define BITMAP_EMPTY_UNIT 0ULL
-
-Bitmap::Bitmap(int bits_number) {
-	Bitmap(bits_number, false);
-}
 
 Bitmap::~Bitmap(){
 	delete bit_array_;
@@ -57,7 +55,6 @@ bool Bitmap::SetBit(int index) {
 	// Set the bit to acknowledge that the bit is used
 	bit_array_[position] |= 1ULL << remainder;
 	return true;
-	
 };
 
 bool Bitmap::ClearBit(int index) {
@@ -159,4 +156,14 @@ int Bitmap::find_unset_bit(UINT64 value) {
 #undef step
 
 	return position;
+}
+
+BYTE* Bitmap::Serialize(BYTE *ptr) {
+	memcpy(ptr, bit_array_, bits_array_size_ * sizeof(UINT64));
+	return ptr + bits_array_size_ * sizeof(UINT64);
+}
+
+BYTE* Bitmap::Deserialize(BYTE *ptr) {
+	memcpy(bit_array_, ptr, bits_array_size_ * sizeof(UINT64));
+	return ptr + bits_array_size_ * sizeof(UINT64);
 }
