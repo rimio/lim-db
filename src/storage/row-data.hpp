@@ -11,7 +11,7 @@
 class RowData {
 public:
 	RowData(Table *t);
-	~RowData();
+	~RowData() {};
 	// Serializes a row starting at the location of *start
 	// Retreives a pointer to the end of serialization
 	BYTE* SerializeRow(Table *t, BYTE* start);

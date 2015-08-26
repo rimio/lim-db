@@ -30,7 +30,7 @@ ErrorCode DataSector::Insert(BYTE *ptr, int length_required) {
 	int slot_and_data_size = data_size + sizeof(Slot);
 
 	if (free_ < slot_and_data_size) {
-		return ErrorManager::error(__HERE__, ER_ALLOCATION_DATASECTOR_FULL);
+		return ER_ALLOCATION_DATASECTOR_FULL;
 	}
 	
 	UINT16 new_row_offset = offset_to_last_row_data_ - data_size;

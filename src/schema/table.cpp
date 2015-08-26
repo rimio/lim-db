@@ -5,14 +5,14 @@
 Table::Table ()
 {
 	id_ = 0;
-	allocated_sectors_ = NULL;
+	allocated_sectors_ = new SectorGroup();
 	nr_float_= nr_int_ = nr_string_ = nr_attr_ = 0;
 }
 
 Table::Table (SectorID sector_id)
 {
 	id_ = (TableID) sector_id;
-	allocated_sectors_ = NULL;
+	allocated_sectors_ = new SectorGroup();
 	nr_float_ = nr_int_ = nr_string_ = nr_attr_ = 0;
 	MemToTable ();
 }
