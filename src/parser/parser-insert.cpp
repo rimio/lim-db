@@ -200,6 +200,7 @@ ErrorCode ParserInsertStatement::Prepare () {
 }
 
 ErrorCode ParserInsertStatement::Execute () {
+	/*
 	auto attributes = table_->table()->get_table_attributes();
 	std::vector<std::vector<DatabaseValue>> list;
 	std::vector<DatabaseValue> row;
@@ -248,8 +249,9 @@ ErrorCode ParserInsertStatement::Execute () {
 			list.push_back(row);
 		}
 	}
+	*/
 
-	QueryExecuteInsert* querry = new QueryExecuteInsert(list, table_->table());
+	QueryExecuteInsert* querry = new QueryExecuteInsert(table_->table());
 
 	ErrorCode er = NO_ERROR;
 
