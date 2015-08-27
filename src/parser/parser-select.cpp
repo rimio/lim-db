@@ -7,24 +7,30 @@
 
 ParserSelect::~ParserSelect () {
 	// delete select list
-	vector_clear_and_delete (*list_);
-	delete list_;
+	if (list_ != nullptr && list_ != NULL)
+		vector_clear_and_delete (*list_);
+
+	if (list_ != nullptr && list_ != NULL)
+		delete list_;
 
 	// delete from
-	delete from_;
+	if (from_ != nullptr && list_ != NULL)
+		delete from_;
 }
 
 std::string ParserSelect::ToString () {
 	std::string to_string = std::string ("SELECT ");
 
 	bool first_item = true;
-	for (auto item = list_->begin (); item != list_->end (); ++item) {
-		if (!first_item) {
-			to_string += ", ";
-		}
-		first_item = false;
+	if (list_ != nullptr) {
+		for (auto item = list_->begin (); item != list_->end (); ++item) {
+			if (!first_item) {
+				to_string += ", ";
+			}
+			first_item = false;
 
-		to_string += (*item)->ToString ();
+			to_string += (*item)->ToString ();
+		}
 	}
 
 	to_string += "FROM ";

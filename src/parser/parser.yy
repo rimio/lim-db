@@ -242,6 +242,10 @@ select_statement
 		{
 			$$ = new ParserSelectStatement ($2, $4, @1);
 		}
+	| SELECT STAR FROM table_identifier
+		{
+			$$ = new ParserSelectStatement ($2, $4, @1);
+		}
 	;
 
 insert_statement
