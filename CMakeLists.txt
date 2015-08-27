@@ -80,6 +80,9 @@ set (SRC_PARSER_FILES
 	${SOURCE_DIR}/parser/parser-select.hpp
 	${SOURCE_DIR}/parser/parser-select.cpp
 
+	${SOURCE_DIR}/parser/parser-star.hpp
+	${SOURCE_DIR}/parser/parser-star.cpp
+
 	${SOURCE_DIR}/parser/parser-table.hpp
 	${SOURCE_DIR}/parser/parser-table.cpp
 
