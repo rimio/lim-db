@@ -5,6 +5,8 @@ ScanValueList::ScanValueList(std::vector<std::vector<DatabaseValue>> list) {
 	next_ = 0;
 }
 
-std::vector<DatabaseValue> ScanValueList::Next() {
-	return list_.at(next_++);
+ErrorCode ScanValueList::Next(std::vector<DatabaseValue> *row) {
+	row->assign(list_.at(next_).begin(), list_.at(next_).end());
+	next_++;
+	return NO_ERROR;
 }

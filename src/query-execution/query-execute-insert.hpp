@@ -17,8 +17,8 @@ public:
 
 	std::vector<std::vector<DatabaseValue>> database_value_list() { return database_value_list_; }
 
+	ErrorCode InsertSector(BYTE *start, int length);
 	ErrorCode Execute() override;
-
 private:
 	std::vector<std::vector<DatabaseValue>> database_value_list_;
 	Table* table_;

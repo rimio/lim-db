@@ -34,6 +34,11 @@
 #ifndef MACHINE_ERROR
 #define MACHINE_ERROR 0.0000001
 #endif
+
+#ifndef INT32_ALIGNMENT 4
+#define INT32_ALIGNMENT 4
+#endif
+
 enum ArithmeticOperators {
 	PLUS,
 	MINUS,
