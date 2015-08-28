@@ -201,13 +201,13 @@ ErrorCode ParserInsertStatement::Prepare () {
 
 ErrorCode ParserInsertStatement::Execute () {
 
-	QueryExecuteInsert* querry = new QueryExecuteInsert(table_->table());
+	QueryExecuteInsert* querry = new QueryExecuteInsert(table_->table(), columns_, values_);
 
 	ErrorCode er = NO_ERROR;
-	
-	querry->set_database_value_list(columns_, values_);
 
 	er = querry->Execute();
+
+	delete querry;
 
 	if (er != NO_ERROR)
 		return er;

@@ -3,11 +3,12 @@
 
 #include "query-execution\scan.hpp"
 #include "metadata\database-value.hpp"
+#include "parser\parser-node.hpp"
 #include <vector>
 
 class ScanValueList: Scan {
 public:
-	ScanValueList(std::vector<std::vector<DatabaseValue>> list);
+	ScanValueList(std::vector<std::vector<ParserNode *> *> * list);
 	void Start() override { next_ = 0; }
 	void End() override {};
 	bool HasNext() { return (next_ < list_.size()); }
