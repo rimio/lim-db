@@ -200,58 +200,12 @@ ErrorCode ParserInsertStatement::Prepare () {
 }
 
 ErrorCode ParserInsertStatement::Execute () {
-	auto attributes = table_->table()->get_table_attributes();
-	std::vector<std::vector<DatabaseValue>> list;
-	std::vector<DatabaseValue> row;
 
-	// If there are any blank columns, fill them with NULL values
-	if (attributes.size() != values_->at(0)->size()) {
-		int size = table_->table()->get_number_of_attributes();
-		int* position = new int[size];
-		for (int i = 0; i < size; i++)
-			position[i] = size;
-
-		// For each column search its position in the table's attibutes
-		std::string col_name;
-		for (int i = 0; i < columns_->size(); i++) {
-			col_name = columns_->at(i)->name();
-			for (int j = 0; j < attributes.size(); j++)
-				if (col_name == attributes.at(j).get_name()) {
-					position[attributes.at(j).get_position()-1] = i;
-					break;
-				}
-		}
-
-		// Prepare the list of values for insertion
-		DatabaseValue blank = DatabaseValue();
-		for (auto val = values_->begin(); val != values_->end(); val++) {
-			row.clear();
-			for (int i = 0; i < attributes.size(); i++) {
-				if (position[i] < size) {
-					row.push_back((*val)->at(position[i])->computed_value());
-				}
-				else
-					row.push_back(blank);
-			}
-			list.push_back(row);
-		}
-
-		delete position;
-	} 
-	// Otherwise all the columns are used
-	else {
-		for (auto val = values_->begin(); val != values_->end(); val++) {
-			row.clear();
-			for (auto v = (*val)->begin(); v != (*val)->end(); v++) {
-				row.push_back((*v)->computed_value());
-			}
-			list.push_back(row);
-		}
-	}
-
-	QueryExecuteInsert* querry = new QueryExecuteInsert(list, table_->table());
+	QueryExecuteInsert* querry = new QueryExecuteInsert(table_->table());
 
 	ErrorCode er = NO_ERROR;
+	
+	querry->set_database_value_list(columns_, values_);
 
 	er = querry->Execute();
 

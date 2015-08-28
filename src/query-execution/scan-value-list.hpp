@@ -11,7 +11,7 @@ public:
 	void Start() override { next_ = 0; }
 	void End() override {};
 	bool HasNext() { return (next_ < list_.size()); }
-	std::vector<DatabaseValue> Next();
+	ErrorCode Next(std::vector<DatabaseValue> * row);
 
 private:
 	std::vector<std::vector<DatabaseValue>> list_;

@@ -39,6 +39,10 @@
 #define BYTE_UNIT_SIZE 8
 #endif
 
+#ifndef INT32_ALIGNMENT 4
+#define INT32_ALIGNMENT 4
+#endif
+
 enum ArithmeticOperators {
 	PLUS,
 	MINUS,
