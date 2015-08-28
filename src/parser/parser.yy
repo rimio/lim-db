@@ -27,6 +27,7 @@
 	#include "parser/parser-index.hpp"
 	#include "parser/parser-insert.hpp"
 	#include "parser/parser-select.hpp"
+	#include "parser/parser-star.hpp"
 	#include "parser/parser-update.hpp"
 
 	#include "parser/expression/parser-expression-arithmetic.hpp"
