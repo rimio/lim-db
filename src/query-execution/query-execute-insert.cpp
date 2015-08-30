@@ -14,7 +14,7 @@ ErrorCode QueryExecuteInsert::Execute() {
 	BYTE *ptr;
 	RowData* rd = new RowData(table_);
 	std::vector<DatabaseValue> row;
-	TableData *td = new TableData(table_);
+	TableData *td = new TableData(table_->get_table_name());
 	while (scan->HasNext()) {
 		// Serialize row
 		er = scan->Next(&row);

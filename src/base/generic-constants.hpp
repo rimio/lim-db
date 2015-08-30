@@ -35,7 +35,7 @@
 #define MACHINE_ERROR 0.0000001
 #endif
 
-#ifndef INT32_ALIGNMENT 4
+#ifndef INT32_ALIGNMENT
 #define INT32_ALIGNMENT 4
 #endif
 

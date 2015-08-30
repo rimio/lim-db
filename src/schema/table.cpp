@@ -5,21 +5,21 @@
 Table::Table ()
 {
 	id_ = 0;
-	allocated_sectors_ = new SectorGroup();
+	table_data_ = new TableData(name_);
 	nr_float_= nr_int_ = nr_string_ = nr_attr_ = 0;
 }
 
 Table::Table (SectorID sector_id)
 {
 	id_ = (TableID) sector_id;
-	allocated_sectors_ = new SectorGroup();
+	table_data_ = new TableData(name_);
 	nr_float_ = nr_int_ = nr_string_ = nr_attr_ = 0;
 	MemToTable ();
 }
 
 Table::~Table() {
 	attributes_.clear();
-	delete allocated_sectors_;
+	delete table_data_;
 }
 
 TableID Table::get_table_id() {
