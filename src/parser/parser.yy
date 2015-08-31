@@ -64,7 +64,7 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 	std::string *sval;
 
 	ParserRoot *parser_root_val;
-	ParserNode *parser_node;
+	ParserNode *parser_node_val;
 	ParserCommand *command_val;
 
 	ParserIndex *index_node_val;
@@ -153,10 +153,11 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 
 // Typed nodes
 %type <value_node_val>			literal
-%type <parser_node>				operand
-%type <parser_node>				expression
+%type <parser_node_val>			operand
+%type <parser_node_val>			expression
 %type <parser_node_list>		expression_list
 %type <parser_node_list>		insert_values
+%type <parser_node_list>		select_list_item
 
 // Identifiers
 %type <table_node_val>	        table_identifier
@@ -256,22 +257,26 @@ select_statement
 		{
 			$$ = new ParserSelectStatement ($2, $4, @1);
 		}
+	;
 
 select_list_item
-	: expression
+	: expression_list
 	{
 		$$ = $1;
 	}
 	| STAR 
 	{
-	//	$$ = new std::vector<ParserNode*>;
-	//	$$->push_back(new ParserNode());
-	}
-	| table_idendifier DOT STAR 
+		$$ = new std::vector<ParserNode*>;
+		$$->push_back(new ParserStar());
+	} 
+	| table_identifier DOT STAR 
 	{
 		// TO DO
-		$$ = nullptr;
-	}
+		$$ = new std::vector<ParserNode*>;
+		$$->push_back(new ParserStar($1));
+	} 
+	;
+	
 
 
 insert_statement
