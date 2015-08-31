@@ -156,6 +156,9 @@ set (SRC_STORAGE_FILES
 
 	${SOURCE_DIR}/storage/sector-manager.hpp
 	${SOURCE_DIR}/storage/sector-manager.cpp
+
+	${SOURCE_DIR}/storage/table-data.hpp
+	${SOURCE_DIR}/storage/table-data.cpp
 	)
 source_group("src\\storage" FILES ${SRC_STORAGE_FILES})
 

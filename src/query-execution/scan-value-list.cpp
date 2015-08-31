@@ -1,7 +1,15 @@
 #include "query-execution\scan-value-list.hpp"
 
-ScanValueList::ScanValueList(std::vector<std::vector<DatabaseValue>> list) {
-	list_.assign(list.begin(), list.end());
+ScanValueList::ScanValueList(std::vector<std::vector<ParserNode *> *> *list) {
+	list_.clear();
+	std::vector<DatabaseValue> row;
+	for (auto r : (*list)) {
+		row.clear();
+		for (auto i : (*r)) {
+			row.push_back(i->computed_value());
+		}
+		list_.push_back(row);
+	}
 	next_ = 0;
 }
 

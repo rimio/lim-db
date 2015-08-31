@@ -3,15 +3,16 @@
 
 #include "storage\sector.hpp"
 #include "schema\attribute.hpp"
-#include "metadata\sector-group.hpp"
 #include "base\error-codes.hpp"
+#include "metadata\sector-group.hpp"
+#include "storage\table-data.hpp"
+
 #include <string>
 #include <vector>
 
 typedef SectorID TableID;
 
-class Table
-{
+class Table {
 public:
 	// Constructors
 	Table();
@@ -30,16 +31,17 @@ public:
 	int get_nr_string();
 	int get_nr_float();
 	int get_nr_int();
-	SectorGroup* allocated_sectors() { return allocated_sectors_; };
 
+	SectorGroup* allocated_sectors() { return table_data_->a_sectors(); };
+	TableData* table_data() { return table_data_; }
+	
 	void set_table_id(TableID id);
 	void set_table_name(std::string table_name);
-	ErrorCode AddAttribute(std::string attr_name, DataType attr_type);
 	void set_nr_string(int nr);
 	void set_nr_float(int nr);
 	void set_nr_int(int nr);
 
-	
+	ErrorCode AddAttribute(std::string attr_name, DataType attr_type);
 
 private:
 
@@ -47,7 +49,7 @@ private:
 
 	std::string name_;
 
-	SectorGroup* allocated_sectors_;
+	TableData *table_data_;
 
 	std::vector<Attribute> attributes_;
 
