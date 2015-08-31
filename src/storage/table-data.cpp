@@ -9,9 +9,8 @@ ErrorCode TableData::InsertIntoSector(BYTE *start, int length) {
 	Table *t = GET_SCHEMA_MANAGER()->FindTable(table_);
 	for (auto sector : t->allocated_sectors()->sectors()) {
 		ds = (DataSector*)GET_SECTOR_MANAGER()->GetSectorPointer(sector);
-		er = ds->Insert(start, length);
-		if (er != ER_ALLOCATION_DATASECTOR_FULL) {
-			row_inserted = true;
+		er = ds->Insert(start, length,&row_inserted);
+		if (row_inserted) {
 			break;
 		}
 	}
@@ -26,7 +25,7 @@ ErrorCode TableData::InsertIntoSector(BYTE *start, int length) {
 		t->allocated_sectors()->AppendSector(new_sector);
 		ds = reinterpret_cast<DataSector*> (GET_SECTOR_MANAGER()->GetSectorPointer(new_sector));
 
-		er = ds->Insert(start, length);
+		er = ds->Insert(start, length,&row_inserted);
 
 		if (er != NO_ERROR)
 			return er;

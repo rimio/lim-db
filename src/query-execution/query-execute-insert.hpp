@@ -11,13 +11,13 @@
 class QueryExecuteInsert : QueryExecute {
 public:
 	QueryExecuteInsert (Table* t) { table_ = t; };
-	QueryExecuteInsert(Table* t, std::vector<ParserColumn *>* columns,
-		std::vector<std::vector<ParserNode *> *> * values) { table_ = t; columns_ = columns; values_ = values; };
+	QueryExecuteInsert(Table* t, std::vector<Attribute> columns,
+		std::vector<std::vector<DatabaseValue>> values);
 
 	ErrorCode Execute() override;
 private:
-	std::vector<ParserColumn *>* columns_;
-	std::vector<std::vector<ParserNode *> *> * values_;
+	std::vector<Attribute> columns_;
+	std::vector<std::vector<DatabaseValue>> values_;
 	Table* table_;
 };
 

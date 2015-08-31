@@ -56,6 +56,7 @@ void Table::set_table_id(TableID id) {
 
 void Table::set_table_name(std::string table_name) {
 	name_ = table_name;
+	table_data_->set_table_name(table_name);
 }
 
 ErrorCode Table::AddAttribute(std::string attr_name, DataType attr_type) {

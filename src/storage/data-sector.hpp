@@ -21,7 +21,7 @@ public:
 	//Returns all rows contained
 	std::vector<BYTE*> Select();
 	//Inserts a row in the DataSector
-	ErrorCode Insert(BYTE* ptr, int length_required);
+	ErrorCode Insert(BYTE* ptr, int length_required, bool *has_free_space);
 
 	void UseDataSector(DataSector *sector);
 
