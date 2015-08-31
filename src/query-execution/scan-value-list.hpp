@@ -8,7 +8,7 @@
 
 class ScanValueList: Scan {
 public:
-	ScanValueList(std::vector<std::vector<ParserNode *> *> * list);
+	ScanValueList(std::vector<std::vector<DatabaseValue>> list);
 	void Start() override { next_ = 0; }
 	void End() override {};
 	bool HasNext() { return (next_ < list_.size()); }

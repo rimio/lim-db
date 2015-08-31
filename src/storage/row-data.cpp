@@ -126,24 +126,31 @@ BYTE* RowData::DeserializeRow(BYTE *start) {
 	return s_pos;
 }
 
-void RowData::set_data_values(std::vector<DatabaseValue> values, std::vector<ParserColumn *>* columns) {
-	// If there are any blank columns, fill them with NULL values
-	if (table_->get_number_of_attributes() != values.size()) {
-		auto attributes = table_->get_table_attributes();
-
-		// For each column search its position in the table's attibutes
-		std::string col_name;
-		for (int i = 0; i < columns->size(); i++) {
-			col_name = columns->at(i)->name();
-			for (int j = 0; j < attributes.size(); j++)
-				if (col_name == attributes.at(j).get_name()) {
-					values_[j].Clone(values[i]);
-					break;
-				}
-		}
+void RowData::set_data_values(std::vector<DatabaseValue> values, std::vector<Attribute> columns) {
+	auto attributes = table_->get_table_attributes();
+	bool right_order = true;
+	
+	// Check if all the columns are used and in right order
+	if (table_->get_number_of_attributes() == values.size()) {
+		for (int i = 0; i < values.size(); i++)
+			if (attributes.at(i).get_name() != columns.at(i).get_name()) {
+				right_order = false;
+				break;
+			}
 	}
-	// Otherwise all the columns are used
 	else {
+		right_order = false;
+	}
+	
+	if (right_order) {
 		values_.assign(values.begin(), values.end());
-	}	
+		return;
+	}
+	
+	// Otherwise fill them with NULL values and/or reorder them
+	for (int i = 0; i < columns.size(); i++) {
+		values_[columns.at(i).get_position() - 1].Clone(values[i]);
+		}
+
+	return;
 }
