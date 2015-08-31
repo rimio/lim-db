@@ -160,11 +160,11 @@ ErrorCode ParserInsertStatement::Compile () {
 		// All good
 	if (columns_ == NULL) {
 		columns_ = new std::vector < ParserColumn * >();
-		std::vector<Attribute> attributes = tableSchema->get_table_attributes();
+		std::vector<Attribute> attributes = tableSchema->table_attributes();
 		// Set all the columns 
 		for (auto attr = attributes.begin(); attr != attributes.end(); ++attr) {
-			columns_->push_back(new ParserColumn(attr->get_name(),
-				attr->get_type(), table_->name(),table_));
+			columns_->push_back(new ParserColumn(attr->name(),
+				attr->type(), table_->name(),table_));
 		}
 	}
 	
@@ -217,13 +217,13 @@ std::vector<std::vector<DatabaseValue>> ParserInsertStatement::ParserValueToData
 
 std::vector<Attribute> ParserInsertStatement::ParserColumnToAttributes(std::vector<ParserColumn *>* columns) {
 	std::vector<Attribute> result;
-	auto attributes = table_->table()->get_table_attributes();
+	auto attributes = table_->table()->table_attributes();
 	
 	std::string col_name;
 	for (auto col : *columns) {
 		col_name = col->name();
 		for (auto atr: attributes)
-			if (col_name == atr.get_name()) {
+			if (col_name == atr.name()) {
 				result.push_back(atr);
 				break;
 			}
@@ -237,13 +237,11 @@ ErrorCode ParserInsertStatement::Execute () {
 	std::vector<std::vector<DatabaseValue>> values = ParserValueToDatabase(values_);
 	std::vector<Attribute> columns = ParserColumnToAttributes(columns_);
 
-	QueryExecuteInsert* querry = new QueryExecuteInsert(table_->table(), columns, values);
+	QueryExecuteInsert querry = QueryExecuteInsert(table_->table(), columns, values);
 
 	ErrorCode er = NO_ERROR;
 
-	er = querry->Execute();
-
-	delete querry;
+	er = querry.Execute();
 
 	if (er != NO_ERROR)
 		return er;

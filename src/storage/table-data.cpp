@@ -6,8 +6,7 @@ ErrorCode TableData::InsertIntoSector(BYTE *start, int length) {
 	ErrorCode er = NO_ERROR;
 	bool row_inserted = false;
 	DataSector *ds;
-	Table *t = GET_SCHEMA_MANAGER()->FindTable(table_);
-	for (auto sector : t->allocated_sectors()->sectors()) {
+	for (auto sector : allocated_sectors_->sectors()) {
 		ds = (DataSector*)GET_SECTOR_MANAGER()->GetSectorPointer(sector);
 		er = ds->Insert(start, length,&row_inserted);
 		if (row_inserted) {
@@ -22,7 +21,7 @@ ErrorCode TableData::InsertIntoSector(BYTE *start, int length) {
 		if (er != NO_ERROR)
 			return er;
 
-		t->allocated_sectors()->AppendSector(new_sector);
+		allocated_sectors_->AppendSector(new_sector);
 		ds = reinterpret_cast<DataSector*> (GET_SECTOR_MANAGER()->GetSectorPointer(new_sector));
 
 		er = ds->Insert(start, length,&row_inserted);

@@ -15,9 +15,9 @@ public:
 	// Accessors
 	// TODO: Is it better to use pointers/references?
 	std::string name () { return name_; };
-	Table* table() { return table_; }
-	void set_name(std::string name) { STRING_TO_LOWER(name); name_ = name; };
-	void set_table(Table *t) { table_ = t; };
+	Table* table () { return table_; }
+	void set_name (std::string name) { STRING_TO_LOWER(name); name_ = name; };
+	void set_table (Table *t) { table_ = t; };
 
 protected:
 

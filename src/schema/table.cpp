@@ -22,31 +22,31 @@ Table::~Table() {
 	delete table_data_;
 }
 
-TableID Table::get_table_id() {
+TableID Table::table_id() {
 	return id_;
 }
 
-std::string Table::get_table_name() {
+std::string Table::table_name() {
 	return name_;
 }
 
-int Table::get_number_of_attributes() {
+int Table::number_of_attributes() {
 	return attributes_.size();
 }
 
-std::vector<Attribute> Table::get_table_attributes() {
+std::vector<Attribute> Table::table_attributes() {
 	return attributes_;
 }
 
-int Table::get_nr_string() {
+int Table::nr_string() {
 	return nr_string_;
 }
 
-int Table::get_nr_float() {
+int Table::nr_float() {
 	return nr_float_;
 }
 
-int Table::get_nr_int() {
+int Table::nr_int() {
 	return nr_int_;
 }
 
@@ -56,7 +56,6 @@ void Table::set_table_id(TableID id) {
 
 void Table::set_table_name(std::string table_name) {
 	name_ = table_name;
-	table_data_->set_table_name(table_name);
 }
 
 ErrorCode Table::AddAttribute(std::string attr_name, DataType attr_type) {

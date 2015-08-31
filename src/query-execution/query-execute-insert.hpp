@@ -11,10 +11,10 @@
 class QueryExecuteInsert : QueryExecute {
 public:
 	QueryExecuteInsert (Table* t) { table_ = t; };
-	QueryExecuteInsert(Table* t, std::vector<Attribute> columns,
+	QueryExecuteInsert (Table* t, std::vector<Attribute> columns,
 		std::vector<std::vector<DatabaseValue>> values);
 
-	ErrorCode Execute() override;
+	ErrorCode Execute () override;
 private:
 	std::vector<Attribute> columns_;
 	std::vector<std::vector<DatabaseValue>> values_;

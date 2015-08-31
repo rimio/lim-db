@@ -17,11 +17,11 @@ ErrorCode ParserColumn::NameResolvePost(NameResolveArg* arg, bool* stop_walk) {
 			if (table_name() == (*tbl)->name()) {
 				this->resolved_to_ = *tbl;
 
-				auto attributes = (*tbl)->table()->get_table_attributes();
+				auto attributes = (*tbl)->table()->table_attributes();
 
 				for (auto atr : attributes) {
-					if (atr.get_name() == name_){
-						this->data_type_ = atr.get_type();
+					if (atr.name() == name_){
+						this->data_type_ = atr.type();
 						return NO_ERROR;
 					}
 				}
@@ -38,11 +38,11 @@ ErrorCode ParserColumn::NameResolvePost(NameResolveArg* arg, bool* stop_walk) {
 		}
 		
 		for (auto tbl = pt.begin(); tbl != pt.end(); tbl++) {
-			auto attributes = (*tbl)->table()->get_table_attributes();
+			auto attributes = (*tbl)->table()->table_attributes();
 
 			for (auto atr : attributes) {
-				if (atr.get_name() == name_) {
-					this->data_type_ = atr.get_type();
+				if (atr.name() == name_) {
+					this->data_type_ = atr.type();
 					return NO_ERROR;
 				}
 			}

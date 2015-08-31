@@ -46,7 +46,7 @@ void DataSectorTest::check() {
 	v1.push_back(DatabaseValue((float)2.7));
 	v1.push_back(DatabaseValue((float)3.9));
 
-	rd->set_data_values(v1, t->get_table_attributes());
+	rd->set_data_values(v1, t->table_attributes());
 
 	ptr = rd->SerializeRow( start);
 	bool ok;
@@ -71,7 +71,7 @@ void DataSectorTest::check() {
 	v2.push_back(DatabaseValue((float)12.7));
 	v2.push_back(DatabaseValue((float)13.9));
 
-	rd->set_data_values(v2,t->get_table_attributes());
+	rd->set_data_values(v2,t->table_attributes());
 	
 	ptr = rd->SerializeRow(start);
 	//insert second serialized row

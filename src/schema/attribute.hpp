@@ -8,15 +8,15 @@
 class Attribute
 {
 	public:
-		Attribute(DataType type, std::string name, INT32 position);
-		~Attribute();
+		Attribute (DataType type, std::string name, INT32 position);
+		~Attribute ();
 
-		DataType get_type();
-		std::string get_name();
-		INT32 get_position();
+		DataType type () { return type_; }
+		std::string name () { return name_; }
+		INT32 position () { return position_; }
 
-		void set_position(INT32 pos);
-		bool isFixed();
+		void set_position (INT32 pos);
+		bool isFixed ();
 
 	private:
 		DataType type_;

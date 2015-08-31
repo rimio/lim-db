@@ -15,33 +15,31 @@ typedef SectorID TableID;
 class Table {
 public:
 	// Constructors
-	Table();
-	Table(SectorID sector_id);
+	Table ();
+	Table (SectorID sector_id);
 
 	// Destructor
-	~Table();
+	~Table ();
 
-	ErrorCode TableToMem();
-	ErrorCode MemToTable();
+	ErrorCode TableToMem ();
+	ErrorCode MemToTable ();
 
-	TableID get_table_id();
-	std::string get_table_name();
-	int get_number_of_attributes();
-	std::vector<Attribute> get_table_attributes();
-	int get_nr_string();
-	int get_nr_float();
-	int get_nr_int();
-
-	SectorGroup* allocated_sectors() { return table_data_->a_sectors(); };
-	TableData* table_data() { return table_data_; }
+	TableID table_id ();
+	std::string table_name ();
+	int number_of_attributes ();
+	std::vector<Attribute> table_attributes ();
+	int nr_string ();
+	int nr_float ();
+	int nr_int ();
+	TableData* table_data () { return table_data_; }
 	
-	void set_table_id(TableID id);
-	void set_table_name(std::string table_name);
-	void set_nr_string(int nr);
-	void set_nr_float(int nr);
-	void set_nr_int(int nr);
+	void set_table_id (TableID id);
+	void set_table_name (std::string table_name);
+	void set_nr_string (int nr);
+	void set_nr_float (int nr);
+	void set_nr_int (int nr);
 
-	ErrorCode AddAttribute(std::string attr_name, DataType attr_type);
+	ErrorCode AddAttribute (std::string attr_name, DataType attr_type);
 
 private:
 

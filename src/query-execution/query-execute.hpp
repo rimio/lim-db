@@ -5,7 +5,7 @@
 
 class QueryExecute {
 public:
-	virtual ErrorCode Execute() = 0;
+	virtual ErrorCode Execute () = 0;
 };
 
 #endif
