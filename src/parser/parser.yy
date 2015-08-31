@@ -238,6 +238,7 @@ statement
 		}
 	;
 
+/*
 select_statement
 	: SELECT expression_list FROM table_identifier
 		{
@@ -245,9 +246,33 @@ select_statement
 		}
 	| SELECT STAR FROM table_identifier
 		{
-			$$ = new ParserSelectStatement ($2, $4, @1);
+			$$ = new ParserSelectStatement (nullptr, $4, @1);
 		}
 	;
+*/
+
+select_statement
+	: SELECT select_list_item FROM table_identifier
+		{
+			$$ = new ParserSelectStatement ($2, $4, @1);
+		}
+
+select_list_item
+	: expression
+	{
+		$$ = $1;
+	}
+	| STAR 
+	{
+	//	$$ = new std::vector<ParserNode*>;
+	//	$$->push_back(new ParserNode());
+	}
+	| table_idendifier DOT STAR 
+	{
+		// TO DO
+		$$ = nullptr;
+	}
+
 
 insert_statement
 	: INSERT INTO table_identifier insert_column_list VALUES insert_values_list

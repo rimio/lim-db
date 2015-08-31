@@ -3,8 +3,10 @@
 
 #include "parser\parser-node.hpp"
 #include "parser\parser-root.hpp"
+#include "parser\parser-star.hpp"
 #include "parser\parser-table.hpp"
 #include "parser\parser-column.hpp"
+#include "parser\parser-select.hpp"
 
 class ParserSelect :
 	public virtual ParserNode {
