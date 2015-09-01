@@ -1,6 +1,6 @@
 #include "parser\parser-select.hpp"
 #include "base\generic-operations.hpp"
-
+#include "boot\boot.hpp"
 //
 // PTSelectNode
 //
@@ -40,13 +40,13 @@ std::string ParserSelect::ToString () {
 }
 
 void ParserSelect::GetChildren (std::vector<ParserNode *>* children) {
+	// Add from_
+	children->push_back(from_);
+
 	// Add select list
 	for (auto item = list_->begin (); item != list_->end (); ++item) {
 		children->push_back (*item);
 	}
-
-	// Add from_
-	children->push_back (from_);
 }
 
 //
@@ -62,7 +62,36 @@ ParserSelectStatement::ParserSelectStatement (std::vector<ParserNode *>* list,
 	setLocation (loc);
 }
 
+ErrorCode ParserSelect::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
+	// Create new node
+	std::vector <ParserTable *> new_node;
+
+	// Add Parser table to the node
+	arg->tables_stack_.push(new_node);
+	arg->reference_to_list = list_;
+
+	return NO_ERROR;
+}
+
 ErrorCode ParserSelectStatement::Compile () {
+	// Check if table name exists
+	Table *tableSchema = NULL;
+
+	// Find table by name
+	tableSchema = GET_SCHEMA_MANAGER()->FindTable(from_->name());
+	if (tableSchema == NULL) {
+		// Not found
+		return ErrorManager::error(__HERE__, ER_TABLE_DOES_NOT_EXIST,
+			from_->name().c_str());
+	}
+
+	ErrorCode er = NO_ERROR;
+
+	er = this->NameResolve();
+
+	if (er != NO_ERROR)
+		return er;
+
 	return NO_ERROR;
 }
 

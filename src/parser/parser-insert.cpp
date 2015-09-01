@@ -157,7 +157,7 @@ ErrorCode ParserInsertStatement::Compile () {
 	if (er != NO_ERROR) 
 		return er;
 	
-		// All good
+	// All good
 	if (columns_ == NULL) {
 		columns_ = new std::vector < ParserColumn * >();
 		std::vector<Attribute> attributes = tableSchema->get_table_attributes();

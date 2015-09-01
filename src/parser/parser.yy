@@ -155,9 +155,11 @@ static int yylex (Parser::semantic_type *yylval, Parser::location_type *loc, Lex
 %type <value_node_val>			literal
 %type <parser_node_val>			operand
 %type <parser_node_val>			expression
+%type <parser_node_val>			select_list_item
 %type <parser_node_list>		expression_list
 %type <parser_node_list>		insert_values
-%type <parser_node_list>		select_list_item
+%type <parser_node_list>		select_list
+
 
 // Identifiers
 %type <table_node_val>	        table_identifier
@@ -239,44 +241,40 @@ statement
 		}
 	;
 
-/*
 select_statement
-	: SELECT expression_list FROM table_identifier
+	: SELECT select_list FROM table_identifier
 		{
 			$$ = new ParserSelectStatement ($2, $4, @1);
-		}
-	| SELECT STAR FROM table_identifier
-		{
-			$$ = new ParserSelectStatement (nullptr, $4, @1);
 		}
 	;
-*/
 
-select_statement
-	: SELECT select_list_item FROM table_identifier
-		{
-			$$ = new ParserSelectStatement ($2, $4, @1);
-		}
+select_list 
+	: select_list COMMA select_list_item
+	{
+		$$ = $1;
+		$$->push_back ($3);
+	}
+	| select_list_item
+	{
+		$$ = new std::vector <ParserNode*>;
+		$$->push_back ($1); 
+	}
 	;
 
 select_list_item
-	: expression_list
+	: expression
 	{
 		$$ = $1;
 	}
 	| STAR 
 	{
-		$$ = new std::vector<ParserNode*>;
-		$$->push_back(new ParserStar());
+		$$ = new ParserStar();
 	} 
 	| table_identifier DOT STAR 
 	{
-		// TO DO
-		$$ = new std::vector<ParserNode*>;
-		$$->push_back(new ParserStar($1));
+		$$ = new ParserStar($1);
 	} 
 	;
-	
 
 
 insert_statement
