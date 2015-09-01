@@ -5,48 +5,48 @@
 Table::Table ()
 {
 	id_ = 0;
-	allocated_sectors_ = NULL;
+	table_data_ = new TableData();
 	nr_float_= nr_int_ = nr_string_ = nr_attr_ = 0;
 }
 
 Table::Table (SectorID sector_id)
 {
 	id_ = (TableID) sector_id;
-	allocated_sectors_ = NULL;
+	table_data_ = new TableData();
 	nr_float_ = nr_int_ = nr_string_ = nr_attr_ = 0;
 	MemToTable ();
 }
 
 Table::~Table() {
 	attributes_.clear();
-	delete allocated_sectors_;
+	delete table_data_;
 }
 
-TableID Table::get_table_id() {
+TableID Table::table_id() {
 	return id_;
 }
 
-std::string Table::get_table_name() {
+std::string Table::table_name() {
 	return name_;
 }
 
-int Table::get_number_of_attributes() {
+int Table::number_of_attributes() {
 	return attributes_.size();
 }
 
-std::vector<Attribute> Table::get_table_attributes() {
+std::vector<Attribute> Table::table_attributes() {
 	return attributes_;
 }
 
-int Table::get_nr_string() {
+int Table::nr_string() {
 	return nr_string_;
 }
 
-int Table::get_nr_float() {
+int Table::nr_float() {
 	return nr_float_;
 }
 
-int Table::get_nr_int() {
+int Table::nr_int() {
 	return nr_int_;
 }
 

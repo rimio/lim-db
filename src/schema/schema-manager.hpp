@@ -11,13 +11,13 @@
 class SchemaManager { 
 	public:
 		//Destructor
-		~SchemaManager();
+		~SchemaManager ();
 		//Adds a new table
-		ErrorCode AddTable(Table *t);
+		ErrorCode AddTable (Table *t);
 		//Delets an existing table
-		ErrorCode DropTable(std::string table_name);
+		ErrorCode DropTable (std::string table_name);
 		//If there exists a table with the searched name, returns it, NULL otherwise
-	    Table* FindTable(std::string table_name);
+	    Table* FindTable (std::string table_name);
 	protected:
 	private:
 		std::map<std::string, Table*> list_of_tables_;

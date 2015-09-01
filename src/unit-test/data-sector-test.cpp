@@ -46,16 +46,17 @@ void DataSectorTest::check() {
 	v1.push_back(DatabaseValue((float)2.7));
 	v1.push_back(DatabaseValue((float)3.9));
 
-	rd->set_data_values(v1);
+	rd->set_data_values(v1, t->table_attributes());
 
-	ptr = rd->SerializeRow(t, start);
-
+	ptr = rd->SerializeRow( start);
+	bool ok;
 	//insert first serialized row
-	ds->Insert(start, ptr - start);
+	ds->Insert(start, ptr - start,&ok);
+	assert(ok);
 	
 	RowData *rdd = new RowData(t);
 	BYTE* where = ds->Select(0);
-	ptr = rdd->DeserializeRow(t, where);
+	ptr = rdd->DeserializeRow( where);
 
 	std::vector<DatabaseValue> v2;
 	v2.push_back(DatabaseValue(117));
@@ -70,27 +71,30 @@ void DataSectorTest::check() {
 	v2.push_back(DatabaseValue((float)12.7));
 	v2.push_back(DatabaseValue((float)13.9));
 
-	rd->set_data_values(v2);
+	rd->set_data_values(v2,t->table_attributes());
 	
-	ptr = rd->SerializeRow(t, start);
+	ptr = rd->SerializeRow(start);
 	//insert second serialized row
-	ds->Insert(start, ptr - start);
+	ds->Insert(start, ptr - start,&ok);
+	assert(ok);
 	
 	where = ds->Select(1);
-	ptr = rdd->DeserializeRow(t, where);
+	ptr = rdd->DeserializeRow(where);
 	
 	where = ds->Select(1);
-	ptr = rdd->DeserializeRow(t, where);
+	ptr = rdd->DeserializeRow(where);
 	
 	where = ds->Select(0);
-	ptr = rdd->DeserializeRow(t, where);
+	ptr = rdd->DeserializeRow( where);
 	
 	std::vector<BYTE*> res;
 	res = ds->Select();
 
 	for (int i = 0; i < res.size(); i++) {
-		ptr = rdd->DeserializeRow(t, res.at(i));
+		ptr = rdd->DeserializeRow(res.at(i));
 	}
+	
+	Boot::StartServer();
 
 	// Check Insert statement
 	std::vector <std::string> scenario;

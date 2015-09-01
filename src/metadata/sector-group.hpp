@@ -15,6 +15,8 @@ public:
 
 	ErrorCode AppendSector (SectorID sector_id);
 
+	std::vector<SectorID> sectors() { return sectors_; }
+
 private:
 	std::vector<SectorID> sectors_;
 };

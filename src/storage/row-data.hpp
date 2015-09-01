@@ -5,22 +5,24 @@
 #include "schema\attribute.hpp"
 #include "schema\table.hpp"
 #include "storage\data-sector.hpp"
+#include "parser\parser-column.hpp"
 
 #include <vector>
 
 class RowData {
 public:
-	RowData(Table *t);
-	~RowData();
+	RowData (Table *t);
+	~RowData () {};
 	// Serializes a row starting at the location of *start
 	// Retreives a pointer to the end of serialization
-	BYTE* SerializeRow(Table *t, BYTE* start);
+	BYTE* SerializeRow (BYTE* start);
 	// Deserializes a row starting at the location of *start
 	// Retreives a pointer to the end of deserialization
-	BYTE* DeserializeRow(Table *t, BYTE* start);
-	void set_data_values(std::vector<DatabaseValue> values);
+	BYTE* DeserializeRow (BYTE* start);
+	void set_data_values (std::vector<DatabaseValue> values, std::vector<Attribute> columns);
 private:
 	std::vector<DatabaseValue> values_;
+	Table *table_;
 };
 
 #endif

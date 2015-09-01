@@ -3,7 +3,7 @@
 #include "boot\boot.hpp"
 #include "parser\parser-value.hpp"
 #include "metadata\database-value.hpp"
-
+#include "query-execution\query-execute-insert.hpp"
 //
 // PTInsertNode
 //
@@ -160,11 +160,11 @@ ErrorCode ParserInsertStatement::Compile () {
 		// All good
 	if (columns_ == NULL) {
 		columns_ = new std::vector < ParserColumn * >();
-		std::vector<Attribute> attributes = tableSchema->get_table_attributes();
+		std::vector<Attribute> attributes = tableSchema->table_attributes();
 		// Set all the columns 
 		for (auto attr = attributes.begin(); attr != attributes.end(); ++attr) {
-			columns_->push_back(new ParserColumn(attr->get_name(),
-				attr->get_type(), table_->name(),table_));
+			columns_->push_back(new ParserColumn(attr->name(),
+				attr->type(), table_->name(),table_));
 		}
 	}
 	
@@ -199,7 +199,53 @@ ErrorCode ParserInsertStatement::Prepare () {
 	return NO_ERROR;
 }
 
+std::vector<std::vector<DatabaseValue>> ParserInsertStatement::ParserValueToDatabase
+			(std::vector<std::vector<ParserNode *> *> *values) {
+	std::vector<std::vector<DatabaseValue>> list;
+	std::vector<DatabaseValue> row;
+
+	for (auto val_row: *values) {
+		row.clear();
+		for (auto val : *val_row) {
+			row.push_back(val->computed_value());
+		}
+		list.push_back(row);
+	}
+
+	return list;
+}
+
+std::vector<Attribute> ParserInsertStatement::ParserColumnToAttributes(std::vector<ParserColumn *>* columns) {
+	std::vector<Attribute> result;
+	auto attributes = table_->table()->table_attributes();
+	
+	std::string col_name;
+	for (auto col : *columns) {
+		col_name = col->name();
+		for (auto atr: attributes)
+			if (col_name == atr.name()) {
+				result.push_back(atr);
+				break;
+			}
+	}
+
+	return result;
+}
+
 ErrorCode ParserInsertStatement::Execute () {
+
+	std::vector<std::vector<DatabaseValue>> values = ParserValueToDatabase(values_);
+	std::vector<Attribute> columns = ParserColumnToAttributes(columns_);
+
+	QueryExecuteInsert querry = QueryExecuteInsert(table_->table(), columns, values);
+
+	ErrorCode er = NO_ERROR;
+
+	er = querry.Execute();
+
+	if (er != NO_ERROR)
+		return er;
+
 	return NO_ERROR;
 }
 
