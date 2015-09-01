@@ -6,7 +6,7 @@
 
 class TableData {
 public:
-	TableData (std::string t) { allocated_sectors_ = new SectorGroup(); };
+	TableData () { allocated_sectors_ = new SectorGroup(); };
 	~TableData () { delete allocated_sectors_; };
 	
 	ErrorCode InsertIntoSector (BYTE *start, int length);	

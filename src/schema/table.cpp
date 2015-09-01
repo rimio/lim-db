@@ -5,14 +5,14 @@
 Table::Table ()
 {
 	id_ = 0;
-	table_data_ = new TableData(name_);
+	table_data_ = new TableData();
 	nr_float_= nr_int_ = nr_string_ = nr_attr_ = 0;
 }
 
 Table::Table (SectorID sector_id)
 {
 	id_ = (TableID) sector_id;
-	table_data_ = new TableData(name_);
+	table_data_ = new TableData();
 	nr_float_ = nr_int_ = nr_string_ = nr_attr_ = 0;
 	MemToTable ();
 }
