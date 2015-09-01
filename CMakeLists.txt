@@ -159,6 +159,9 @@ set (SRC_STORAGE_FILES
 
 	${SOURCE_DIR}/storage/sector-manager.hpp
 	${SOURCE_DIR}/storage/sector-manager.cpp
+
+	${SOURCE_DIR}/storage/table-data.hpp
+	${SOURCE_DIR}/storage/table-data.cpp
 	)
 source_group("src\\storage" FILES ${SRC_STORAGE_FILES})
 
@@ -183,6 +186,21 @@ set (SRC_METADATA_FILES
 	)
 source_group("src\\metadata" FILES ${SRC_METADATA_FILES})
 
+set (SRC_QUERY_EXECUTION_FILES
+	${SOURCE_DIR}/query-execution/scan.hpp
+	${SOURCE_DIR}/query-execution/scan.cpp
+
+	${SOURCE_DIR}/query-execution/scan-value-list.hpp
+	${SOURCE_DIR}/query-execution/scan-value-list.cpp
+
+	${SOURCE_DIR}/query-execution/query-execute.hpp
+	${SOURCE_DIR}/query-execution/query-execute.cpp
+
+	${SOURCE_DIR}/query-execution/query-execute-insert.hpp
+	${SOURCE_DIR}/query-execution/query-execute-insert.cpp
+	)
+source_group("src\\query-execution" FILES ${SRC_QUERY_EXECUTION_FILES})
+
 # Unit-testing Header files
 set (UNIT_TEST_HEADER_FILES
 	${SOURCE_DIR}/unit-test/bitmap-test.hpp
@@ -204,7 +222,8 @@ add_library(lim-db
 			${SRC_BOOT_FILES}
 			${SRC_STORAGE_FILES}
 			${SRC_SCHEMA_FILES}
-			${SRC_METADATA_FILES})
+			${SRC_METADATA_FILES}
+			${SRC_QUERY_EXECUTION_FILES})
 
 # Executable targets
 add_executable (lim-db-console

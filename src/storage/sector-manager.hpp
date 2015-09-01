@@ -10,22 +10,22 @@
 class SectorManager {
 	public:
 		//Constructor
-		SectorManager();
+		SectorManager ();
 
 		//Destructor
-		~SectorManager();
+		~SectorManager ();
 
 		//Finds and returns ID to a free sector
-		ErrorCode AllocateSector(SectorID *sector_id);
+		ErrorCode AllocateSector (SectorID *sector_id);
 
 		//Deallocates a sector
-		ErrorCode DeallocateSector(SectorID sector_id);
+		ErrorCode DeallocateSector (SectorID sector_id);
 
 		//Checks wether a sector is free ot not
-		bool IsSectorAllocated(SectorID sector_id);
+		bool IsSectorAllocated (SectorID sector_id);
 
 		//Returns a pointer to the beggining of the requested sector
-		BYTE* GetSectorPointer(SectorID sector_id);
+		BYTE* GetSectorPointer (SectorID sector_id);
 	protected:
 	private:
 		//Instance of Bitmap for tracking usage of sectors

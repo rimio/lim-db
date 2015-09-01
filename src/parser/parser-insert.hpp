@@ -45,7 +45,8 @@ public:
 	ParserInsertStatement (ParserTable* table, std::vector<ParserColumn *>* columns,
 						   std::vector<std::vector<ParserNode *> *> *values,
 						   yy::location loc);
-
+	std::vector<std::vector<DatabaseValue>> ParserValueToDatabase (std::vector<std::vector<ParserNode *> *> *values);
+	std::vector<Attribute> ParserColumnToAttributes (std::vector<ParserColumn *>* columns);
 protected:
 	ErrorCode Compile () override;
 	ErrorCode Prepare () override;

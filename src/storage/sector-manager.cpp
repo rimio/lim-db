@@ -23,7 +23,7 @@ ErrorCode SectorManager::AllocateSector(SectorID * sector_id){
 
 	//If the table is full, no free sector can be returned
 	if (*sector_id == -1)
-		return ErrorManager::error(__HERE__, ER_ALLOCATION_TABLE_FULL);
+		return ER_ALLOCATION_TABLE_FULL;
 
 	//Returns the id of the allocated sector
 	return NO_ERROR;

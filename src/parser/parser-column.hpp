@@ -9,7 +9,7 @@ class ParserColumn : public virtual ParserNode {
 public:
 	// Ctors
 	ParserColumn (std::string name) : name_ (name), resolved_to_(NULL) {};
-	ParserColumn(std::string name, DataType type, std::string table_name, ParserTable* table) : 
+	ParserColumn (std::string name, DataType type, std::string table_name, ParserTable* table) : 
 		name_(name), data_type_(type), table_name_(table_name), resolved_to_(table) {};
 	
 	std::string ToString ();

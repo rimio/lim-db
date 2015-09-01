@@ -9,18 +9,6 @@ Attribute::Attribute(DataType type, std::string name, INT32 position) {
 	position_ = position;
 }
 
-DataType Attribute::get_type() {
-	return type_;
-}
-
-std::string Attribute::get_name() {
-	return name_;
-}
-
-INT32 Attribute::get_position() {
-	return position_;
-}
-
 void Attribute::set_position(INT32 pos) {
 	position_ = pos;
 }

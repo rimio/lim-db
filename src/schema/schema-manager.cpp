@@ -17,7 +17,7 @@ ErrorCode SchemaManager::AddTable(Table *t){
 	
 	if (er == NO_ERROR) {
 		t->set_table_id(id);
-		list_of_tables_.insert(std::pair<std::string, Table*>(t->get_table_name(), t));
+		list_of_tables_.insert(std::pair<std::string, Table*>(t->table_name(), t));
 	}
 
 	return er;
@@ -28,7 +28,7 @@ ErrorCode SchemaManager::DropTable(std::string table_name) {
 	//Store a pointer to the desired table in order to completely delete it
 	Table *t = list_of_tables_.find(table_name)->second;
 	//Free the used sector
-	ErrorCode er = GET_SECTOR_MANAGER()->DeallocateSector(t->get_table_id());
+	ErrorCode er = GET_SECTOR_MANAGER()->DeallocateSector(t->table_id());
 	if (er == NO_ERROR){
 		//Delete the table from the list 
 		list_of_tables_.erase(table_name);
