@@ -27,10 +27,11 @@ ErrorCode ParserStar::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
 		}
 	}
 	// Insert the expanded columns
-	for (int i = 0; i < (*arg->reference_to_list).size(); i++) {
-		if ((*arg->reference_to_list).at(i) == this) {
-			(*arg->reference_to_list).erase((*arg->reference_to_list).begin() + i );
-			(*arg->reference_to_list).insert((*arg->reference_to_list).begin() + i, expansion.begin(), expansion.end());
+	for (int i = 0; i < (*arg->reference_to_list_).size(); i++) {
+		if ((*arg->reference_to_list_).at(i) == this) {
+			(*arg->reference_to_list_).erase((*arg->reference_to_list_).begin() + i );
+			(*arg->reference_to_list_).insert((*arg->reference_to_list_).begin() + i, expansion.begin(), expansion.end());
+			break;
 		}
 	}
 	return NO_ERROR;

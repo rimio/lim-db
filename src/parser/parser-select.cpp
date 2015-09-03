@@ -11,14 +11,14 @@
 
 ParserSelect::~ParserSelect () {
 	// delete select list
-	if (list_ != nullptr && list_ != NULL)
+	if (list_ != nullptr)
 		vector_clear_and_delete (*list_);
 
-	if (list_ != nullptr && list_ != NULL)
+	if (list_ != nullptr)
 		delete list_;
 
 	// delete from
-	if (from_ != nullptr && list_ != NULL)
+	if (from_ != nullptr)
 		delete from_;
 }
 
@@ -72,7 +72,7 @@ ErrorCode ParserSelect::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
 
 	// Add Parser table to the node
 	arg->tables_stack_.push(new_node);
-	arg->reference_to_list = list_;
+	arg->reference_to_list_ = list_;
 
 	return NO_ERROR;
 }

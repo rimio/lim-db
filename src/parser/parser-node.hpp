@@ -50,7 +50,7 @@ protected:
 	class NameResolveArg {
 	public:
 		std::stack<std::vector <ParserTable*>, std::vector < std::vector< ParserTable* > > > tables_stack_;
-		std::vector<ParserNode *>* reference_to_list;
+		std::vector<ParserNode *>* reference_to_list_;
 	};
 
 	virtual ErrorCode NameResolvePre (NameResolveArg* arg, bool* stop_walk) = 0;
