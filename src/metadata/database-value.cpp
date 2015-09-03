@@ -29,14 +29,14 @@ int DatabaseValue::Compare(DatabaseValue arg) {
 	DatabaseValue a = arg;
 	DatabaseValue b = *this;
 	
-	DataType common_type = CommonType(a.get_type(), b.get_type());
+	DataType common_type = CommonType(a.data_type(), b.data_type());
 
 	if (common_type == DB_ERROR)
 		return ErrorManager::error(__HERE__, ER_FAILED);
 
-	if (a.get_type() != common_type)
+	if (a.data_type() != common_type)
 		a.Cast(common_type);
-	if (b.get_type() != common_type)
+	if (b.data_type() != common_type)
 		b.Cast(common_type);
 	
 	switch (common_type) {
@@ -61,7 +61,7 @@ int DatabaseValue::Compare(DatabaseValue arg) {
 
 bool DatabaseValue::operator<(const DatabaseValue& value) {
 	DatabaseValue a = value;
-	assert(this->get_type() != DB_BOOLEAN && a.get_type() != DB_BOOLEAN);
+	assert(this->data_type() != DB_BOOLEAN && a.data_type() != DB_BOOLEAN);
 	int result = Compare(value);
 	if (result < 0) return true;
 	return false;
@@ -69,7 +69,7 @@ bool DatabaseValue::operator<(const DatabaseValue& value) {
 
 bool DatabaseValue::operator>(const DatabaseValue& value) {
 	DatabaseValue a = value;
-	assert(this->get_type() != DB_BOOLEAN && a.get_type() != DB_BOOLEAN);
+	assert(this->data_type() != DB_BOOLEAN && a.data_type() != DB_BOOLEAN);
 	int result = Compare(value);
 	if (result > 0) return true;
 	return false;
@@ -77,7 +77,7 @@ bool DatabaseValue::operator>(const DatabaseValue& value) {
 
 bool DatabaseValue::operator>=(const DatabaseValue& value) {
 	DatabaseValue a = value;
-	assert(this->get_type() != DB_BOOLEAN && a.get_type() != DB_BOOLEAN);
+	assert(this->data_type() != DB_BOOLEAN && a.data_type() != DB_BOOLEAN);
 	int result = Compare(value);
 	if (result < 0) return false;
 	return true;
@@ -85,7 +85,7 @@ bool DatabaseValue::operator>=(const DatabaseValue& value) {
 
 bool DatabaseValue::operator<=(const DatabaseValue& value) {
 	DatabaseValue a = value;
-	assert(this->get_type() != DB_BOOLEAN && a.get_type() != DB_BOOLEAN);
+	assert(this->data_type() != DB_BOOLEAN && a.data_type() != DB_BOOLEAN);
 	int result = Compare(value);
 	if (result > 0) return false;
 	return true;
@@ -119,20 +119,20 @@ DatabaseValue DatabaseValue::operator+(const DatabaseValue& value) {
 	DatabaseValue left = *this;
 	DatabaseValue right = value;
 
-	if (left.get_type() != DB_INTEGER && left.get_type() != DB_FLOAT) {
+	if (left.data_type() != DB_INTEGER && left.data_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
 		return result;
 	}
 
-	if (right.get_type() != DB_INTEGER && right.get_type() != DB_FLOAT) {
+	if (right.data_type() != DB_INTEGER && right.data_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
 		return result;
 	}
 
-	DataType dominant_type = (left.get_type() == DB_INTEGER
-		&& right.get_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
+	DataType dominant_type = (left.data_type() == DB_INTEGER
+		&& right.data_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
 
-	if (left.get_type() != dominant_type) {
+	if (left.data_type() != dominant_type) {
 		er = left.Cast(dominant_type);
 		if (er != NO_ERROR) {
 			result.set_type(DB_ERROR);
@@ -140,7 +140,7 @@ DatabaseValue DatabaseValue::operator+(const DatabaseValue& value) {
 		}
 	}
 
-	if (right.get_type() != dominant_type) {
+	if (right.data_type() != dominant_type) {
 		er = right.Cast(dominant_type);
 		if (er != NO_ERROR) {
 			result.set_type(DB_ERROR);
@@ -148,7 +148,7 @@ DatabaseValue DatabaseValue::operator+(const DatabaseValue& value) {
 		}
 	}
 
-	switch (left.get_type()){
+	switch (left.data_type()){
 	case DB_INTEGER:
 		result.set_int_value(left.int_value() + right.int_value());
 		break;
@@ -169,20 +169,20 @@ DatabaseValue DatabaseValue::operator-(const DatabaseValue& value) {
 	DatabaseValue left = *this;
 	DatabaseValue right = value;
 
-	if (left.get_type() != DB_INTEGER && left.get_type() != DB_FLOAT) {
+	if (left.data_type() != DB_INTEGER && left.data_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
 		return result;
 	}
 
-	if (right.get_type() != DB_INTEGER && right.get_type() != DB_FLOAT) {
+	if (right.data_type() != DB_INTEGER && right.data_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
 		return result;
 	}
 
-	DataType dominant_type = (left.get_type() == DB_INTEGER
-		&& right.get_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
+	DataType dominant_type = (left.data_type() == DB_INTEGER
+		&& right.data_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
 
-	if (left.get_type() != dominant_type) {
+	if (left.data_type() != dominant_type) {
 		er = left.Cast(dominant_type);
 		if (er != NO_ERROR) {
 			result.set_type(DB_ERROR);
@@ -190,7 +190,7 @@ DatabaseValue DatabaseValue::operator-(const DatabaseValue& value) {
 		}
 	}
 
-	if (right.get_type() != dominant_type) {
+	if (right.data_type() != dominant_type) {
 		er = right.Cast(dominant_type);
 		if (er != NO_ERROR) {
 			result.set_type(DB_ERROR);
@@ -198,7 +198,7 @@ DatabaseValue DatabaseValue::operator-(const DatabaseValue& value) {
 		}
 	}
 
-	switch (left.get_type()){
+	switch (left.data_type()){
 	case DB_INTEGER:
 		result.set_int_value(left.int_value() - right.int_value());
 		break;
@@ -219,20 +219,20 @@ DatabaseValue DatabaseValue::operator*(const DatabaseValue& value) {
 	DatabaseValue left = *this;
 	DatabaseValue right = value;
 
-	if (left.get_type() != DB_INTEGER && left.get_type() != DB_FLOAT) {
+	if (left.data_type() != DB_INTEGER && left.data_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
 		return result;
 	}
 
-	if (right.get_type() != DB_INTEGER && right.get_type() != DB_FLOAT) {
+	if (right.data_type() != DB_INTEGER && right.data_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
 		return result;
 	}
 
-	DataType dominant_type = (left.get_type() == DB_INTEGER
-		&& right.get_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
+	DataType dominant_type = (left.data_type() == DB_INTEGER
+		&& right.data_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
 
-	if (left.get_type() != dominant_type) {
+	if (left.data_type() != dominant_type) {
 		er = left.Cast(dominant_type);
 		if (er != NO_ERROR) {
 			result.set_type(DB_ERROR);
@@ -240,7 +240,7 @@ DatabaseValue DatabaseValue::operator*(const DatabaseValue& value) {
 		}
 	}
 
-	if (right.get_type() != dominant_type) {
+	if (right.data_type() != dominant_type) {
 		er = right.Cast(dominant_type);
 		if (er != NO_ERROR) {
 			result.set_type(DB_ERROR);
@@ -248,7 +248,7 @@ DatabaseValue DatabaseValue::operator*(const DatabaseValue& value) {
 		}
 	}
 
-	switch (left.get_type()){
+	switch (left.data_type()){
 	case DB_INTEGER:
 		result.set_int_value(left.int_value() * right.int_value());
 		break;
@@ -269,20 +269,20 @@ DatabaseValue DatabaseValue::operator/(const DatabaseValue& value) {
 	DatabaseValue left = *this;
 	DatabaseValue right = value;
 
-	if (left.get_type() != DB_INTEGER && left.get_type() != DB_FLOAT) {
+	if (left.data_type() != DB_INTEGER && left.data_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
 		return result;
 	}
 
-	if (right.get_type() != DB_INTEGER && right.get_type() != DB_FLOAT) {
+	if (right.data_type() != DB_INTEGER && right.data_type() != DB_FLOAT) {
 		result.set_type(DB_ERROR);
 		return result;
 	}
 
-	DataType dominant_type = (left.get_type() == DB_INTEGER
-		&& right.get_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
+	DataType dominant_type = (left.data_type() == DB_INTEGER
+		&& right.data_type() == DB_INTEGER) ? DB_INTEGER : DB_FLOAT;
 
-	if (left.get_type() != dominant_type) {
+	if (left.data_type() != dominant_type) {
 		er = left.Cast(dominant_type);
 		if (er != NO_ERROR) {
 			result.set_type(DB_ERROR);
@@ -290,7 +290,7 @@ DatabaseValue DatabaseValue::operator/(const DatabaseValue& value) {
 		}
 	}
 
-	if (right.get_type() != dominant_type) {
+	if (right.data_type() != dominant_type) {
 		er = right.Cast(dominant_type);
 		if (er != NO_ERROR) {
 			result.set_type(DB_ERROR);
@@ -298,7 +298,7 @@ DatabaseValue DatabaseValue::operator/(const DatabaseValue& value) {
 		}
 	}
 
-	switch (left.get_type()){
+	switch (left.data_type()){
 	case DB_INTEGER:
 		result.set_int_value(left.int_value() / right.int_value());
 		break;
@@ -319,7 +319,7 @@ DatabaseValue DatabaseValue::operator%(const DatabaseValue& value) {
 	DatabaseValue left = *this;
 	DatabaseValue right = value;
 
-	if (left.get_type() != DB_INTEGER || right.get_type() != DB_INTEGER) {
+	if (left.data_type() != DB_INTEGER || right.data_type() != DB_INTEGER) {
 		result.set_type(DB_ERROR);
 		return result;
 	}
@@ -417,7 +417,7 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 	std::string str_val;
 	bool b_val;
 
-	switch (this->get_type()) {
+	switch (this->data_type()) {
 	case DB_INTEGER:
 		int_val = value_.i;
 

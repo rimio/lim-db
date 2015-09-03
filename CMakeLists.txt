@@ -86,6 +86,9 @@ set (SRC_PARSER_FILES
 	${SOURCE_DIR}/parser/parser-table.hpp
 	${SOURCE_DIR}/parser/parser-table.cpp
 
+	${SOURCE_DIR}/parser/parser-to-asl.hpp
+	${SOURCE_DIR}/parser/parser-to-asl.cpp
+
 	${SOURCE_DIR}/parser/parser-update.hpp
 	${SOURCE_DIR}/parser/parser-update.cpp
 
@@ -193,11 +196,17 @@ set (SRC_QUERY_EXECUTION_FILES
 	${SOURCE_DIR}/query-execution/scan-value-list.hpp
 	${SOURCE_DIR}/query-execution/scan-value-list.cpp
 
+	${SOURCE_DIR}/query-execution/scan-serialized-list.hpp
+	${SOURCE_DIR}/query-execution/scan-serialized-list.cpp
+
 	${SOURCE_DIR}/query-execution/query-execute.hpp
 	${SOURCE_DIR}/query-execution/query-execute.cpp
 
 	${SOURCE_DIR}/query-execution/query-execute-insert.hpp
 	${SOURCE_DIR}/query-execution/query-execute-insert.cpp
+
+	${SOURCE_DIR}/query-execution/query-execute-select.hpp
+	${SOURCE_DIR}/query-execution/query-execute-select.cpp
 	)
 source_group("src\\query-execution" FILES ${SRC_QUERY_EXECUTION_FILES})
 

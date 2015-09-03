@@ -10,6 +10,7 @@ public:
 	~TableData () { delete allocated_sectors_; };
 	
 	ErrorCode InsertIntoSector (BYTE *start, int length);	
+	ErrorCode RetrieveFromSector (SectorID* last_sector_used, BYTE* last_row_used, BYTE **start, bool *has_next);
 private:
 	SectorGroup* allocated_sectors_;
 };

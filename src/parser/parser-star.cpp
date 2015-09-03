@@ -7,10 +7,10 @@ ErrorCode ParserStar::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
 
 	// If STAR is resolved to a table expand only its columns
 	if (table_ != nullptr) {
-		attributes = table_->table()->get_table_attributes();
+		attributes = table_->table()->table_attributes();
 		for (auto atr : attributes) {
-			expansion.push_back(new ParserColumn(atr.get_name(), 
-				atr.get_type(), table_->table()->get_table_name(), table_));
+			expansion.push_back(new ParserColumn(atr.name(), 
+				atr.type(), table_->table()->table_name(), table_));
 		}
 	} 
 	// Otherwise expand columns from all tables in the current node
@@ -18,11 +18,11 @@ ErrorCode ParserStar::NameResolvePre(NameResolveArg* arg, bool* stop_walk) {
 		auto pt = arg->tables_stack_.top();
 
 		for (auto tbl = pt.begin(); tbl != pt.end(); tbl++) {
-			attributes = (*tbl)->table()->get_table_attributes();
+			attributes = (*tbl)->table()->table_attributes();
 
 			for (auto atr : attributes) {
-				expansion.push_back(new ParserColumn(atr.get_name(),
-					atr.get_type(), table_->table()->get_table_name(), table_));
+				expansion.push_back(new ParserColumn(atr.name(),
+					atr.type(), (*tbl)->table()->table_name(), *tbl));
 			}
 		}
 	}

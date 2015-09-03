@@ -39,7 +39,7 @@ public:
 	float float_value() { assert(data_type_ == DB_FLOAT); return value_.f; };
 	std::string string_value() { assert(data_type_ == DB_STRING); return (*value_.s); }
 	bool bool_value() { assert(data_type_ == DB_BOOLEAN); return value_.b; };
-	DataType get_type() { return data_type_; }
+	DataType data_type() { return data_type_; }
 
 	// Setters
 	void set_int_value (INT32 value);

@@ -24,6 +24,7 @@ public:
 	ErrorCode Insert (BYTE* ptr, int length_required, bool *has_free_space);
 
 	void UseDataSector (DataSector *sector);
+	int num_rows () { return (int)num_rows_; }
 
 private:
 	INT16 num_rows_;

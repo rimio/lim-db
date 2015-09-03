@@ -189,6 +189,8 @@ void DataSectorTest::check() {
 	line = "Insert into t(c) values ('abd'!='cd')";
 	scenario.push_back(line);
 
+	line = "Select * from t";
+	scenario.push_back(line);
 
 	line = "drop table t";
 	scenario.push_back(line);

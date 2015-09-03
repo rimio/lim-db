@@ -118,7 +118,7 @@ ErrorCode ParserExpressionLogical::ConstantFoldPost() {
 	}
 
 	// Convert to the expected type
-	if (this->computed_value().get_type() != this->ExpectedType()){
+	if (this->computed_value().data_type() != this->ExpectedType()){
 		auto aux = this->computed_value();
 		er = aux.Cast(this->ExpectedType());
 		if (er != NO_ERROR)

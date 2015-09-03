@@ -55,7 +55,7 @@ ErrorCode ParserExpressionArithmetic::ConstantFoldPost() {
 		result = left_child->computed_value() / right_child->computed_value();
 		break;
 	case MODULO:
-		if (left_child->computed_value().get_type()!= DB_INTEGER || right_child->computed_value().get_type() != DB_INTEGER)
+		if (left_child->computed_value().data_type()!= DB_INTEGER || right_child->computed_value().data_type() != DB_INTEGER)
 			return ErrorManager::error(__HERE__, ER_ARITHMETIC_COMPUTATION, "MOD", "NON_INT", "NON_INT");
 		result = left_child->computed_value() % right_child->computed_value();
 		break;
@@ -65,12 +65,12 @@ ErrorCode ParserExpressionArithmetic::ConstantFoldPost() {
 		break;
 	}
 
-	if (result.get_type() == DB_ERROR)
+	if (result.data_type() == DB_ERROR)
 		return ER_FAILED;
 
 	this->set_computed_value(result);
 
-	if (this->computed_value().get_type() != this->ExpectedType()){
+	if (this->computed_value().data_type() != this->ExpectedType()){
 		auto aux = this->computed_value();
 		er = aux.Cast(this->ExpectedType());
 		if (er != NO_ERROR)

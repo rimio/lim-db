@@ -4,6 +4,7 @@
 #include "parser\parser-value.hpp"
 #include "metadata\database-value.hpp"
 #include "query-execution\query-execute-insert.hpp"
+#include "parser\parser-to-asl.hpp"
 //
 // PTInsertNode
 //
@@ -199,49 +200,18 @@ ErrorCode ParserInsertStatement::Prepare () {
 	return NO_ERROR;
 }
 
-std::vector<std::vector<DatabaseValue>> ParserInsertStatement::ParserValueToDatabase
-			(std::vector<std::vector<ParserNode *> *> *values) {
-	std::vector<std::vector<DatabaseValue>> list;
-	std::vector<DatabaseValue> row;
 
-	for (auto val_row: *values) {
-		row.clear();
-		for (auto val : *val_row) {
-			row.push_back(val->computed_value());
-		}
-		list.push_back(row);
-	}
-
-	return list;
-}
-
-std::vector<Attribute> ParserInsertStatement::ParserColumnToAttributes(std::vector<ParserColumn *>* columns) {
-	std::vector<Attribute> result;
-	auto attributes = table_->table()->table_attributes();
-	
-	std::string col_name;
-	for (auto col : *columns) {
-		col_name = col->name();
-		for (auto atr: attributes)
-			if (col_name == atr.name()) {
-				result.push_back(atr);
-				break;
-			}
-	}
-
-	return result;
-}
 
 ErrorCode ParserInsertStatement::Execute () {
 
-	std::vector<std::vector<DatabaseValue>> values = ParserValueToDatabase(values_);
-	std::vector<Attribute> columns = ParserColumnToAttributes(columns_);
+	std::vector<std::vector<DatabaseValue>> values = ParserToASL::ParserValueToDatabase(values_);
+	std::vector<Attribute> columns = ParserToASL::ParserColumnToAttributes(table_,columns_);
 
-	QueryExecuteInsert querry = QueryExecuteInsert(table_->table(), columns, values);
+	QueryExecuteInsert query = QueryExecuteInsert(table_->table(), columns, values);
 
 	ErrorCode er = NO_ERROR;
 
-	er = querry.Execute();
+	er = query.Execute();
 
 	if (er != NO_ERROR)
 		return er;

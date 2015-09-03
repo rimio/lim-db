@@ -42,7 +42,7 @@ ErrorCode ParserExpressionCompare::ConstantFoldPost() {
 	}
 
 	// Check for illegal bool comparisons
-	if (left_child->computed_value().get_type() == DB_BOOLEAN && right_child->computed_value().get_type() == DB_BOOLEAN)
+	if (left_child->computed_value().data_type() == DB_BOOLEAN && right_child->computed_value().data_type() == DB_BOOLEAN)
 		if (op() != EQ && op() != NOT_EQ) 
 			return ErrorManager::error(__HERE__, ER_FAILED);
 
@@ -72,7 +72,7 @@ ErrorCode ParserExpressionCompare::ConstantFoldPost() {
 
 	this->set_computed_value( DatabaseValue(result));
 
-	if (this->computed_value().get_type() != this->ExpectedType()){
+	if (this->computed_value().data_type() != this->ExpectedType()){
 		auto aux = this->computed_value();
 		er = aux.Cast(this->ExpectedType());
 		if (er != NO_ERROR)

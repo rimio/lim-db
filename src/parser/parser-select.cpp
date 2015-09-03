@@ -1,6 +1,10 @@
 #include "parser\parser-select.hpp"
 #include "base\generic-operations.hpp"
 #include "boot\boot.hpp"
+#include "storage\data-sector.hpp"
+#include "storage\row-data.hpp"
+#include "query-execution\query-execute-select.hpp"
+#include "parser\parser-to-asl.hpp"
 //
 // PTSelectNode
 //
@@ -85,6 +89,7 @@ ErrorCode ParserSelectStatement::Compile () {
 			from_->name().c_str());
 	}
 
+	from_->set_table(tableSchema);
 	ErrorCode er = NO_ERROR;
 
 	er = this->NameResolve();
@@ -100,6 +105,14 @@ ErrorCode ParserSelectStatement::Prepare () {
 }
 
 ErrorCode ParserSelectStatement::Execute () {
+	ErrorCode er = NO_ERROR;
+	std::vector<ParserColumn*> list = ParserToASL::ParserNodeToParserColumn(list_);
+	std::vector<Attribute> columns = ParserToASL::ParserColumnToAttributes(from_, &list);
+
+	QueryExecuteSelect query = QueryExecuteSelect(from_->table(), columns);
+
+	er = query.Execute();
+
 	return NO_ERROR;
 }
 

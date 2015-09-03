@@ -27,7 +27,7 @@ BYTE* DataSector::Select(int row_number) {
 ErrorCode DataSector::Insert(BYTE *ptr, int length_required, bool *has_free_space) {
 	assert(has_free_space != nullptr);
 	*has_free_space = true;
-	int data_size = ALIGN_SIZE (length_required, 4);
+	int data_size = ALIGN_SIZE (length_required, INT32_ALIGNMENT);
 	int slot_and_data_size = data_size + sizeof(Slot);
 
 	if (free_ < slot_and_data_size) {
