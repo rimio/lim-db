@@ -106,16 +106,44 @@ ErrorCode ParserSelectStatement::Prepare () {
 
 ErrorCode ParserSelectStatement::Execute () {
 	ErrorCode er = NO_ERROR;
-	std::vector<ParserColumn*> list = ParserToASL::ParserNodeToParserColumn(list_);
-	std::vector<Attribute> columns = ParserToASL::ParserColumnToAttributes(from_, &list);
 
-	QueryExecuteSelect query = QueryExecuteSelect(from_->table(), columns);
+	QueryExecuteSelect query = QueryExecuteSelect(from_, this);
 
 	er = query.Execute();
-
+	query.Print(values_);
+	
 	return NO_ERROR;
 }
 
 std::string ParserSelectStatement::Print () {
 	return ToString ();
+}
+
+ErrorCode ParserSelect::ConstantFoldPost() {
+	ErrorCode er = NO_ERROR;
+	std::vector<DatabaseValue> row(list_->size(), DatabaseValue());
+	int poz = values_.size();
+	values_.push_back(row);
+	
+	for (int i = 0; i < list_->size(); i++) {
+		if (list_->at(i)->computed_value().is_null()) continue;
+		switch (list_->at(i)->computed_value().data_type()) {
+		case DB_INTEGER:
+			values_[poz][i].set_int_value(list_->at(i)->computed_value().int_value());
+			break;
+		case DB_FLOAT:
+			values_[poz][i].set_float_value(list_->at(i)->computed_value().float_value());
+			break;
+		case DB_STRING:
+			values_[poz][i].set_string_value(&(list_->at(i)->computed_value().string_value()), true);
+			break;
+		case DB_BOOLEAN:
+			values_[poz][i].set_bool_value(list_->at(i)->computed_value().bool_value());
+			break;
+		default:
+			return ER_FAILED;
+		}
+	}
+	
+	return er;
 }

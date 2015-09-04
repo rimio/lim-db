@@ -1,15 +1,5 @@
 #include "parser-to-asl.hpp"
 
-std::vector<ParserColumn *> ParserToASL::ParserNodeToParserColumn(std::vector<ParserNode *>* list) {
-	std::vector<ParserColumn *> result;
-
-	for (auto node : *list) {
-		result.push_back(dynamic_cast<ParserColumn*>(node));
-	}
-
-	return result;
-}
-
 std::vector<std::vector<DatabaseValue>> ParserToASL::ParserValueToDatabase
 (std::vector<std::vector<ParserNode *> *> *values) {
 	std::vector<std::vector<DatabaseValue>> list;

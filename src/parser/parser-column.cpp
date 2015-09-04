@@ -2,6 +2,7 @@
 #include "boot\boot.hpp"
 #include "parser\parser-table.hpp"
 
+
 std::string ParserColumn::ToString () {
 	return name_;
 }
@@ -54,4 +55,21 @@ ErrorCode ParserColumn::NameResolvePost(NameResolveArg* arg, bool* stop_walk) {
 
 ErrorCode ParserColumn::TypeCheckPre(TypeCheckArg *arg, bool* stop_walk) {
 	return NO_ERROR;
+}
+
+ErrorCode ParserColumn::ConstantFoldPost() {
+	ErrorCode er = NO_ERROR;
+	assert(this->resolved_to_ != nullptr);
+
+	std::vector<DatabaseValue> * row = this->resolved_to_->active_row();
+	std::vector<Attribute> attributes = this->resolved_to_->table()->table_attributes();
+
+	for (auto atr : attributes) {
+		if (this->name() == atr.name()) {
+			this->set_computed_value(row->at(atr.position() - 1));
+			break;
+		}
+	}
+
+	return er;
 }

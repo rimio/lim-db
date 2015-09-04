@@ -32,6 +32,8 @@ public:
 	DatabaseValue computed_value() { return computed_value_; }
 	void set_computed_value (const DatabaseValue& value) { computed_value_.Clone(value); }
 	void set_expected_type (DataType type) { expected_type_ = type; };
+
+	ErrorCode ConstantFold();
 protected:
 	// Position in input buffer
 	yy::location location_;
@@ -60,7 +62,6 @@ protected:
 
 	ErrorCode NameResolve ();
 	ErrorCode TypeCheck ();
-	ErrorCode ConstantFold();
 private:
 	template <class ArgPre, class ArgPost>
 	ErrorCode ParserWalkInternal (ErrorCode (ParserNode::*pre_func) (ArgPre *, bool*), ArgPre* arg_pre,

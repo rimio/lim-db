@@ -606,6 +606,14 @@ ErrorCode DatabaseValue::Cast(DataType type, DatabaseValue* output) {
 
 
 void DatabaseValue::Clone(const DatabaseValue& value) {
+	if (value.is_null_) {
+		data_type_ = DB_UNKNOWN;
+		need_clear_ = false;
+		is_null_ = true;
+		value_.s = nullptr;
+		return;
+	}
+	
 	switch (value.data_type_) {
 	case DB_INTEGER:
 		this->set_int_value(value.value_.i);

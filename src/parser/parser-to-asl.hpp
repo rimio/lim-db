@@ -10,7 +10,6 @@
 
 class ParserToASL {
 public:
-	static std::vector<ParserColumn *> ParserNodeToParserColumn(std::vector<ParserNode *>* list);
 	static std::vector<std::vector<DatabaseValue>> ParserValueToDatabase (std::vector<std::vector<ParserNode *> *> *values);
 	static std::vector<Attribute> ParserColumnToAttributes (ParserTable *table, std::vector<ParserColumn *>* columns);
 };

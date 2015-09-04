@@ -6,16 +6,18 @@
 #include "metadata\database-value.hpp"
 #include "parser\parser-node.hpp"
 #include "parser\parser-column.hpp"
+#include "parser\parser-table.hpp"
+#include "parser\parser-select.hpp"
 #include <vector>
 
 class QueryExecuteSelect : QueryExecute {
 public:
-	QueryExecuteSelect(Table *t, std::vector<Attribute> columns);
+	QueryExecuteSelect(ParserTable *t, ParserSelect *select_reference);
 	ErrorCode Execute() override;
 	void Print(std::vector<std::vector<DatabaseValue>> values);
 private:
-	Table *table_;
-	std::vector<Attribute> columns_;
+	ParserTable *table_;
+	ParserSelect *select_reference_;
 };
 
 #endif 

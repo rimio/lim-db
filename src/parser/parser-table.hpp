@@ -16,8 +16,11 @@ public:
 	// TODO: Is it better to use pointers/references?
 	std::string name () { return name_; };
 	Table* table () { return table_; }
+	std::vector<DatabaseValue>* active_row() { return active_row_; }
+	
 	void set_name (std::string name) { STRING_TO_LOWER(name); name_ = name; };
 	void set_table (Table *t) { table_ = t; };
+	void set_active_row(std::vector<DatabaseValue> *row) { active_row_ = row; }
 
 protected:
 
@@ -37,6 +40,7 @@ private:
 
 	// Members
 	std::string name_;
+	std::vector<DatabaseValue> *active_row_;
 
 	// Future implementation
 	std::string alias_;

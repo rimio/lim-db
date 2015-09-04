@@ -189,9 +189,12 @@ ErrorCode ParserInsertStatement::Compile () {
 		return er;
 	
 	// Resolve constant folding
+	std::vector<ParserColumn *>* col = columns_;
+	columns_ = NULL;
 	er = ConstantFold();
 	if (er != NO_ERROR)
 		return er;
+	columns_ = col;
 
 	return er;
 }
