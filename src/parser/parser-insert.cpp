@@ -141,11 +141,11 @@ ErrorCode ParserInsert::TypeCheckPre(TypeCheckArg* arg, bool* stop_walk) {
 
 ErrorCode ParserInsertStatement::Compile () {
 	// Check if table name exists
-	Table *tableSchema = NULL;
+	Table *tableSchema = nullptr;
 
 	// Find table by name
 	tableSchema = GET_SCHEMA_MANAGER()->FindTable(table_->name());
-	if (tableSchema == NULL) {
+	if (tableSchema == nullptr) {
 		// Not found
 		return ErrorManager::error(__HERE__, ER_TABLE_DOES_NOT_EXIST,
 			table_->name().c_str());

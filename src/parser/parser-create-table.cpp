@@ -33,7 +33,7 @@ ErrorCode ParserCreateTableStatement::Compile () {
 	STRING_TO_LOWER (table_name);
 	table_->set_name(table_name);
 
-	if (GET_SCHEMA_MANAGER ()->FindTable (table_name) != NULL) {
+	if (GET_SCHEMA_MANAGER ()->FindTable (table_name) != nullptr) {
 		return ErrorManager::error (__HERE__, ER_TABLE_ALREADY_EXISTS,
 									table_->name ().c_str ());
 	}

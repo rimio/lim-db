@@ -42,5 +42,5 @@ Table * SchemaManager::FindTable(std::string table_name) {
 	STRING_TO_LOWER(table_name);
 	if (list_of_tables_.find(table_name) != list_of_tables_.end())
 		return list_of_tables_.find(table_name)->second;
-	return NULL;
+	return nullptr;
 }
